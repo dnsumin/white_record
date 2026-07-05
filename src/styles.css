@@ -691,6 +691,7 @@ button {
 .playlist-title {
   flex: 1;
   min-width: 0;
+  font-family: 'DosGothic', 'DotGothic16', monospace;
   font-size: 16px;
   line-height: 1;
   text-decoration: underline;

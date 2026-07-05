@@ -41,11 +41,41 @@ const loadingLetters = ['L', 'o', 'a', 'd', 'i', 'n', 'g'];
 const jangmaStills = Array.from({ length: 15 }, (_, index) => `jangma-still-${String(index + 1).padStart(2, '0')}.png`);
 
 const playlistItems = [
-  { title: 'vivitics', time: '4:01', image: 'playlist-vivitics.png' },
-  { title: 'Nighty Night', time: '2:50', image: 'playlist-nighty-night.png' },
-  { title: 'Dear.', time: '1:32', image: 'playlist-dear.png' },
-  { title: 'Eternally', time: '3:13', image: 'playlist-eternally.png' },
-  { title: '26', time: '2:39', image: 'playlist-26.png' },
+  {
+    koTitle: '비비틱스',
+    enTitle: 'vivitics',
+    time: '4:01',
+    image: 'playlist-vivitics.png',
+    link: 'https://youtu.be/0ZzHRXLFu7k?si=HG9X2cxk-2ydrUq8',
+  },
+  {
+    koTitle: '수마가 몰려와',
+    enTitle: 'Nighty Night',
+    time: '2:50',
+    image: 'playlist-nighty-night.png',
+    link: 'https://youtu.be/hbTIpGJcY2Y?si=Fd_u8X56edppcj-7',
+  },
+  {
+    koTitle: '비보',
+    enTitle: 'Dear.',
+    time: '1:32',
+    image: 'playlist-dear.png',
+    link: 'https://youtu.be/_IEMR2eiYYA?si=ms-Uj1RMU1rvh4jt',
+  },
+  {
+    koTitle: '사랑해',
+    enTitle: 'Eternally',
+    time: '3:13',
+    image: 'playlist-eternally.png',
+    link: 'https://youtu.be/gleFEoPHgOE?si=RPKPdHbXgJDNPcMX',
+  },
+  {
+    koTitle: '26',
+    enTitle: '26',
+    time: '2:39',
+    image: 'playlist-26.png',
+    link: 'https://youtu.be/jEdoHGAi3lw?si=n-I93TQv5IAjVfcx',
+  },
 ];
 
 const slotLayouts = [
@@ -542,10 +572,10 @@ function JangmaPage({ locale }: JangmaPageProps) {
               >
                   <div className="jangma-playlist-list">
                     {playlistItems.map((item) => (
-                      <a className="playlist-row" href="https://www.naver.com" target="_blank" rel="noreferrer" key={item.title}>
+                      <a className="playlist-row" href={item.link} target="_blank" rel="noreferrer" key={item.enTitle}>
                         <span className="playlist-row-inner">
                           <img src={asset(item.image)} alt="" />
-                          <span className="playlist-title">{item.title}</span>
+                          <span className="playlist-title">{locale === 'ko' ? item.koTitle : item.enTitle}</span>
                           <span className="playlist-time">{item.time}</span>
                         </span>
                       </a>
