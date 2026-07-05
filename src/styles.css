@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+KR:wght@400;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
 
 @font-face {
   font-family: 'DosHandwriting';
@@ -11,6 +12,13 @@
   font-family: 'DosGothic';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSGothic.woff') format('woff');
   font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2506-1@1.0/Galmuri11-Bold.woff2') format('woff2');
+  font-weight: 700;
   font-display: swap;
 }
 
@@ -704,6 +712,207 @@ button {
   font-size: 14px;
   line-height: 1;
   text-align: right;
+}
+
+.track-archive-page {
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: auto;
+  background: var(--white);
+  color: var(--green-deep);
+  font-family: 'DotGothic16', monospace;
+}
+
+.track-archive-scale {
+  position: relative;
+  margin: 0 auto;
+}
+
+.track-archive-scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1129px;
+  transform-origin: top left;
+}
+
+.track-album-panel {
+  position: absolute;
+  left: 100px;
+  top: 127px;
+  width: 319px;
+}
+
+.track-sidebar-button,
+.track-mode-button,
+.track-info-card h2 {
+  height: 43px;
+  border-bottom: 3px solid var(--green);
+  font-family: 'DotGothic16', monospace;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 40px;
+  text-align: center;
+}
+
+.track-sidebar-button,
+.track-mode-button.is-active {
+  background: var(--green);
+  color: #fffef7;
+}
+
+.track-sidebar-copy {
+  width: 319px;
+  min-height: 365px;
+  margin-top: 16px;
+  padding: 16px 27px 18px;
+  border: 2px solid var(--green);
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'DosGothic', 'DotGothic16', monospace;
+  font-size: 25px;
+  line-height: 37px;
+}
+
+.track-sidebar-copy p {
+  margin: 0 0 43px;
+}
+
+.track-sidebar-copy ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: track-list;
+}
+
+.track-sidebar-copy li {
+  counter-increment: track-list;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+}
+
+.track-sidebar-copy li::before {
+  content: counter(track-list, decimal-leading-zero);
+  font-weight: 700;
+}
+
+.track-sidebar-copy span {
+  display: inline-block;
+  margin-left: 50px;
+}
+
+.track-content {
+  position: absolute;
+  left: 459px;
+  top: 40px;
+  width: 1361px;
+}
+
+.track-header {
+  position: relative;
+  height: 71px;
+}
+
+.track-title-badge {
+  position: absolute;
+  left: 0;
+  top: 1.5px;
+  width: 360px;
+  height: 68px;
+  border: 3px solid var(--green);
+  background: var(--white);
+  box-shadow: 5px 5px 0 var(--green);
+}
+
+.track-title-badge span {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 344px;
+  height: 52px;
+  background: var(--green);
+  color: var(--white);
+  font-family: 'Galmuri11', 'DotGothic16', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 52px;
+  text-align: center;
+}
+
+.track-mode-tabs {
+  position: absolute;
+  right: 0;
+  top: 14px;
+  display: flex;
+  gap: 20px;
+}
+
+.track-mode-button {
+  width: 200px;
+  border: 2px solid var(--green);
+  border-bottom-width: 3px;
+  background: #fffef7;
+  color: var(--green);
+}
+
+.track-mode-button:hover {
+  filter: brightness(0.98);
+}
+
+.track-video-frame {
+  position: relative;
+  width: 1361px;
+  height: 718px;
+  margin-top: 16px;
+  overflow: hidden;
+  background: #fffef7;
+}
+
+.track-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.track-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 308px);
+  gap: 44px;
+  margin-top: 40px;
+}
+
+.track-info-card {
+  width: 308px;
+  margin: 0;
+  color: var(--green-deep);
+}
+
+.track-info-card h2 {
+  margin: 0;
+  border: 2px solid var(--green);
+  border-bottom-width: 2px;
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'DosGothic', 'DotGothic16', monospace;
+}
+
+.track-info-card p {
+  min-height: 68px;
+  margin: -2px 0 0;
+  padding: 14px 15px 12px;
+  border: 2px solid var(--green);
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'DosGothic', 'DotGothic16', monospace;
+  font-size: 25px;
+  line-height: 37px;
+  white-space: pre-line;
 }
 
 @media (max-width: 1500px) {

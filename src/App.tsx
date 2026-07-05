@@ -10,8 +10,9 @@ type ArchiveObject = {
 };
 
 type Locale = 'ko' | 'en';
-type AppPage = 'main' | 'jangma';
+type AppPage = 'main' | 'jangma' | 'track';
 type JangmaWindow = 'profile' | 'playlist' | 'stills';
+type TrackArchiveMode = 'mv' | 'lyric';
 type JangmaWindowPosition = {
   left: number;
   top: number;
@@ -94,6 +95,9 @@ const jangmaFitRatio = 0.94;
 const jangmaContentCenterX = (149 + 1726) / 2;
 const jangmaDragMinLeft = 420;
 const stillFrameWidth = 924;
+const trackArchiveDesignWidth = 1920;
+const trackArchiveDesignHeight = 1129;
+const trackArchiveFitRatio = 0.98;
 
 const jangmaInitialWindowPositions: Record<JangmaWindow, JangmaWindowPosition> = {
   profile: { left: 1199, top: 662 },
@@ -242,8 +246,8 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     pressedObject.current = null;
 
     if (stepCount === 0) {
-      if (!didDrag.current && clickTarget?.id === 'jangma' && clickTarget.isCenter) {
-        onNavigate('#jangma');
+      if (!didDrag.current && clickTarget?.isCenter && ['camera', 'jangma'].includes(clickTarget.id)) {
+        onNavigate(`#${clickTarget.id}`);
       }
       return;
     }
@@ -262,7 +266,9 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
       >
       {visibleObjects.map(({ object, style, isCenter }) => (
         <div
-          className={`gallery-object asset-${object.id}${object.id === 'jangma' && isCenter ? ' is-clickable' : ''}`}
+          className={`gallery-object asset-${object.id}${
+            ['camera', 'jangma'].includes(object.id) && isCenter ? ' is-clickable' : ''
+          }`}
           aria-label={object.label}
           key={object.id}
           style={style}
@@ -638,6 +644,128 @@ function JangmaPage({ locale }: JangmaPageProps) {
   );
 }
 
+type TrackArchivePageProps = {
+  locale: Locale;
+};
+
+function TrackArchivePage({ locale }: TrackArchivePageProps) {
+  const [trackMode, setTrackMode] = useState<TrackArchiveMode>('mv');
+  const [sceneScale, setSceneScale] = useState(1);
+
+  useEffect(() => {
+    const updateScale = () => {
+      setSceneScale(Math.min(window.innerWidth / trackArchiveDesignWidth, 1) * trackArchiveFitRatio);
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
+  const trackArchiveCopy = {
+    ko: {
+      albumTitle: ['장마 1st EP', '‘ 화이트 레코드 ’'],
+      tracks: ['하나 둘', '맨발로 걷는 하루', '나만의 반딧불', '황혼성 사냥', '나만의 반딧불'],
+      trackDetails: [
+        ['하나 둘', '노래를 피우는 사람들'],
+        ['맨발로 걷는 하루', '아무 의미 없지는\n않았다고 생각해'],
+        ['나만의 반딧불', '편지를 부칠 수가 없네'],
+        ['황혼성 사냥', '어느 쪽으로 갈까'],
+      ],
+    },
+    en: {
+      albumTitle: ['Jangma 1st EP', '‘ White Record ’'],
+      tracks: ['mic test', 'Hop Step Jump', 'fairytale', 'Twilight hunting', 'fairytale'],
+      trackDetails: [
+        ['mic test', 'The song smokers'],
+        ['Hop Step Jump', 'I think it wasn’t all for nothing'],
+        ['fairytale', "Can't mail this letter"],
+        ['Twilight hunting', 'Which way to go'],
+      ],
+    },
+  };
+
+  const pageCopy = trackArchiveCopy[locale];
+
+  return (
+    <main className="track-archive-page">
+      <div
+        className="track-archive-scale"
+        style={{
+          width: trackArchiveDesignWidth * sceneScale,
+          height: trackArchiveDesignHeight * sceneScale,
+        }}
+      >
+        <div className="track-archive-scene" style={{ transform: `scale(${sceneScale})` }}>
+          <aside className="track-album-panel" aria-label="White Record album track list">
+            <div className="track-sidebar-button">White Record</div>
+            <div className="track-sidebar-copy">
+              <p>
+                {pageCopy.albumTitle[0]}
+                <br />
+                {pageCopy.albumTitle[1]}
+              </p>
+              <ol>
+                {pageCopy.tracks.slice(0, 4).map((track) => (
+                  <li key={track}>{track}</li>
+                ))}
+                <li>
+                  {pageCopy.tracks[4]}
+                  <br />
+                  <span>(Inst.)</span>
+                </li>
+              </ol>
+            </div>
+          </aside>
+
+          <section className="track-content" aria-label="Track Archive music video">
+            <header className="track-header">
+              <div className="track-title-badge">
+                <span>TRACK ARCHIVE</span>
+              </div>
+              <nav className="track-mode-tabs" aria-label="Track archive mode">
+                <button
+                  className={`track-mode-button ${trackMode === 'mv' ? 'is-active' : ''}`}
+                  type="button"
+                  onClick={() => setTrackMode('mv')}
+                >
+                  MV
+                </button>
+                <button
+                  className={`track-mode-button ${trackMode === 'lyric' ? 'is-active' : ''}`}
+                  type="button"
+                  onClick={() => setTrackMode('lyric')}
+                >
+                  Lyric Video
+                </button>
+              </nav>
+            </header>
+
+            <div className="track-video-frame">
+              <iframe
+                src="https://www.youtube.com/embed/jEdoHGAi3lw?si=yLAS_tk_Eiqf9eDn"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+
+            <div className="track-card-grid" aria-label="Track descriptions">
+              {pageCopy.trackDetails.map(([title, description]) => (
+                <article className="track-info-card" key={title}>
+                  <h2>{title}</h2>
+                  <p>{description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 type FooterProps = {
   locale: Locale;
 };
@@ -690,7 +818,11 @@ function LoadingScreen() {
 export default function App() {
   const [locale, setLocale] = useState<Locale>('ko');
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState<AppPage>(() => (window.location.hash === '#jangma' ? 'jangma' : 'main'));
+  const [currentPage, setCurrentPage] = useState<AppPage>(() => {
+    if (window.location.hash === '#jangma') return 'jangma';
+    if (window.location.hash === '#camera') return 'track';
+    return 'main';
+  });
   const loadingTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -718,7 +850,15 @@ export default function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      setCurrentPage(window.location.hash === '#jangma' ? 'jangma' : 'main');
+      if (window.location.hash === '#jangma') {
+        setCurrentPage('jangma');
+        return;
+      }
+      if (window.location.hash === '#camera') {
+        setCurrentPage('track');
+        return;
+      }
+      setCurrentPage('main');
     };
 
     window.addEventListener('hashchange', handleHashChange);
@@ -741,7 +881,7 @@ export default function App() {
   const handleInternalNavigation = (href: string) => {
     showPageLoading(() => {
       window.location.hash = href;
-      setCurrentPage(href === '#jangma' ? 'jangma' : 'main');
+      setCurrentPage(href === '#jangma' ? 'jangma' : href === '#camera' ? 'track' : 'main');
     });
   };
 
@@ -749,6 +889,8 @@ export default function App() {
     <>
       {currentPage === 'jangma' ? (
         <JangmaPage locale={locale} />
+      ) : currentPage === 'track' ? (
+        <TrackArchivePage locale={locale} />
       ) : (
         <main className="page-shell" aria-busy={isLoading}>
           <div className="main-frame">
