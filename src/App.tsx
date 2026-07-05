@@ -650,11 +650,13 @@ type TrackArchivePageProps = {
 
 function TrackArchivePage({ locale }: TrackArchivePageProps) {
   const [trackMode, setTrackMode] = useState<TrackArchiveMode>('mv');
+  const [selectedLyricTrack, setSelectedLyricTrack] = useState('01');
+  const [expandedLyricImageIndex, setExpandedLyricImageIndex] = useState<number | null>(null);
   const [sceneScale, setSceneScale] = useState(1);
 
   useEffect(() => {
     const updateScale = () => {
-      setSceneScale(Math.min(window.innerWidth / trackArchiveDesignWidth, 1) * trackArchiveFitRatio);
+    setSceneScale(Math.min(window.innerWidth / trackArchiveDesignWidth, 1) * trackArchiveFitRatio);
     };
 
     updateScale();
@@ -686,36 +688,149 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   };
 
   const pageCopy = trackArchiveCopy[locale];
+  const videoSources: Record<TrackArchiveMode, string> = {
+    mv: 'https://www.youtube.com/embed/jEdoHGAi3lw?si=yLAS_tk_Eiqf9eDn',
+    lyric: 'https://www.youtube.com/embed/jEdoHGAi3lw?si=yLAS_tk_Eiqf9eDn',
+  };
+  const lyricTracks = [
+    {
+      id: '01',
+      koTitle: '하나 둘',
+      enTitle: 'mic test',
+      imageCount: 4,
+      places: [
+        {
+          koName: '청사포',
+          enName: 'Cheongsapo',
+          koDescription:
+            '소박한 포구의 정취와 해변열차가 지나가는 철길, 푸른 바다가 어우러져 한 폭의 그림 같은 풍경을 자아내는 곳입니다. 붉고 하얀 쌍둥이 등대 사이로 밀려오는 파도 소리는 가만히 귀를 기울이게 만드는 매력이 있습니다.',
+          enDescription:
+            'A place where the quiet charm of a small port, a railway with passing beach trains, and the blue sea come together to create a scene straight out of a painting. The sound of waves rolling in between the red and white twin lighthouses holds a certain magic that makes you stop and listen closely.',
+        },
+      ],
+    },
+    {
+      id: '02',
+      koTitle: '맨발로 걷는 하루',
+      enTitle: 'Hop Step Jump',
+      imageCount: 2,
+      places: [
+        {
+          koName: '임랑해수욕장',
+          enName: 'Imrang Beach',
+          koDescription:
+            '부산의 다른 유명 해변들에 비해 한적하고 조용하여 오롯이 바다 자체에 집중할 수 있는 공간입니다. 넓게 펼쳐진 백사장 위로 하얗게 부서지는 파도를 보고 있으면 마음이 아늑하고 평온해집니다. 특히 해 질 무렵 밀려드는 고즈넉한 빛과 파도 소리는 오래도록 깊은 여운을 남깁니다.',
+          enDescription:
+            'Quieter and less crowded than other famous beaches in Busan, this space allows you to focus entirely on the sea itself. Watching the white waves break over the wide sandy shore brings a sense of warmth and peace to the mind. The serene light and the sound of the waves rolling in at dusk leave a deep lasting impression.',
+        },
+      ],
+    },
+    {
+      id: '04',
+      koTitle: '황혼성 사냥',
+      enTitle: 'Twilight hunting',
+      imageCount: 4,
+      places: [
+        {
+          koName: '황령산 봉수대',
+          enName: 'Hwangnyeongsan Beacon Fire Station',
+          koDescription:
+            '부산의 화려한 도심과 푸른 바다를 사방으로 시원하게 내려다볼 수 있는 공간입니다. 낮에는 탁 트인 풍경으로 해방감을 주고, 해가 저물면 하나둘 불빛이 켜지며 아늑한 야경으로 변합니다. 웅장함과 서글픈 아름다움이 공존하는 장소입니다.',
+          enDescription:
+            'A space that offers a sweeping panoramic view of Busan’s vibrant cityscape and blue ocean. The open scenery brings a sense of liberation during the day, and as the sun goes down, it transforms into a cozy night view as the lights flicker on one by one. It is a place where grandeur and a poignant beauty coexist.',
+        },
+      ],
+    },
+  ];
+  const activeLyricTrack = lyricTracks.find((track) => track.id === selectedLyricTrack) ?? lyricTracks[0];
+  const activeLyricImages = Array.from({ length: activeLyricTrack.imageCount }, (_, index) => {
+    const imageNumber = index + 1;
+    const src = asset(`${activeLyricTrack.id}-${imageNumber}.jpg`);
+    const isTopCrop = activeLyricTrack.id === '01' && imageNumber === 4;
+    const isWideCrop = isTopCrop || (activeLyricTrack.id === '04' && imageNumber <= 2);
+    return {
+      src,
+      alt: `${locale === 'ko' ? activeLyricTrack.koTitle : activeLyricTrack.enTitle} ${imageNumber}`,
+      isTopCrop,
+      isWideCrop,
+    };
+  });
+  const sceneHeight = trackMode === 'lyric' ? trackArchiveDesignHeight + 832 : trackArchiveDesignHeight;
 
   return (
     <main className="track-archive-page">
+      <button
+        className="track-temp-back"
+        type="button"
+        aria-label="Back"
+        onClick={() => {
+          window.location.hash = '';
+        }}
+      >
+        <img src={asset('button-next.svg')} alt="" />
+      </button>
+
       <div
         className="track-archive-scale"
         style={{
           width: trackArchiveDesignWidth * sceneScale,
-          height: trackArchiveDesignHeight * sceneScale,
+          height: sceneHeight * sceneScale,
         }}
       >
-        <div className="track-archive-scene" style={{ transform: `scale(${sceneScale})` }}>
+        <div
+          className={`track-archive-scene${trackMode === 'lyric' ? ' is-lyric' : ''}`}
+          style={{ height: sceneHeight, transform: `scale(${sceneScale})` }}
+        >
           <aside className="track-album-panel" aria-label="White Record album track list">
-            <div className="track-sidebar-button">White Record</div>
-            <div className="track-sidebar-copy">
-              <p>
-                {pageCopy.albumTitle[0]}
-                <br />
-                {pageCopy.albumTitle[1]}
-              </p>
-              <ol>
-                {pageCopy.tracks.slice(0, 4).map((track) => (
-                  <li key={track}>{track}</li>
-                ))}
-                <li>
-                  {pageCopy.tracks[4]}
-                  <br />
-                  <span>(Inst.)</span>
-                </li>
-              </ol>
-            </div>
+            {trackMode === 'lyric' ? (
+              <>
+                <nav className="track-lyric-song-list" aria-label="Lyric video tracks">
+                  {lyricTracks.map((track) => (
+                    <button
+                      className={`track-sidebar-button ${selectedLyricTrack === track.id ? 'is-active' : ''}`}
+                      type="button"
+                      key={track.id}
+                      onClick={() => {
+                        setSelectedLyricTrack(track.id);
+                        setExpandedLyricImageIndex(null);
+                      }}
+                    >
+                      {locale === 'ko' ? track.koTitle : track.enTitle}
+                    </button>
+                  ))}
+                </nav>
+
+                <div className="track-place-list">
+                  {activeLyricTrack.places.map((place) => (
+                    <section className="track-place-card" key={place.koName}>
+                      <h2>{locale === 'ko' ? place.koName : place.enName}</h2>
+                      <p>{locale === 'ko' ? place.koDescription : place.enDescription}</p>
+                    </section>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="track-sidebar-button is-active">White Record</div>
+                <div className="track-sidebar-copy">
+                  <p>
+                    {pageCopy.albumTitle[0]}
+                    <br />
+                    {pageCopy.albumTitle[1]}
+                  </p>
+                  <ol>
+                    {pageCopy.tracks.slice(0, 4).map((track) => (
+                      <li key={track}>{track}</li>
+                    ))}
+                    <li>
+                      {pageCopy.tracks[4]}
+                      <br />
+                      <span>(Inst.)</span>
+                    </li>
+                  </ol>
+                </div>
+              </>
+            )}
           </aside>
 
           <section className="track-content" aria-label="Track Archive music video">
@@ -727,7 +842,10 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                 <button
                   className={`track-mode-button ${trackMode === 'mv' ? 'is-active' : ''}`}
                   type="button"
-                  onClick={() => setTrackMode('mv')}
+                  onClick={() => {
+                    setTrackMode('mv');
+                    setExpandedLyricImageIndex(null);
+                  }}
                 >
                   MV
                 </button>
@@ -743,7 +861,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
 
             <div className="track-video-frame">
               <iframe
-                src="https://www.youtube.com/embed/jEdoHGAi3lw?si=yLAS_tk_Eiqf9eDn"
+                src={videoSources[trackMode]}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -751,17 +869,84 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
               />
             </div>
 
-            <div className="track-card-grid" aria-label="Track descriptions">
-              {pageCopy.trackDetails.map(([title, description]) => (
-                <article className="track-info-card" key={title}>
-                  <h2>{title}</h2>
-                  <p>{description}</p>
-                </article>
-              ))}
-            </div>
+            {trackMode === 'lyric' ? (
+              <div className="track-lyric-photo-grid" aria-label="Lyric video photos">
+                {activeLyricImages.map((image, index) => (
+                  <button
+                    className={`track-lyric-photo${image.isWideCrop ? ' is-wide-crop' : ''}${
+                      image.isTopCrop ? ' is-top-crop' : ''
+                    }`}
+                    type="button"
+                    key={image.src}
+                    onClick={() => setExpandedLyricImageIndex(index)}
+                  >
+                    <img src={image.src} alt={image.alt} />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="track-card-grid" aria-label="Track descriptions">
+                {pageCopy.trackDetails.map(([title, description]) => (
+                  <article className="track-info-card" key={title}>
+                    <h2>{title}</h2>
+                    <p>{description}</p>
+                  </article>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>
+
+      {expandedLyricImageIndex !== null ? (
+        <div
+          className="track-photo-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged lyric video photo"
+          onClick={() => setExpandedLyricImageIndex(null)}
+        >
+          <div className="track-photo-modal-window" onClick={(event) => event.stopPropagation()}>
+            <div className="track-photo-modal-bar">
+              <span>Photo</span>
+              <button type="button" aria-label="Close photo" onClick={() => setExpandedLyricImageIndex(null)}>
+                <img src={asset('window-close.svg')} alt="" />
+              </button>
+            </div>
+            <div className="track-photo-modal-body">
+              <div className="track-photo-modal-image-frame">
+                <img
+                  className={`${activeLyricImages[expandedLyricImageIndex].isWideCrop ? 'is-wide-crop' : ''}${
+                    activeLyricImages[expandedLyricImageIndex].isTopCrop ? ' is-top-crop' : ''
+                  }`}
+                  src={activeLyricImages[expandedLyricImageIndex].src}
+                  alt={activeLyricImages[expandedLyricImageIndex].alt}
+                />
+              </div>
+              {expandedLyricImageIndex > 0 ? (
+                <button
+                  className="track-photo-arrow track-photo-arrow-prev"
+                  type="button"
+                  aria-label="Previous photo"
+                  onClick={() => setExpandedLyricImageIndex(expandedLyricImageIndex - 1)}
+                >
+                  <img src={asset('button-next.svg')} alt="" />
+                </button>
+              ) : null}
+              {expandedLyricImageIndex < activeLyricImages.length - 1 ? (
+                <button
+                  className="track-photo-arrow track-photo-arrow-next"
+                  type="button"
+                  aria-label="Next photo"
+                  onClick={() => setExpandedLyricImageIndex(expandedLyricImageIndex + 1)}
+                >
+                  <img src={asset('button-next.svg')} alt="" />
+                </button>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

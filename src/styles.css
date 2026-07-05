@@ -407,7 +407,8 @@ button {
   pointer-events: none;
 }
 
-.jangma-temp-back {
+.jangma-temp-back,
+.track-temp-back {
   position: fixed;
   left: 18px;
   top: 18px;
@@ -416,11 +417,19 @@ button {
   height: 22px;
 }
 
-.jangma-temp-back img {
+.jangma-temp-back img,
+.track-temp-back img {
   width: 100%;
   height: 100%;
-  filter: brightness(0) invert(1);
   transform: rotate(180deg);
+}
+
+.jangma-temp-back img {
+  filter: brightness(0) invert(1);
+}
+
+.track-temp-back img {
+  filter: brightness(0);
 }
 
 .jangma-sidebar {
@@ -746,7 +755,8 @@ button {
 
 .track-sidebar-button,
 .track-mode-button,
-.track-info-card h2 {
+.track-info-card h2,
+.track-place-card h2 {
   height: 43px;
   border-bottom: 3px solid var(--green);
   font-family: 'DotGothic16', monospace;
@@ -756,10 +766,60 @@ button {
   text-align: center;
 }
 
-.track-sidebar-button,
+.track-sidebar-button {
+  width: 319px;
+  border: 2px solid var(--green);
+  border-bottom-width: 3px;
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'Galmuri11', 'DotGothic16', monospace;
+  font-weight: 400;
+}
+
+.track-sidebar-button.is-active,
 .track-mode-button.is-active {
   background: var(--green);
   color: #fffef7;
+}
+
+.track-lyric-song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.track-place-list {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+}
+
+.track-place-card {
+  width: 319px;
+}
+
+.track-place-card h2 {
+  margin: 0;
+  border: 2px solid var(--green);
+  border-bottom-width: 3px;
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'GalmuriMono11', 'DotGothic16', monospace;
+  font-size: 25px;
+}
+
+.track-place-card p {
+  margin: 12px 0 0;
+  padding: 16px 27px 18px;
+  border: 2px solid var(--green);
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'DosGothic', 'DotGothic16', monospace;
+  font-size: 25px;
+  line-height: 37px;
+  white-space: pre-line;
+  word-break: keep-all;
 }
 
 .track-sidebar-copy {
@@ -906,6 +966,35 @@ button {
   margin-top: 40px;
 }
 
+.track-lyric-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 659px);
+  gap: 44px 43px;
+  margin-top: 48px;
+}
+
+.track-lyric-photo {
+  width: 659px;
+  height: 482px;
+  overflow: hidden;
+  background: #fffef7;
+}
+
+.track-lyric-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.track-lyric-photo.is-wide-crop img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.track-lyric-photo.is-top-crop img {
+  object-position: center -100px;
+}
+
 .track-info-card {
   width: 308px;
   margin: 0;
@@ -932,6 +1021,110 @@ button {
   font-size: 25px;
   line-height: 37px;
   white-space: pre-line;
+}
+
+.track-photo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px;
+  background: rgba(254, 254, 254, 0.92);
+}
+
+.track-photo-modal-window {
+  width: min(1344px, 88vw, calc((78vh - 91px) * 1.3672 + 70px));
+  max-height: 78vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.track-photo-modal-bar {
+  height: 27px;
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--green);
+  color: #fff;
+  font-family: 'DotGothic16', monospace;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.track-photo-modal-bar button {
+  width: 27px;
+  height: 27px;
+  border: 1px solid var(--green);
+  background: #fffef7;
+}
+
+.track-photo-modal-bar img {
+  width: 100%;
+  height: 100%;
+}
+
+.track-photo-modal-body {
+  position: relative;
+  width: 100%;
+  padding: 32px;
+  border: 3px solid var(--green);
+  background: #fffef7;
+}
+
+.track-photo-modal-image-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 659 / 482;
+  overflow: hidden;
+  border: 2px solid #000;
+  background: #686868;
+}
+
+.track-photo-modal-image-frame > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.track-photo-modal-image-frame > img.is-wide-crop {
+  object-fit: cover;
+  object-position: center;
+}
+
+.track-photo-modal-image-frame > img.is-top-crop {
+  object-position: center -100px;
+}
+
+.track-photo-arrow {
+  position: absolute;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateY(-50%);
+}
+
+.track-photo-arrow img {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0) invert(1);
+}
+
+.track-photo-arrow-prev {
+  left: 86px;
+}
+
+.track-photo-arrow-prev img {
+  transform: rotate(180deg);
+}
+
+.track-photo-arrow-next {
+  right: 86px;
 }
 
 @media (max-width: 1500px) {
