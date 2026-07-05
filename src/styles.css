@@ -1127,6 +1127,724 @@ button {
   right: 86px;
 }
 
+.white-diary-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  color: #567c65;
+}
+
+.white-diary-scale {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.white-diary-scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: top left;
+}
+
+.white-diary-back {
+  position: fixed;
+  left: 18px;
+  top: 18px;
+  z-index: 90;
+  width: 22px;
+  height: 22px;
+}
+
+.white-diary-back img {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0) invert(1);
+  transform: rotate(180deg);
+}
+
+.white-diary-book,
+.white-diary-tape {
+  position: absolute;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.white-diary-book {
+  left: 239px;
+  top: 52px;
+  z-index: 10;
+  width: 1442px;
+  height: 962px;
+}
+
+.white-diary-paper {
+  position: absolute;
+  left: 327px;
+  top: 95px;
+  z-index: 11;
+  width: 1267px;
+  height: 869px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.white-diary-paper img {
+  position: absolute;
+  left: -6.06%;
+  top: -3.88%;
+  width: 110.86%;
+  height: 107.76%;
+}
+
+.white-diary-lp {
+  position: absolute;
+  left: -334px;
+  top: -235px;
+  z-index: 1;
+  width: 735px;
+  height: 735px;
+  pointer-events: none;
+}
+
+.white-diary-lp img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.white-diary-title {
+  position: absolute;
+  left: 399px;
+  top: 42px;
+  z-index: 22;
+  width: 360px;
+  height: 68px;
+  padding: 8px;
+  border: 3px solid var(--green);
+  background: var(--white);
+  box-shadow: 5.2949px 5px 0 var(--green);
+}
+
+.white-diary-title span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  background: var(--green);
+  color: var(--white);
+  font-family: 'Galmuri11', 'DotGothic16', monospace;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.white-diary-copy {
+  position: absolute;
+  left: 390px;
+  top: 144px;
+  z-index: 16;
+  width: 514px;
+  height: 720px;
+  color: #567c65;
+  font-family: 'DosGothic', 'DotGothic16', monospace;
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 40px;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+.white-diary-copy p {
+  margin: 0;
+}
+
+.white-diary-copy-page-2 {
+  left: 1013px;
+  top: 144px;
+  width: 507px;
+  height: 623px;
+}
+
+.white-diary-copy-page-3 {
+  left: 390px;
+  top: 144px;
+  width: 507px;
+  height: 720px;
+}
+
+.white-diary-copy-page-4 {
+  left: 390px;
+  top: 144px;
+  width: 540px;
+}
+
+.white-diary-copy-page-5 {
+  left: 1013px;
+  top: 144px;
+  width: 522px;
+}
+
+.white-diary-copy-page-6-left {
+  left: 390px;
+  top: 144px;
+  width: 514px;
+}
+
+.white-diary-copy-page-6-right {
+  left: 1013px;
+  top: 144px;
+  width: 525px;
+}
+
+.white-diary-copy-page-7-left {
+  left: 390px;
+  top: 144px;
+  width: 536px;
+}
+
+.white-diary-copy-page-7-right {
+  left: 1013px;
+  top: 453px;
+  width: 522px;
+  height: 332px;
+}
+
+.white-diary-copy-page-8 {
+  left: 390px;
+  top: 144px;
+  width: 514px;
+}
+
+.white-diary-copy-page-9-left {
+  left: 390px;
+  top: 144px;
+  width: 534px;
+}
+
+.white-diary-copy-page-9-right {
+  left: 1013px;
+  top: 144px;
+  width: 537px;
+}
+
+.white-diary-copy-page-10 {
+  left: 1013px;
+  top: 144px;
+  width: 507px;
+  height: 712px;
+}
+
+.white-diary-photo {
+  position: absolute;
+  z-index: 16;
+  overflow: hidden;
+  background: #fffef7;
+}
+
+.white-diary-photo img,
+.white-diary-polaroid-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.white-diary-photo-forest {
+  left: 1015px;
+  top: 368px;
+  width: 342px;
+  height: 513px;
+}
+
+.white-diary-photo-meadow {
+  left: 402px;
+  top: 174.52px;
+  width: 373px;
+  height: 560px;
+}
+
+.white-diary-photo-bubbles {
+  left: 544px;
+  top: 645.52px;
+  width: 368px;
+  height: 245px;
+  z-index: 17;
+}
+
+.white-diary-photo-pond {
+  left: 1047px;
+  top: 166px;
+  width: 465px;
+  height: 697px;
+}
+
+.white-diary-photo-rivergrass {
+  left: 1071px;
+  top: 570.38px;
+  width: 435px;
+  height: 290.011px;
+}
+
+.white-diary-photo-branches {
+  left: 1079px;
+  top: 598.27px;
+  width: 416px;
+  height: 276.882px;
+}
+
+.white-diary-photo-water {
+  left: 413px;
+  top: 533px;
+  width: 468px;
+  height: 312px;
+}
+
+.white-diary-photo-curtain {
+  left: 1187px;
+  top: 169px;
+  width: 356px;
+  height: 244px;
+}
+
+.white-diary-photo-sun-tree {
+  left: 472px;
+  top: 598px;
+  width: 371px;
+  height: 247px;
+}
+
+.white-diary-photo-forest-wide {
+  left: 399px;
+  top: 183.32px;
+  width: 498px;
+  height: 331.677px;
+}
+
+.white-diary-photo-window-vine {
+  left: 487.14px;
+  top: 582.63px;
+  width: 397.632px;
+  height: 265.12px;
+}
+
+.white-diary-shorts {
+  position: absolute;
+  z-index: 16;
+  width: 409px;
+  height: 727px;
+  overflow: hidden;
+  background: #d9d9d9;
+}
+
+.white-diary-shorts iframe {
+  width: 409px;
+  height: 727px;
+  border: 0;
+}
+
+.white-diary-shorts-right-page-4,
+.white-diary-shorts-right-page-8 {
+  left: 1086px;
+  top: 149px;
+}
+
+.white-diary-shorts-left {
+  left: 453px;
+  top: 149px;
+}
+
+.white-diary-polaroid {
+  position: absolute;
+  left: 1169px;
+  top: 168px;
+  z-index: 18;
+  width: 355px;
+  height: 361px;
+  padding: 18px 16px 44px;
+  border: 2px solid var(--green);
+  background: #fffef7;
+}
+
+.white-diary-polaroid-photo {
+  position: relative;
+  z-index: 1;
+  width: 323px;
+  height: 299px;
+  overflow: hidden;
+}
+
+.white-diary-polaroid-photo img {
+  position: absolute;
+  left: -27px;
+  top: 0;
+  width: 448px;
+  height: 299px;
+  max-width: none;
+}
+
+.white-diary-sticker,
+.white-diary-tape-strip {
+  position: absolute;
+  z-index: 19;
+  display: block;
+  width: 32px;
+  background: rgba(228, 179, 185, 0.5);
+  transform-origin: center;
+}
+
+.white-diary-tape-pink-long {
+  left: 1314px;
+  top: 127px;
+  height: 91.67px;
+  background: rgba(228, 179, 185, 0.5);
+  transform: rotate(-148.83deg);
+}
+
+.white-diary-tape-green-meadow {
+  left: 558.22px;
+  top: 137px;
+  height: 70px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(11.72deg);
+}
+
+.white-diary-tape-green-bubbles {
+  left: 856px;
+  top: 622.52px;
+  height: 70px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(-48.28deg);
+}
+
+.white-diary-tape-green-bubbles-corner {
+  left: 516.06px;
+  top: 833.52px;
+  height: 88.509px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(125.15deg);
+}
+
+.white-diary-tape-green-pond-top {
+  left: 1020px;
+  top: 149px;
+  height: 100px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(53.73deg);
+}
+
+.white-diary-tape-green-pond-bottom {
+  left: 1449.46px;
+  top: 791.11px;
+  height: 100px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(-145.88deg);
+}
+
+.white-diary-tape-gold-rivergrass {
+  left: 1217.44px;
+  top: 523px;
+  width: 45.942px;
+  height: 100.496px;
+  background: rgba(210, 185, 106, 0.5);
+  transform: rotate(123.19deg);
+}
+
+.white-diary-tape-gold-branches {
+  left: 1241.08px;
+  top: 551px;
+  width: 43.221px;
+  height: 94.545px;
+  background: rgba(210, 185, 106, 0.5);
+  transform: rotate(37.8deg);
+}
+
+.white-diary-tape-pink-water-left {
+  left: 393px;
+  top: 788px;
+  height: 91.67px;
+  background: rgba(228, 179, 185, 0.5);
+  transform: rotate(-49.37deg);
+}
+
+.white-diary-tape-pink-water-right {
+  left: 812px;
+  top: 514px;
+  height: 91.67px;
+  background: rgba(228, 179, 185, 0.5);
+  transform: rotate(127.28deg);
+}
+
+.white-diary-tape-pink-curtain {
+  left: 1316px;
+  top: 135px;
+  height: 70.169px;
+  background: rgba(228, 179, 185, 0.5);
+  transform: rotate(127.28deg);
+}
+
+.white-diary-tape-blue-sun-tree {
+  left: 625px;
+  top: 560px;
+  height: 70px;
+  background: rgba(141, 189, 200, 0.5);
+  transform: rotate(11.72deg);
+}
+
+.white-diary-tape-green-forest-wide {
+  left: 609.8px;
+  top: 147.54px;
+  width: 30.944px;
+  height: 67.689px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(-7.05deg);
+}
+
+.white-diary-tape-green-window-left {
+  left: 469.27px;
+  top: 560px;
+  width: 30.083px;
+  height: 76.128px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(42.69deg);
+}
+
+.white-diary-tape-green-window-right {
+  left: 827.45px;
+  top: 784.75px;
+  width: 30.083px;
+  height: 93.422px;
+  background: rgba(167, 200, 141, 0.5);
+  transform: rotate(42.69deg);
+}
+
+.white-diary-tape-strip-long {
+  left: 145px;
+  top: -27px;
+  height: 91.67px;
+  transform: rotate(-148.83deg);
+}
+
+.white-diary-tape-strip-short {
+  display: none;
+}
+
+.white-diary-tape {
+  left: -155px;
+  top: 579px;
+  z-index: 2;
+  width: 384px;
+  height: 345px;
+}
+
+.white-diary-pencil,
+.white-diary-pen,
+.white-diary-eraser {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.white-diary-pencil {
+  left: 1658px;
+  top: 258px;
+  width: 196.834px;
+  height: 652.552px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.white-diary-pencil img {
+  width: 99px;
+  height: 645px;
+  object-fit: cover;
+  object-position: 47.5% center;
+  transform: rotate(-8.83deg);
+}
+
+.white-diary-pen {
+  left: 1618.43px;
+  top: 515.69px;
+  width: 125.139px;
+  height: 434.617px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.white-diary-pen img {
+  width: 104px;
+  height: 430px;
+  object-fit: cover;
+  object-position: 38.2% center;
+  transform: rotate(2.83deg);
+}
+
+.white-diary-eraser {
+  left: 1740px;
+  top: 149.05px;
+  width: 136.626px;
+  height: 165.765px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.white-diary-eraser img {
+  width: 115.922px;
+  height: 150.468px;
+  object-fit: cover;
+  object-position: 33% center;
+  transform: rotate(-8.39deg);
+}
+
+.white-diary-nav {
+  position: absolute;
+  z-index: 30;
+  overflow: hidden;
+}
+
+.white-diary-nav-prev {
+  left: 346px;
+  top: 770px;
+  width: 169px;
+  height: 197px;
+}
+
+.white-diary-nav-next {
+  left: 1407px;
+  top: 765px;
+  width: 168px;
+  height: 199px;
+}
+
+.white-diary-nav-arrow,
+.white-diary-fold {
+  position: absolute;
+  display: block;
+  transition: opacity 140ms ease;
+}
+
+.white-diary-nav-arrow {
+  z-index: 2;
+  width: 40px;
+  height: 22px;
+  opacity: 1;
+}
+
+.white-diary-nav-prev .white-diary-nav-arrow {
+  left: 43px;
+  top: 124px;
+}
+
+.white-diary-nav-next .white-diary-nav-arrow {
+  left: 87.95px;
+  top: 129px;
+}
+
+.white-diary-nav-arrow img {
+  width: 100%;
+  height: 100%;
+}
+
+.white-diary-nav-prev .white-diary-nav-arrow img {
+  transform: rotate(180deg);
+}
+
+.white-diary-fold {
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+}
+
+.white-diary-fold img {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+}
+
+.white-diary-fold-left img {
+  left: -67.6%;
+  top: -437.06%;
+  width: 970.12%;
+  height: 554.82%;
+}
+
+.white-diary-fold-right img {
+  left: -820.98%;
+  top: -430.15%;
+  width: 975.89%;
+  height: 549.25%;
+}
+
+.white-diary-nav:hover .white-diary-nav-arrow {
+  opacity: 0;
+}
+
+.white-diary-nav:hover .white-diary-fold {
+  opacity: 1;
+}
+
+.white-diary-scene.is-turning .white-diary-nav .white-diary-nav-arrow {
+  opacity: 1;
+}
+
+.white-diary-scene.is-turning .white-diary-nav .white-diary-fold {
+  opacity: 0;
+}
+
+.white-diary-turn-sheet {
+  position: absolute;
+  top: 95px;
+  z-index: 25;
+  width: 633px;
+  height: 869px;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(90deg, rgba(86, 124, 101, 0.24), rgba(255, 254, 247, 0.9) 22%, rgba(255, 254, 247, 0.68)),
+    url('/assets/white-diary-paper.png') center / 1400px 930px;
+  box-shadow: -26px 0 32px rgba(47, 79, 66, 0.18);
+}
+
+.white-diary-scene.is-turning-next .white-diary-turn-sheet {
+  left: 960px;
+  transform: perspective(1600px) rotateY(0deg);
+  transform-origin: left center;
+}
+
+.white-diary-scene.is-turning-prev .white-diary-turn-sheet {
+  left: 327px;
+  transform: perspective(1600px) rotateY(0deg);
+  transform-origin: right center;
+  background:
+    linear-gradient(270deg, rgba(86, 124, 101, 0.24), rgba(255, 254, 247, 0.9) 22%, rgba(255, 254, 247, 0.68)),
+    url('/assets/white-diary-paper.png') center / 1400px 930px;
+  box-shadow: 26px 0 32px rgba(47, 79, 66, 0.18);
+}
+
+.white-diary-scene.is-turning.is-turning-next .white-diary-turn-sheet {
+  animation: white-page-turn-next 560ms ease-in-out both;
+}
+
+.white-diary-scene.is-turning.is-turning-prev .white-diary-turn-sheet {
+  animation: white-page-turn-prev 560ms ease-in-out both;
+}
+
 @media (max-width: 1500px) {
   .object-stage {
     transform: scale(calc((100vw - 40px) / 1360));
@@ -1221,6 +1939,52 @@ button {
 
   34% {
     transform: translateY(4px);
+  }
+}
+
+@keyframes white-page-turn-next {
+  0% {
+    opacity: 0;
+    transform: perspective(1600px) rotateY(0deg);
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  58% {
+    opacity: 1;
+    transform: perspective(1600px) rotateY(-98deg);
+    box-shadow: -34px 0 42px rgba(47, 79, 66, 0.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: perspective(1600px) rotateY(-174deg);
+    box-shadow: -8px 0 18px rgba(47, 79, 66, 0);
+  }
+}
+
+@keyframes white-page-turn-prev {
+  0% {
+    opacity: 0;
+    transform: perspective(1600px) rotateY(0deg);
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  58% {
+    opacity: 1;
+    transform: perspective(1600px) rotateY(98deg);
+    box-shadow: 34px 0 42px rgba(47, 79, 66, 0.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: perspective(1600px) rotateY(174deg);
+    box-shadow: 8px 0 18px rgba(47, 79, 66, 0);
   }
 }
 

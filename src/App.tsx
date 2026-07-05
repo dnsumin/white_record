@@ -10,7 +10,7 @@ type ArchiveObject = {
 };
 
 type Locale = 'ko' | 'en';
-type AppPage = 'main' | 'jangma' | 'track';
+type AppPage = 'main' | 'jangma' | 'track' | 'diary';
 type JangmaWindow = 'profile' | 'playlist' | 'stills';
 type TrackArchiveMode = 'mv' | 'lyric';
 type JangmaWindowPosition = {
@@ -35,7 +35,7 @@ const archiveObjects: ArchiveObject[] = [
   { id: 'lp', label: 'LP archive', image: 'main-lp.png', title: 'White Record' },
   { id: 'camera', label: 'Camera archive', image: 'main-camera.png', title: 'Track Archive' },
   { id: 'jangma', label: 'Jangma microphone archive', image: 'main-jangma.png', title: 'Jangma' },
-  { id: 'diary', label: 'Diary archive', image: 'main-diary.png', title: 'White Pages' },
+  { id: 'diary', label: 'Diary archive', image: 'main-diary.png', title: 'White Diary' },
 ];
 
 const loadingLetters = ['L', 'o', 'a', 'd', 'i', 'n', 'g'];
@@ -98,6 +98,8 @@ const stillFrameWidth = 924;
 const trackArchiveDesignWidth = 1920;
 const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
+const whitePagesDesignWidth = 1920;
+const whitePagesDesignHeight = 1080;
 
 const jangmaInitialWindowPositions: Record<JangmaWindow, JangmaWindowPosition> = {
   profile: { left: 1199, top: 662 },
@@ -246,7 +248,7 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     pressedObject.current = null;
 
     if (stepCount === 0) {
-      if (!didDrag.current && clickTarget?.isCenter && ['camera', 'jangma'].includes(clickTarget.id)) {
+      if (!didDrag.current && clickTarget?.isCenter && ['camera', 'jangma', 'diary'].includes(clickTarget.id)) {
         onNavigate(`#${clickTarget.id}`);
       }
       return;
@@ -267,7 +269,7 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
       {visibleObjects.map(({ object, style, isCenter }) => (
         <div
           className={`gallery-object asset-${object.id}${
-            ['camera', 'jangma'].includes(object.id) && isCenter ? ' is-clickable' : ''
+            ['camera', 'jangma', 'diary'].includes(object.id) && isCenter ? ' is-clickable' : ''
           }`}
           aria-label={object.label}
           key={object.id}
@@ -951,6 +953,473 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   );
 }
 
+type WhiteDiaryPhoto = {
+  src: string;
+  className: string;
+  side: 'left' | 'right';
+  frame?: 'polaroid';
+};
+
+type WhiteDiarySticker = {
+  className: string;
+  side: 'left' | 'right';
+};
+
+type WhiteDiaryCopy = {
+  side: 'left' | 'right';
+  className?: string;
+  lines: string[];
+};
+
+type WhiteDiaryEmbed = {
+  side: 'left' | 'right';
+  className: string;
+  src: string;
+  title: string;
+};
+
+type WhiteDiaryPage = {
+  copySide: 'left' | 'right';
+  copyClassName?: string;
+  lines: string[];
+  extraCopies?: WhiteDiaryCopy[];
+  photos: WhiteDiaryPhoto[];
+  stickers?: WhiteDiarySticker[];
+  embeds?: WhiteDiaryEmbed[];
+};
+
+const whiteDiaryPages: WhiteDiaryPage[] = [
+  {
+    copySide: 'left',
+    lines: [
+      '시골 고택에 혼자 콕 박혀서',
+      '여름을 보내고 싶다는 생각을 매년 해요.',
+      '',
+      '마룻바닥에 누워서 매미 소리, 바람에 숲이 와르르 흔들리는 소리 같은 걸 들으며',
+      '시간을 보내는 거예요.',
+      '눈 깜빡이는 것 외에는 아무것도 안 하면서.',
+      '',
+      '그러다 밖이 어스름해지면',
+      '반딧불을 보러 밤 산책을 나가고요.',
+      '',
+      '반디 본 적 있으세요? 저는 없거든요...',
+      '기억에 없으니까 없는 게 맞을 거예요.',
+    ],
+    photos: [
+      { src: 'white-diary-photo-forest.png', className: 'white-diary-photo-forest', side: 'right' },
+      { src: 'white-diary-photo-glass.png', className: 'white-diary-polaroid-page-1', side: 'right', frame: 'polaroid' },
+    ],
+    stickers: [{ className: 'white-diary-tape-pink-long', side: 'right' }],
+  },
+  {
+    copySide: 'right',
+    copyClassName: 'white-diary-copy-page-2',
+    lines: [
+      '늘 바라는데 한 번도 그런 식으로',
+      '여름을 나본 적이 없어요.',
+      '',
+      '그래서 만들어 보려고요.',
+      '',
+      '기억은 사실이 아니어도',
+      '만들 수 있다고 생각해요.',
+    ],
+    photos: [
+      { src: 'white-diary-photo-meadow.png', className: 'white-diary-photo-meadow', side: 'left' },
+      { src: 'white-diary-photo-bubbles.png', className: 'white-diary-photo-bubbles', side: 'left' },
+    ],
+    stickers: [
+      { className: 'white-diary-tape-green-meadow', side: 'left' },
+      { className: 'white-diary-tape-green-bubbles', side: 'left' },
+      { className: 'white-diary-tape-green-bubbles-corner', side: 'left' },
+    ],
+  },
+  {
+    copySide: 'left',
+    copyClassName: 'white-diary-copy-page-3',
+    lines: [
+      '언젠가 바라는 대로 있을 수 있게 되면',
+      '이 앨범을 틀어놓고 비교해 보고 싶어요.',
+      '',
+      '상상하던 거랑 비슷한가 하고.',
+      '',
+      '',
+      '2026.  8.  16.',
+    ],
+    photos: [{ src: 'white-diary-photo-pond.png', className: 'white-diary-photo-pond', side: 'right' }],
+    stickers: [
+      { className: 'white-diary-tape-green-pond-top', side: 'right' },
+      { className: 'white-diary-tape-green-pond-bottom', side: 'right' },
+    ],
+  },
+  {
+    copySide: 'left',
+    copyClassName: 'white-diary-copy-page-4',
+    lines: [
+      '안녕하세요.',
+      ' ',
+      '첫 EP라니 정말이지 감개가 무량합니다.',
+      '몇 년 전까지만 해도 이런 날이 올 줄은',
+      '몰랐...다는 말은 농담으로도 못 하겠고요.',
+      '이런 날이 올 줄은 알고 있었죠 계속 음악을 해야겠다고 생각하며 살았으니까요~',
+      '',
+      '그런데도 지금이 유달리',
+      '특별하게 느껴지는 건 대체 왜일까 싶습니다.',
+      '두 번째, 세 번째에는 덜 특별할까요?',
+      '그렇지도 않을 것 같은데.',
+    ],
+    photos: [],
+    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-4', src: 'https://www.youtube.com/embed/WbBM_K6f2wQ', title: '시간이 흘러' }],
+  },
+  {
+    copySide: 'right',
+    copyClassName: 'white-diary-copy-page-5',
+    lines: [
+      '취향은 자주 바뀌잖아요.',
+      '저는 파란색을 좋아했었는데, 지금은 초록이 더 좋아요. 밀크티를 싫어했었는데 좋아하게 됐고. 또 봄은 늘상 싫어요. 바람 한 번에 재채기를 열 번쯤 하게 돼서요...ㅋㅋㅋ',
+      '봄볕도 왠지 속이 메슥거려서 별로던데요.',
+      '',
+      '한결같이 좋아하는 것도 많아요.',
+      '그중 하나가 ‘영원’이에요. 그 말이 좋아요.',
+    ],
+    photos: [{ src: 'white-diary-photo-rivergrass.png', className: 'white-diary-photo-rivergrass', side: 'right' }],
+    stickers: [{ className: 'white-diary-tape-gold-rivergrass', side: 'right' }],
+    embeds: [{ side: 'left', className: 'white-diary-shorts-left', src: 'https://www.youtube.com/embed/WbBM_K6f2wQ', title: '시간이 흘러' }],
+  },
+  {
+    copySide: 'right',
+    copyClassName: 'white-diary-copy-page-6-right',
+    lines: [
+      '또 처음부터 완전한 걸 좋아하면 편할 텐데 하고 오만한 생각도 했어요 ㅋㅋㅋ',
+      '막상 그러면 또 눈길이 안 가는 걸',
+      '알면서도요. 이렇게 써 놓으니 제가 무슨',
+      '약하고 불완전한 것만 사랑하는',
+      '취향 고약한 사람으로 비칠까 걱정도 되는데',
+      '그렇지도 않아요... 그렇게 보일 뿐이지 사실 강하더라고요. 걱정 따위는 필요 없을 만큼. 그러니까 불안하다고 생각한 건 전부 다',
+      '제 착각이었던 거죠.',
+    ],
+    extraCopies: [
+      {
+        side: 'left',
+        className: 'white-diary-copy-page-6-left',
+        lines: [
+          '영원을 믿으세요? 전 믿고 싶은 쪽이에요.',
+          '믿는지, 안 믿는지만 따지면 어느 쪽인지',
+          '솔직히 모르겠어요.',
+          '그동안은 왜 믿고 싶은지도 잘 몰랐고요.',
+          '',
+          '어젯밤에 생각을 해 봤거든요?',
+          '불 꺼진 방 침대 위에 가만히 누워서요.',
+          '생각해 봤는데, 애정이 있어서 믿고 싶었나 봐요. 좋아서. 그런데 뭐가 됐든 제가 좋아하는 건 다 언젠가는 스러질 것 같이 보이더라고요.',
+          '',
+          '그게 무서워서 영원이 있다고 믿고 싶었나',
+          '봐요. 그런다고 없는 게 있게 되고',
+          '있는 게 없어지지 않을 텐데.',
+        ],
+      },
+    ],
+    photos: [{ src: 'white-diary-photo-branches.png', className: 'white-diary-photo-branches', side: 'right' }],
+    stickers: [{ className: 'white-diary-tape-gold-branches', side: 'right' }],
+  },
+  {
+    copySide: 'right',
+    copyClassName: 'white-diary-copy-page-7-right',
+    lines: [
+      '저도 알죠. 사람이 꿈속에 살 수 없다는 걸. 숨만 쉬어도 해야 할 일이 턱턱 주어지는',
+      '현실이잖아요.',
+      '주어진다? 던져진다는 표현이 더 맞겠어요.',
+      '',
+      '아무튼 지금 것만 해도 머리 아파 죽겠는데 다음에는 뭘 해야 하고, 내년에는,',
+      '십 년 뒤에는 어쩌고 저쩌고...',
+    ],
+    extraCopies: [
+      {
+        side: 'left',
+        className: 'white-diary-copy-page-7-left',
+        lines: [
+          '하고 싶은 일만 하며 살 수 있으면 얼마나',
+          '좋을까. 이것도 매번 하는 생각 중 하난데, 어른들은 그럴 수 없다고 그러잖아요.',
+          '어떻게 좋아하는 일만 하며 살겠냐면서.',
+          '',
+          '정말 그런가? 그렇게 생각하세요? 제가 아직 덜 자라 반발심이라도 있는 건진 모르겠지만 왜 그럴 수 없겠어요?',
+          '',
+        ],
+      },
+    ],
+    photos: [
+      { src: 'white-diary-photo-water.png', className: 'white-diary-photo-water', side: 'left' },
+      { src: 'white-diary-photo-curtain.png', className: 'white-diary-photo-curtain', side: 'right' },
+    ],
+    stickers: [
+      { className: 'white-diary-tape-pink-water-left', side: 'left' },
+      { className: 'white-diary-tape-pink-water-right', side: 'left' },
+      { className: 'white-diary-tape-pink-curtain', side: 'right' },
+    ],
+  },
+  {
+    copySide: 'left',
+    copyClassName: 'white-diary-copy-page-8',
+    lines: [
+      '그래도 선택지가 점점 더 늘어나서 언젠가 정말 싫은 건 고르지 않아도 되는 날이 오면 좋겠어요. 선택지가 하나밖에 없으면 그게 정말 정말 싫어도 고를 수밖에 없잖아요.',
+      '아니면 멈추거나. 멈추는 것도 선택인가요. 무튼 전 그런 걸 받아들이기 싫다고요...',
+      '',
+      '그러니까 제가 하고 싶은 말은 딸기 케이크에 딸기만, 새우 파스타의 새우만 쏙쏙 뽑아먹는 그런 삶이 아니더라도 다들 정말 못 견디겠는 건 안 하며 살 수 있으면 좋겠다, 그 말이에요. 그럼 서로 미워하고 할퀼 일도 줄어들지 않겠어요. 그렇게 세계 평화,',
+      '우주 평화가 이루어지고.',
+      '',
+      '가당찮은 소리죠? 압니다...',
+    ],
+    photos: [],
+    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-8', src: 'https://www.youtube.com/embed/WbBM_K6f2wQ', title: '시간이 흘러' }],
+  },
+  {
+    copySide: 'right',
+    copyClassName: 'white-diary-copy-page-9-right',
+    lines: [
+      '그래도 소화하는 방법이 하나 더 생긴 셈이니 좋은 거죠. 이 태도가 오래 가주면 좋으련만.',
+      '',
+      '바람 중 하나인데 저는 제가 좀 덜 급하게',
+      '살면 좋겠어요. 지레 겁먹는 것도 그만 좀',
+      '하고. 근데 이렇게 스스로를 다그쳐봤자',
+      '좋을 게 없겠죠? 이것도 제 욕심일까요.',
+      '',
+      '그럼 그냥 받아들여야 하나.',
+      '그러긴 또 싫은데.',
+    ],
+    extraCopies: [
+      {
+        side: 'left',
+        className: 'white-diary-copy-page-9-left',
+        lines: [
+          '저는 욕심이 정말 많은데, 감사하게도 지금은 그 욕심을 어느 정도 선까지는 해소하며 살고 있는 것 같아요. 일단 지금은요.',
+          '',
+          '내일은 또 어떻게 될지 모르겠네요.',
+          '열망이란 말 없이는 제 인생을 설명할 수가',
+          '없어요. 당연히 부러진 적도 많고, 잃은 것도 많은데 이제는 이유가 있었겠거니 생각하게 됐어요. 늘 그런 식으로 포장하지는 않고요,,',
+          '',
+        ],
+      },
+    ],
+    photos: [{ src: 'white-diary-photo-sun-tree.png', className: 'white-diary-photo-sun-tree', side: 'left' }],
+    stickers: [{ className: 'white-diary-tape-blue-sun-tree', side: 'left' }],
+  },
+  {
+    copySide: 'right',
+    copyClassName: 'white-diary-copy-page-10',
+    lines: [
+      '아주 멀리까지 가고 싶어요.',
+      '모르는 게 너무 많아요.',
+      '다 알고 싶지는 않은데 평생을 헤매더라도 다 알게 될 리 없고... 단정 짓지 말까요?',
+      '',
+      '이 글을 쓰고 있는 지금은 6월 22일입니다. 한동안 쭉 더웠는데, 요 며칠 비가 오더니 오늘은 또 서늘하네요. 더위 조심하시고, 냉방병 조심하시고. 덥지 않은 계절을 지나고 계시면 다른 걸 조심하시고요.',
+      '',
+      '가령... 뭘... 그래 건강을 챙기세요!',
+      '건강해야 뭐든 할 수 있잖아요. 여유 될 때 제 노래도 들어주시면 더 더 좋고요 ㅋㅋㅋ',
+      '',
+      '긴 글 읽어주셔서 감사합니다.',
+      '이만 줄일게요. 또 봐요!',
+    ],
+    photos: [
+      { src: 'white-diary-photo-forest-wide.png', className: 'white-diary-photo-forest-wide', side: 'left' },
+      { src: 'white-diary-photo-window-vine.png', className: 'white-diary-photo-window-vine', side: 'left' },
+    ],
+    stickers: [
+      { className: 'white-diary-tape-green-forest-wide', side: 'left' },
+      { className: 'white-diary-tape-green-window-left', side: 'left' },
+      { className: 'white-diary-tape-green-window-right', side: 'left' },
+    ],
+  },
+];
+
+function WhiteDiaryArchivePage() {
+  const [sceneScale, setSceneScale] = useState(1);
+  const [diaryPage, setDiaryPage] = useState(0);
+  const [isPageTurning, setIsPageTurning] = useState(false);
+  const [turnDirection, setTurnDirection] = useState<'next' | 'prev'>('next');
+  const [pageTransition, setPageTransition] = useState<{
+    direction: 'next' | 'prev';
+    nextPage: number;
+    showIncomingSide: boolean;
+    hideStableSide: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    const updateScale = () => {
+      setSceneScale(Math.min(Math.max(window.innerWidth / whitePagesDesignWidth, window.innerHeight / whitePagesDesignHeight), 1));
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
+  const turnDiaryPage = (direction: 1 | -1) => {
+    const nextPage = Math.min(Math.max(diaryPage + direction, 0), whiteDiaryPages.length - 1);
+    if (nextPage === diaryPage || isPageTurning) return;
+
+    setTurnDirection(direction > 0 ? 'next' : 'prev');
+    setPageTransition({ direction: direction > 0 ? 'next' : 'prev', nextPage, showIncomingSide: false, hideStableSide: false });
+    setIsPageTurning(true);
+    window.setTimeout(() => {
+      setPageTransition({ direction: direction > 0 ? 'next' : 'prev', nextPage, showIncomingSide: true, hideStableSide: true });
+    }, 260);
+    window.setTimeout(() => {
+      setDiaryPage(nextPage);
+      setPageTransition(null);
+      setIsPageTurning(false);
+    }, 560);
+  };
+
+  const renderDiaryContent = (page: WhiteDiaryPage, pageIndex: number, visibleSides: Array<'left' | 'right'>) => (
+    <>
+      {[{ side: page.copySide, className: page.copyClassName, lines: page.lines }, ...(page.extraCopies ?? [])]
+        .filter((copyBlock) => visibleSides.includes(copyBlock.side))
+        .map((copyBlock, copyIndex) => (
+          <div className={`white-diary-copy ${copyBlock.className ?? ''}`} key={`copy-${pageIndex}-${copyBlock.side}-${copyIndex}`}>
+            {copyBlock.lines.map((line, index) => (
+              <p key={`${pageIndex}-${copyIndex}-${index}`}>{line || '\u00a0'}</p>
+            ))}
+          </div>
+        ))}
+
+      {page.photos
+        .filter((photo) => visibleSides.includes(photo.side))
+        .map((photo) =>
+          photo.frame === 'polaroid' ? (
+            <div className={`white-diary-polaroid ${photo.className}`} key={`photo-${pageIndex}-${photo.className}`}>
+              <div className="white-diary-polaroid-photo">
+                <img src={asset(photo.src)} alt="" />
+              </div>
+            </div>
+          ) : (
+            <div className={`white-diary-photo ${photo.className}`} key={`photo-${pageIndex}-${photo.className}`}>
+              <img src={asset(photo.src)} alt="" />
+            </div>
+          ),
+        )}
+
+      {page.stickers
+        ?.filter((sticker) => visibleSides.includes(sticker.side))
+        .map((sticker) => (
+          <span className={`white-diary-sticker ${sticker.className}`} aria-hidden="true" key={`sticker-${pageIndex}-${sticker.className}`} />
+        ))}
+
+      {page.embeds
+        ?.filter((embed) => visibleSides.includes(embed.side))
+        .map((embed) => (
+          <div className={`white-diary-shorts ${embed.className}`} key={`embed-${pageIndex}-${embed.className}`}>
+            <iframe
+              width="409"
+              height="727"
+              src={embed.src}
+              title={embed.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        ))}
+    </>
+  );
+
+  const clickedSide = pageTransition?.direction === 'prev' ? 'left' : 'right';
+  const stableSide = pageTransition?.direction === 'prev' ? 'right' : 'left';
+
+  return (
+    <main className="white-diary-page">
+      <button
+        className="white-diary-back"
+        type="button"
+        aria-label="Back"
+        onClick={() => {
+          window.location.hash = '';
+        }}
+      >
+        <img src={asset('button-next.svg')} alt="" />
+      </button>
+
+      <div
+        className="white-diary-scale"
+        style={{
+          width: whitePagesDesignWidth * sceneScale,
+          height: whitePagesDesignHeight * sceneScale,
+        }}
+      >
+        <section
+          className={`white-diary-scene is-turning-${turnDirection}${isPageTurning ? ' is-turning' : ''}`}
+          style={{ transform: `scale(${sceneScale})` }}
+          aria-label="White Diary"
+        >
+          <img className="white-diary-book" src={asset('white-diary-book.png')} alt="" />
+          <div className="white-diary-paper">
+            <img src={asset('white-diary-paper.png')} alt="" />
+          </div>
+
+          <div className="white-diary-lp" aria-hidden="true">
+            <img src={asset('white-diary-lp-a.png')} alt="" />
+            <img src={asset('white-diary-lp-b.png')} alt="" />
+          </div>
+
+          <div className="white-diary-title">
+            <span>WHITE DIARY</span>
+          </div>
+
+          {pageTransition
+            ? pageTransition.hideStableSide
+              ? null
+              : renderDiaryContent(whiteDiaryPages[diaryPage], diaryPage, [stableSide])
+            : renderDiaryContent(whiteDiaryPages[diaryPage], diaryPage, ['left', 'right'])}
+          {pageTransition?.showIncomingSide
+            ? renderDiaryContent(whiteDiaryPages[pageTransition.nextPage], pageTransition.nextPage, [clickedSide])
+            : null}
+
+          <img className="white-diary-tape" src={asset('white-diary-tape.png')} alt="" />
+          <div className="white-diary-pencil">
+            <img src={asset('white-diary-pencil.png')} alt="" />
+          </div>
+          <div className="white-diary-pen">
+            <img src={asset('white-diary-pen.png')} alt="" />
+          </div>
+          <div className="white-diary-eraser">
+            <img src={asset('white-diary-eraser.png')} alt="" />
+          </div>
+
+          <div className="white-diary-turn-sheet" aria-hidden="true" />
+
+          {diaryPage > 0 ? (
+            <button
+              className="white-diary-nav white-diary-nav-prev"
+              type="button"
+              aria-label="Previous diary page"
+              onClick={() => turnDiaryPage(-1)}
+            >
+              <span className="white-diary-nav-arrow">
+                <img src={asset('white-diary-arrow-prev.svg')} alt="" />
+              </span>
+              <span className="white-diary-fold white-diary-fold-left">
+                <img src={asset('white-diary-fold-paper.png')} alt="" />
+              </span>
+            </button>
+          ) : null}
+          {diaryPage < whiteDiaryPages.length - 1 ? (
+            <button
+              className="white-diary-nav white-diary-nav-next"
+              type="button"
+              aria-label="Next diary page"
+              onClick={() => turnDiaryPage(1)}
+            >
+              <span className="white-diary-nav-arrow">
+                <img src={asset('white-diary-arrow-next.svg')} alt="" />
+              </span>
+              <span className="white-diary-fold white-diary-fold-right">
+                <img src={asset('white-diary-fold-paper.png')} alt="" />
+              </span>
+            </button>
+          ) : null}
+        </section>
+      </div>
+    </main>
+  );
+}
+
 type FooterProps = {
   locale: Locale;
 };
@@ -1006,6 +1475,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>(() => {
     if (window.location.hash === '#jangma') return 'jangma';
     if (window.location.hash === '#camera') return 'track';
+    if (window.location.hash === '#diary') return 'diary';
     return 'main';
   });
   const loadingTimer = useRef<number | null>(null);
@@ -1043,6 +1513,10 @@ export default function App() {
         setCurrentPage('track');
         return;
       }
+      if (window.location.hash === '#diary') {
+        setCurrentPage('diary');
+        return;
+      }
       setCurrentPage('main');
     };
 
@@ -1066,7 +1540,7 @@ export default function App() {
   const handleInternalNavigation = (href: string) => {
     showPageLoading(() => {
       window.location.hash = href;
-      setCurrentPage(href === '#jangma' ? 'jangma' : href === '#camera' ? 'track' : 'main');
+      setCurrentPage(href === '#jangma' ? 'jangma' : href === '#camera' ? 'track' : href === '#diary' ? 'diary' : 'main');
     });
   };
 
@@ -1076,6 +1550,8 @@ export default function App() {
         <JangmaPage locale={locale} />
       ) : currentPage === 'track' ? (
         <TrackArchivePage locale={locale} />
+      ) : currentPage === 'diary' ? (
+        <WhiteDiaryArchivePage />
       ) : (
         <main className="page-shell" aria-busy={isLoading}>
           <div className="main-frame">
