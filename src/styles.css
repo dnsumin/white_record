@@ -7,6 +7,13 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'DosGothic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSGothic.woff') format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
 :root {
   --white: #fefefe;
   --green: #99c4a5;
@@ -225,6 +232,10 @@ button {
   will-change: left, top, width, height, opacity;
 }
 
+.gallery-object.is-clickable {
+  cursor: pointer;
+}
+
 .object-stage.is-dragging .gallery-object {
   transition: none;
 }
@@ -358,6 +369,342 @@ button {
   height: 18px;
 }
 
+.jangma-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #2f4f42;
+  color: var(--green-deep);
+  font-family: 'DotGothic16', monospace;
+}
+
+.jangma-scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  z-index: 1;
+  transform-origin: top left;
+}
+
+.jangma-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.jangma-temp-back {
+  position: fixed;
+  left: 18px;
+  top: 18px;
+  z-index: 90;
+  width: 22px;
+  height: 22px;
+}
+
+.jangma-temp-back img {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0) invert(1);
+  transform: rotate(180deg);
+}
+
+.jangma-sidebar {
+  position: absolute;
+  left: 149px;
+  top: 200px;
+  z-index: 60;
+  width: 242px;
+  display: flex;
+  flex-direction: column;
+  gap: 46px;
+}
+
+.jangma-profile-card {
+  width: 242px;
+  height: 285px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fffef7;
+}
+
+.jangma-profile-card img {
+  width: 222px;
+  height: 222px;
+  object-fit: cover;
+}
+
+.jangma-profile-card p {
+  margin: 0;
+  font-size: 25px;
+  line-height: 36px;
+  text-align: center;
+}
+
+.jangma-button-stack {
+  width: 242px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jangma-menu-button {
+  position: relative;
+  width: 242px;
+  height: 43px;
+  border: 2px solid var(--green);
+  background: var(--green);
+  color: #fffef7;
+  font-family: 'DotGothic16', monospace;
+  font-size: 25px;
+  line-height: 39px;
+  text-align: center;
+  transition: background-color 120ms ease, color 120ms ease, filter 120ms ease;
+}
+
+.jangma-menu-button::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -5px;
+  height: 2px;
+  background: #fffef7;
+  opacity: 0.95;
+}
+
+.jangma-menu-button.is-active {
+  background: #fffef7;
+  color: var(--green-deep);
+}
+
+.jangma-button-stack.is-idle .jangma-menu-button:nth-child(1) {
+  animation: jangma-button-blink 3s steps(1, end) infinite;
+}
+
+.jangma-button-stack.is-idle .jangma-menu-button:nth-child(2) {
+  animation: jangma-button-blink 3s steps(1, end) infinite 1s;
+}
+
+.jangma-button-stack.is-idle .jangma-menu-button:nth-child(3) {
+  animation: jangma-button-blink 3s steps(1, end) infinite 2s;
+}
+
+.jangma-menu-button:nth-child(2):active,
+.jangma-menu-button:nth-child(2).is-active {
+  filter: brightness(0.92);
+}
+
+.jangma-window-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.jangma-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+
+.jangma-window-bar {
+  height: 27px;
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--green);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.jangma-window-bar:active {
+  cursor: grabbing;
+}
+
+.jangma-close {
+  width: 27px;
+  height: 27px;
+  border: 1px solid var(--green);
+  background: #fffef7;
+}
+
+.jangma-close img {
+  width: 100%;
+  height: 100%;
+}
+
+.jangma-profile-window {
+  width: 620px;
+}
+
+.jangma-profile-copy {
+  min-height: 153px;
+  padding: 16px;
+  border: 3px solid var(--green);
+  background: #fffef7;
+  color: var(--green-deep);
+  font-family: 'DosGothic', 'DotGothic16', monospace;
+  font-size: 25px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.jangma-profile-copy p {
+  margin: 0 0 24px;
+}
+
+.jangma-profile-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.jangma-stills-window {
+  width: 948px;
+}
+
+.stills-content {
+  height: 534px;
+  padding: 12px;
+  border: 3px solid var(--green);
+  background: #fffef7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stills-media {
+  position: relative;
+  width: 924px;
+  height: 505px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.stills-media:active {
+  cursor: grabbing;
+}
+
+.stills-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  transition: transform 340ms ease;
+  will-change: transform;
+}
+
+.stills-media.is-dragging .stills-track {
+  transition: none;
+}
+
+.stills-track img {
+  width: 924px;
+  height: 100%;
+  object-fit: cover;
+  flex: 0 0 924px;
+  pointer-events: none;
+}
+
+.stills-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 27px;
+  z-index: 2;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.stills-dots button {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green-deep);
+  opacity: 0.72;
+}
+
+.stills-dots button.is-active {
+  background: #fffef7;
+  outline: 1px solid var(--green-deep);
+  opacity: 1;
+}
+
+.jangma-playlist-window {
+  width: 419px;
+}
+
+.jangma-playlist-list {
+  padding: 10px;
+  border: 3px solid var(--green);
+  background: #fffef7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.playlist-row {
+  width: 399px;
+  height: 98px;
+  padding: 8px;
+  border: 2px solid var(--green);
+  background: #fffef7;
+  color: #fffef7;
+  text-decoration: none;
+}
+
+.playlist-row-inner {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--green-deep);
+}
+
+.playlist-row img {
+  width: 66px;
+  height: 66px;
+  object-fit: cover;
+  flex: 0 0 auto;
+}
+
+.playlist-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.playlist-time {
+  width: 32px;
+  font-size: 14px;
+  line-height: 1;
+  text-align: right;
+}
+
 @media (max-width: 1500px) {
   .object-stage {
     transform: scale(calc((100vw - 40px) / 1360));
@@ -452,5 +799,19 @@ button {
 
   34% {
     transform: translateY(4px);
+  }
+}
+
+@keyframes jangma-button-blink {
+  0%,
+  33.333% {
+    background: #fffef7;
+    color: var(--green-deep);
+  }
+
+  33.334%,
+  100% {
+    background: var(--green);
+    color: #fffef7;
   }
 }

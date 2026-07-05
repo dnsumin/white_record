@@ -1,4 +1,4 @@
-import { type CSSProperties, type PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 const asset = (name: string) => `/assets/${name}`;
 
@@ -10,15 +10,23 @@ type ArchiveObject = {
 };
 
 type Locale = 'ko' | 'en';
+type AppPage = 'main' | 'jangma';
+type JangmaWindow = 'profile' | 'playlist' | 'stills';
+type JangmaWindowPosition = {
+  left: number;
+  top: number;
+};
 
 const copy = {
   ko: {
     support:
       '본 사업은 2026년 부산광역시, 부산문화재단 <2026 청년 신진예술가 창작활동 지원사업>의 지원을 받았습니다.',
+    jangmaIntro: ['언젠가 모래의 일부가 될 수 있다면', '안녕하세요. 싱어송라이터 장마입니다.'],
   },
   en: {
     support:
       'Supported by Busan Metropolitan City & Busan Cultural Foundation <2026 Emerging Young Artists Creative Support Program>',
+    jangmaIntro: ['If I Could Become a Grain of Sand, Someday.', "Hello, I'm Jangma, a singer-songwriter."],
   },
 };
 
@@ -30,6 +38,15 @@ const archiveObjects: ArchiveObject[] = [
 ];
 
 const loadingLetters = ['L', 'o', 'a', 'd', 'i', 'n', 'g'];
+const jangmaStills = Array.from({ length: 15 }, (_, index) => `jangma-still-${String(index + 1).padStart(2, '0')}.png`);
+
+const playlistItems = [
+  { title: 'vivitics', time: '4:01', image: 'playlist-vivitics.png' },
+  { title: 'Nighty Night', time: '2:50', image: 'playlist-nighty-night.png' },
+  { title: 'Dear.', time: '1:32', image: 'playlist-dear.png' },
+  { title: 'Eternally', time: '3:13', image: 'playlist-eternally.png' },
+  { title: '26', time: '2:39', image: 'playlist-26.png' },
+];
 
 const slotLayouts = [
   { left: 452, top: 16, width: 456, height: 384, opacity: 1 },
@@ -41,6 +58,24 @@ const snapDistance = 170;
 const motionDuration = 420;
 const minimumInitialLoadingMs = 2000;
 const pageTransitionLoadingMs = 900;
+const jangmaDesignWidth = 1920;
+const jangmaDesignHeight = 1080;
+const jangmaFitRatio = 0.94;
+const jangmaContentCenterX = (149 + 1726) / 2;
+const jangmaDragMinLeft = 420;
+const stillFrameWidth = 924;
+
+const jangmaInitialWindowPositions: Record<JangmaWindow, JangmaWindowPosition> = {
+  profile: { left: 1199, top: 662 },
+  playlist: { left: 430, top: 420 },
+  stills: { left: 778, top: 59 },
+};
+
+const jangmaWindowSizes: Record<JangmaWindow, { width: number; height: number }> = {
+  profile: { width: 620, height: 215 },
+  playlist: { width: 419, height: 592 },
+  stills: { width: 948, height: 568 },
+};
 
 const wrapPosition = (value: number) => ((value % archiveObjects.length) + archiveObjects.length) % archiveObjects.length;
 
@@ -101,6 +136,8 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef<number | null>(null);
   const titleTimer = useRef<number | null>(null);
+  const didDrag = useRef(false);
+  const pressedObject = useRef<{ id: string; isCenter: boolean } | null>(null);
   const dragProgress = isDragging ? -dragOffset / snapDistance : 0;
 
   const scheduleTitleChange = (nextRotation: number) => {
@@ -124,7 +161,8 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     () =>
       archiveObjects.map((object, objectIndex) => {
         const position = wrapPosition(objectIndex - rotation - dragProgress);
-        return { object, style: getObjectStyle(position) };
+        const centerDistance = Math.min(position, archiveObjects.length - position);
+        return { object, style: getObjectStyle(position), isCenter: centerDistance < 0.2 };
       }),
     [dragProgress, rotation],
   );
@@ -138,7 +176,15 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLElement>) => {
+    const objectElement = (event.target as HTMLElement).closest<HTMLElement>('.gallery-object');
+    pressedObject.current = objectElement
+      ? {
+          id: objectElement.dataset.objectId ?? '',
+          isCenter: objectElement.dataset.isCenter === 'true',
+        }
+      : null;
     dragStartX.current = event.clientX;
+    didDrag.current = false;
     setDragOffset(0);
     setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -146,7 +192,11 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     if (dragStartX.current === null) return;
-    setDragOffset(event.clientX - dragStartX.current);
+    const nextOffset = event.clientX - dragStartX.current;
+    if (Math.abs(nextOffset) > 6) {
+      didDrag.current = true;
+    }
+    setDragOffset(nextOffset);
   };
 
   const handlePointerEnd = (event: PointerEvent<HTMLElement>) => {
@@ -158,7 +208,15 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     setIsDragging(false);
 
     const stepCount = Math.round(-finalOffset / snapDistance);
-    if (stepCount === 0) return;
+    const clickTarget = pressedObject.current;
+    pressedObject.current = null;
+
+    if (stepCount === 0) {
+      if (!didDrag.current && clickTarget?.id === 'jangma' && clickTarget.isCenter) {
+        onNavigate('#jangma');
+      }
+      return;
+    }
     moveToRotation(rotation + stepCount);
   };
 
@@ -172,12 +230,14 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
         onPointerUp={handlePointerEnd}
         onPointerCancel={handlePointerEnd}
       >
-      {visibleObjects.map(({ object, style }) => (
+      {visibleObjects.map(({ object, style, isCenter }) => (
         <div
-          className={`gallery-object asset-${object.id}`}
+          className={`gallery-object asset-${object.id}${object.id === 'jangma' && isCenter ? ' is-clickable' : ''}`}
           aria-label={object.label}
           key={object.id}
           style={style}
+          data-object-id={object.id}
+          data-is-center={isCenter}
         >
           <img className="object-image" src={asset(object.image)} alt="" />
         </div>
@@ -212,6 +272,339 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
         {activeTitle}
       </a>
     </>
+  );
+}
+
+type WindowFrameProps = {
+  id: JangmaWindow;
+  title: string;
+  className: string;
+  order: number;
+  position: JangmaWindowPosition;
+  onClose: (id: JangmaWindow) => void;
+  onFocus: (id: JangmaWindow) => void;
+  onBarPointerDown: (id: JangmaWindow, event: PointerEvent<HTMLElement>) => void;
+  onBarPointerMove: (event: PointerEvent<HTMLElement>) => void;
+  onBarPointerUp: (event: PointerEvent<HTMLElement>) => void;
+  children: ReactNode;
+};
+
+function WindowFrame({
+  id,
+  title,
+  className,
+  order,
+  position,
+  onClose,
+  onFocus,
+  onBarPointerDown,
+  onBarPointerMove,
+  onBarPointerUp,
+  children,
+}: WindowFrameProps) {
+  return (
+    <section
+      className={`jangma-window ${className}`}
+      style={{ left: position.left, top: position.top, zIndex: 20 + order }}
+      onPointerDown={() => onFocus(id)}
+      aria-label={title}
+    >
+      <header
+        className="jangma-window-bar"
+        onPointerDown={(event) => onBarPointerDown(id, event)}
+        onPointerMove={onBarPointerMove}
+        onPointerUp={onBarPointerUp}
+        onPointerCancel={onBarPointerUp}
+      >
+        <span>{title}</span>
+        <button
+          className="jangma-close"
+          type="button"
+          aria-label={`Close ${title}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClose(id);
+          }}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <img src={asset('window-close.svg')} alt="" />
+        </button>
+      </header>
+      {children}
+    </section>
+  );
+}
+
+type JangmaPageProps = {
+  locale: Locale;
+};
+
+function JangmaPage({ locale }: JangmaPageProps) {
+  const [openWindows, setOpenWindows] = useState<JangmaWindow[]>([]);
+  const [currentStill, setCurrentStill] = useState(0);
+  const [sceneScale, setSceneScale] = useState(1);
+  const [sceneOffsetX, setSceneOffsetX] = useState(0);
+  const [stillDragOffset, setStillDragOffset] = useState(0);
+  const [isStillDragging, setIsStillDragging] = useState(false);
+  const stillDragStartX = useRef<number | null>(null);
+  const stillDidDrag = useRef(false);
+  const [windowPositions, setWindowPositions] = useState<Record<JangmaWindow, JangmaWindowPosition>>(jangmaInitialWindowPositions);
+  const dragWindow = useRef<{
+    id: JangmaWindow;
+    pointerId: number;
+    startClientX: number;
+    startClientY: number;
+    startLeft: number;
+    startTop: number;
+  } | null>(null);
+  const activeWindow = openWindows[openWindows.length - 1] ?? null;
+
+  useEffect(() => {
+    const updateScale = () => {
+      const nextScale = Math.min(window.innerWidth / jangmaDesignWidth, window.innerHeight / jangmaDesignHeight, 1);
+      const fittedScale = nextScale * jangmaFitRatio;
+      setSceneScale(fittedScale);
+      setSceneOffsetX(window.innerWidth / 2 - jangmaContentCenterX * fittedScale);
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
+  const bringWindowToFront = (windowId: JangmaWindow) => {
+    setOpenWindows((current) => [...current.filter((id) => id !== windowId), windowId]);
+  };
+
+  const closeWindow = (windowId: JangmaWindow) => {
+    setOpenWindows((current) => current.filter((id) => id !== windowId));
+  };
+
+  const clampWindowPosition = (windowId: JangmaWindow, left: number, top: number): JangmaWindowPosition => {
+    const size = jangmaWindowSizes[windowId];
+    return {
+      left: Math.min(Math.max(left, jangmaDragMinLeft), jangmaDesignWidth - size.width - 24),
+      top: Math.min(Math.max(top, 24), jangmaDesignHeight - size.height - 24),
+    };
+  };
+
+  const handleWindowDragStart = (windowId: JangmaWindow, event: PointerEvent<HTMLElement>) => {
+    if (event.button !== 0) return;
+    const currentPosition = windowPositions[windowId];
+    dragWindow.current = {
+      id: windowId,
+      pointerId: event.pointerId,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      startLeft: currentPosition.left,
+      startTop: currentPosition.top,
+    };
+    bringWindowToFront(windowId);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleWindowDragMove = (event: PointerEvent<HTMLElement>) => {
+    const drag = dragWindow.current;
+    if (!drag) return;
+
+    const nextLeft = drag.startLeft + (event.clientX - drag.startClientX) / sceneScale;
+    const nextTop = drag.startTop + (event.clientY - drag.startClientY) / sceneScale;
+    const nextPosition = clampWindowPosition(drag.id, nextLeft, nextTop);
+    setWindowPositions((current) => ({ ...current, [drag.id]: nextPosition }));
+  };
+
+  const handleWindowDragEnd = (event: PointerEvent<HTMLElement>) => {
+    if (!dragWindow.current) return;
+    event.currentTarget.releasePointerCapture(dragWindow.current.pointerId);
+    dragWindow.current = null;
+  };
+
+  const snapStillTo = (nextIndex: number) => {
+    setCurrentStill(Math.min(Math.max(nextIndex, 0), jangmaStills.length - 1));
+  };
+
+  const handleStillPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    stillDragStartX.current = event.clientX;
+    stillDidDrag.current = false;
+    setStillDragOffset(0);
+    setIsStillDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleStillPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (stillDragStartX.current === null) return;
+    const nextOffset = (event.clientX - stillDragStartX.current) / sceneScale;
+    if (Math.abs(nextOffset) > 8) {
+      stillDidDrag.current = true;
+    }
+    setStillDragOffset(nextOffset);
+  };
+
+  const handleStillPointerEnd = (event: PointerEvent<HTMLDivElement>) => {
+    if (stillDragStartX.current === null) return;
+    const dragDistance = (event.clientX - stillDragStartX.current) / sceneScale;
+    stillDragStartX.current = null;
+    setStillDragOffset(0);
+    setIsStillDragging(false);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+
+    const stepCount = Math.round(-dragDistance / stillFrameWidth);
+    if (stepCount !== 0) {
+      snapStillTo(currentStill + stepCount);
+      return;
+    }
+
+    if (Math.abs(dragDistance) > 80) {
+      snapStillTo(currentStill + (dragDistance > 0 ? -1 : 1));
+    }
+  };
+
+  return (
+    <main className="jangma-page">
+      <img className="jangma-bg" src={asset('jangma-bg.png')} alt="" />
+
+      <button
+        className="jangma-temp-back"
+        type="button"
+        aria-label="Back"
+        onClick={() => {
+          window.location.hash = '';
+        }}
+      >
+        <img src={asset('button-next.svg')} alt="" />
+      </button>
+
+      <div className="jangma-scene" style={{ transform: `translateX(${sceneOffsetX}px) scale(${sceneScale})` }}>
+        <aside className="jangma-sidebar" aria-label="Jangma controls">
+          <div className="jangma-profile-card">
+            <img src={asset('jangma-profile.png')} alt="Jangma profile" />
+            <p>Jangma</p>
+          </div>
+
+          <nav className={`jangma-button-stack${activeWindow === null ? ' is-idle' : ''}`} aria-label="Jangma page sections">
+            {[
+              ['profile', 'Profile'],
+              ['playlist', 'Playlist'],
+              ['stills', 'Video Stills'],
+            ].map(([id, label]) => (
+              <button
+                className={`jangma-menu-button ${activeWindow === id ? 'is-active' : ''}`}
+                type="button"
+                key={id}
+                onClick={() => bringWindowToFront(id as JangmaWindow)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        <div className="jangma-window-layer">
+          {openWindows.map((windowId, index) => {
+            if (windowId === 'profile') {
+              return (
+                <WindowFrame
+                  id="profile"
+                title="Jangma"
+                className="jangma-profile-window"
+                order={index}
+                position={windowPositions.profile}
+                key={windowId}
+                onClose={closeWindow}
+                onFocus={bringWindowToFront}
+                onBarPointerDown={handleWindowDragStart}
+                onBarPointerMove={handleWindowDragMove}
+                onBarPointerUp={handleWindowDragEnd}
+                >
+                  <div className="jangma-profile-copy">
+                    {copy[locale].jangmaIntro.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
+                </WindowFrame>
+              );
+            }
+
+            if (windowId === 'playlist') {
+              return (
+                <WindowFrame
+                  id="playlist"
+                title="Playlist"
+                className="jangma-playlist-window"
+                order={index}
+                position={windowPositions.playlist}
+                key={windowId}
+                onClose={closeWindow}
+                onFocus={bringWindowToFront}
+                onBarPointerDown={handleWindowDragStart}
+                onBarPointerMove={handleWindowDragMove}
+                onBarPointerUp={handleWindowDragEnd}
+              >
+                  <div className="jangma-playlist-list">
+                    {playlistItems.map((item) => (
+                      <a className="playlist-row" href="https://www.naver.com" target="_blank" rel="noreferrer" key={item.title}>
+                        <span className="playlist-row-inner">
+                          <img src={asset(item.image)} alt="" />
+                          <span className="playlist-title">{item.title}</span>
+                          <span className="playlist-time">{item.time}</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </WindowFrame>
+              );
+            }
+
+            return (
+              <WindowFrame
+                id="stills"
+                title="Music Video Stills"
+                className="jangma-stills-window"
+                order={index}
+                position={windowPositions.stills}
+                key={windowId}
+                onClose={closeWindow}
+                onFocus={bringWindowToFront}
+                onBarPointerDown={handleWindowDragStart}
+                onBarPointerMove={handleWindowDragMove}
+                onBarPointerUp={handleWindowDragEnd}
+              >
+                <div className="stills-content">
+                  <div
+                    className={`stills-media${isStillDragging ? ' is-dragging' : ''}`}
+                    onPointerDown={handleStillPointerDown}
+                    onPointerMove={handleStillPointerMove}
+                    onPointerUp={handleStillPointerEnd}
+                    onPointerCancel={handleStillPointerEnd}
+                  >
+                    <div
+                      className="stills-track"
+                      style={{ transform: `translateX(${-currentStill * stillFrameWidth + stillDragOffset}px)` }}
+                    >
+                      {jangmaStills.map((still) => (
+                        <img src={asset(still)} alt="" key={still} />
+                      ))}
+                    </div>
+                    <div className="stills-dots" aria-label="Music video stills">
+                      {jangmaStills.map((still, index) => (
+                        <button
+                          className={currentStill === index ? 'is-active' : undefined}
+                          type="button"
+                          aria-label={`Show still ${index + 1}`}
+                          key={still}
+                          onClick={() => setCurrentStill(index)}
+                          onPointerDown={(event) => event.stopPropagation()}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </WindowFrame>
+            );
+          })}
+        </div>
+      </div>
+    </main>
   );
 }
 
@@ -267,6 +660,7 @@ function LoadingScreen() {
 export default function App() {
   const [locale, setLocale] = useState<Locale>('ko');
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState<AppPage>(() => (window.location.hash === '#jangma' ? 'jangma' : 'main'));
   const loadingTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -292,6 +686,15 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPage(window.location.hash === '#jangma' ? 'jangma' : 'main');
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const showPageLoading = (afterLoading: () => void) => {
     if (loadingTimer.current) {
       window.clearTimeout(loadingTimer.current);
@@ -308,27 +711,32 @@ export default function App() {
   const handleInternalNavigation = (href: string) => {
     showPageLoading(() => {
       window.location.hash = href;
+      setCurrentPage(href === '#jangma' ? 'jangma' : 'main');
     });
   };
 
   return (
     <>
-      <main className="page-shell" aria-busy={isLoading}>
-        <div className="main-frame">
-          <div className="hero-layout">
-            <LanguageSwitch locale={locale} onLocaleChange={setLocale} />
+      {currentPage === 'jangma' ? (
+        <JangmaPage locale={locale} />
+      ) : (
+        <main className="page-shell" aria-busy={isLoading}>
+          <div className="main-frame">
+            <div className="hero-layout">
+              <LanguageSwitch locale={locale} onLocaleChange={setLocale} />
 
-            <header className="brand-header">
-              <img src={asset('pixelated-white-record.png')} alt="White Record" />
-              <p>Welcome to White Record!</p>
-            </header>
+              <header className="brand-header">
+                <img src={asset('pixelated-white-record.png')} alt="White Record" />
+                <p>Welcome to White Record!</p>
+              </header>
 
-            <HeroObjects onNavigate={handleInternalNavigation} />
+              <HeroObjects onNavigate={handleInternalNavigation} />
+            </div>
+
+            <Footer locale={locale} />
           </div>
-
-          <Footer locale={locale} />
-        </div>
-      </main>
+        </main>
+      )}
       {isLoading ? <LoadingScreen /> : null}
     </>
   );
