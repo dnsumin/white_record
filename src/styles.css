@@ -820,9 +820,28 @@ button {
   top: 1.5px;
   width: 360px;
   height: 68px;
-  border: 3px solid var(--green);
   background: var(--white);
-  box-shadow: 5px 5px 0 var(--green);
+}
+
+.track-title-badge::before,
+.track-title-badge::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.track-title-badge::before {
+  left: 5.2949px;
+  top: 5px;
+  z-index: -1;
+  width: 360px;
+  height: 68px;
+  background: var(--green);
+}
+
+.track-title-badge::after {
+  inset: 0;
+  border: 3px solid var(--green);
 }
 
 .track-title-badge span {
@@ -838,7 +857,7 @@ button {
   color: var(--white);
   font-family: 'Galmuri11', 'DotGothic16', monospace;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 52px;
   text-align: center;
 }
