@@ -10,9 +10,12 @@ type ArchiveObject = {
 };
 
 type Locale = 'ko' | 'en';
-type AppPage = 'main' | 'jangma' | 'track' | 'diary';
+type AppPage = 'main' | 'lp' | 'jangma' | 'track' | 'diary';
 type JangmaWindow = 'profile' | 'playlist' | 'stills';
 type TrackArchiveMode = 'mv' | 'lyric';
+type WhiteRecordControlId = 'play' | 'pause' | 'stop' | 'record' | 'reset';
+type WhiteRecordPadId = 'raindrop' | 'bird' | 'wind' | 'wave' | 'grasshopper';
+type WhiteRecordChoiceId = 'sunset' | 'city' | 'mountain' | 'sea';
 type JangmaWindowPosition = {
   left: number;
   top: number;
@@ -39,7 +42,24 @@ const archiveObjects: ArchiveObject[] = [
 ];
 
 const loadingLetters = ['L', 'o', 'a', 'd', 'i', 'n', 'g'];
-const jangmaStills = Array.from({ length: 15 }, (_, index) => `jangma-still-${String(index + 1).padStart(2, '0')}.png`);
+const jangmaStills = [
+  'KakaoTalk_Photo_2026-07-16-15-26-47 001.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-49 002.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-51 003.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-52 004.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-54 005.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-56 006.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-57 007.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-57 008.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-58 009.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-58 010.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-59 011.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-26-59 012.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-27-00 013.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-27-00 014.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-27-00 015.jpeg',
+  'KakaoTalk_Photo_2026-07-16-15-27-00 016.jpeg',
+];
 
 const playlistItems = [
   {
@@ -87,6 +107,7 @@ const slotLayouts = [
 ];
 const snapDistance = 170;
 const motionDuration = 420;
+const titleChangeDelay = 180;
 const minimumInitialLoadingMs = 2000;
 const pageTransitionLoadingMs = 900;
 const jangmaDesignWidth = 1920;
@@ -100,6 +121,162 @@ const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
 const whitePagesDesignWidth = 1920;
 const whitePagesDesignHeight = 1080;
+const whitePagesFitRatio = 0.96;
+const whiteRecordDesignWidth = 1440;
+const whiteRecordDesignHeight = 900;
+
+const whiteRecordObjects = [
+  {
+    id: 'tree',
+    label: 'Tree',
+    offImage: 'white-record-object-tree-off.png',
+    onImage: 'white-record-object-tree-on.png',
+    audio: 'object_tree.mp3',
+    className: 'white-record-object-tree',
+  },
+  {
+    id: 'watering-can',
+    label: 'Watering can',
+    offImage: 'white-record-object-watering-can-off.png',
+    onImage: 'white-record-object-watering-can-on.png',
+    audio: 'object-wateringcan.mp3',
+    className: 'white-record-object-watering-can',
+  },
+  {
+    id: 'bubble',
+    label: 'Bubble',
+    offImage: 'white-record-object-bubble-off.png',
+    onImage: 'white-record-object-bubble-on.png',
+    audio: 'object_bubble.mp3',
+    className: 'white-record-object-bubble',
+  },
+  {
+    id: 'ice',
+    label: 'Ice',
+    offImage: 'white-record-object-ice-off.png',
+    onImage: 'white-record-object-ice-on.png',
+    audio: 'object_ice.mp3',
+    className: 'white-record-object-ice',
+  },
+  {
+    id: 'glass-bottle',
+    label: 'Glass bottle',
+    offImage: 'white-record-object-glass-bottle-off.png',
+    onImage: 'white-record-object-glass-bottle-on.png',
+    audio: 'object_bottle.mp3',
+    className: 'white-record-object-glass-bottle',
+  },
+  {
+    id: 'camcorder',
+    label: 'Camcorder',
+    offImage: 'white-record-object-camcorder-off.png',
+    onImage: 'white-record-object-camcorder-on.png',
+    audio: 'object_camera.mp3',
+    className: 'white-record-object-camcorder',
+  },
+] as const;
+
+const whiteRecordChoices = [
+  {
+    id: 'sunset',
+    label: 'Sunset record',
+    image: 'white-record-lp-sunset-off.png',
+    activeImage: 'white-record-lp-sunset-on.png',
+    discImage: 'white-record-disc-sunset.png',
+  },
+  {
+    id: 'city',
+    label: 'City record',
+    image: 'white-record-lp-city-off.png',
+    activeImage: 'white-record-lp-city-on.png',
+    discImage: 'white-record-disc-city.png',
+  },
+  {
+    id: 'mountain',
+    label: 'Mountain record',
+    image: 'white-record-lp-mountain-off.png',
+    activeImage: 'white-record-lp-mountain-on.png',
+    discImage: 'white-record-disc-mountain.png',
+  },
+  {
+    id: 'sea',
+    label: 'Sea record',
+    image: 'white-record-lp-sea-off.png',
+    activeImage: 'white-record-lp-sea-on.png',
+    discImage: 'white-record-disc-sea.png',
+  },
+] as const;
+
+const whiteRecordControls = [
+  { id: 'play', label: 'Play', image: 'white-record-control-play.png', activeImage: 'white-record-control-play-active.png' },
+  { id: 'pause', label: 'Pause', image: 'white-record-control-pause.png', activeImage: 'white-record-control-pause-active.png' },
+  { id: 'stop', label: 'Stop', image: 'white-record-control-stop.png', activeImage: 'white-record-control-stop-active.png' },
+  { id: 'record', label: 'Record', image: 'white-record-control-record.png', activeImage: 'white-record-control-record-active.png' },
+  { id: 'reset', label: 'Reset', image: 'white-record-control-reset.png', activeImage: 'white-record-control-reset-active.png' },
+] as const;
+
+const whiteRecordPads = [
+  {
+    id: 'grasshopper',
+    label: 'Grasshopper noise',
+    audio: 'em_grasshopper.mp3',
+    image: 'white-record-pad-1-off.png',
+    activeImage: 'white-record-pad-1-on.png',
+  },
+  {
+    id: 'wind',
+    label: 'Wind noise',
+    audio: 'em_wind.mp3',
+    image: 'white-record-pad-2-off.png',
+    activeImage: 'white-record-pad-2-on.png',
+  },
+  {
+    id: 'wave',
+    label: 'Wave noise',
+    audio: 'em_wave.mp3',
+    image: 'white-record-pad-3-off.png',
+    activeImage: 'white-record-pad-3-on.png',
+  },
+  {
+    id: 'raindrop',
+    label: 'Raindrop noise',
+    audio: 'em_raindrop.mp3',
+    image: 'white-record-pad-4-off.png',
+    activeImage: 'white-record-pad-4-on.png',
+  },
+  {
+    id: 'bird',
+    label: 'Bird noise',
+    audio: 'em_bird.mp3',
+    image: 'white-record-pad-5-off.png',
+    activeImage: 'white-record-pad-5-on.png',
+  },
+] as const;
+
+const whiteRecordMaxSeconds = 30;
+const whiteRecordPlaybackGain = 2.2;
+
+const formatRecordTime = (seconds: number) => `0 : ${String(Math.max(0, seconds)).padStart(2, '0')}`;
+
+type HomeButtonProps = {
+  variant?: 'dark' | 'light';
+  className?: string;
+};
+
+function HomeButton({ variant = 'dark', className = '' }: HomeButtonProps) {
+  return (
+    <button
+      className={`home-button ${className}`.trim()}
+      type="button"
+      aria-label="Home"
+      onClick={() => {
+        window.location.hash = '';
+      }}
+    >
+      <img src={asset(variant === 'light' ? 'home-light.svg' : 'home-dark.svg')} alt="" />
+    </button>
+  );
+}
 
 const jangmaInitialWindowPositions: Record<JangmaWindow, JangmaWindowPosition> = {
   profile: { left: 1199, top: 662 },
@@ -173,7 +350,7 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
   const dragStartX = useRef<number | null>(null);
   const titleTimer = useRef<number | null>(null);
   const didDrag = useRef(false);
-  const pressedObject = useRef<{ id: string; isCenter: boolean } | null>(null);
+  const pressedObject = useRef<{ id: string; index: number; isCenter: boolean } | null>(null);
   const dragProgress = isDragging ? -dragOffset / snapDistance : 0;
 
   const scheduleTitleChange = (nextRotation: number) => {
@@ -184,7 +361,7 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     titleTimer.current = window.setTimeout(() => {
       setActiveTitle(archiveObjects[nextRotation].title);
       titleTimer.current = null;
-    }, motionDuration);
+    }, titleChangeDelay);
   };
 
   const moveToRotation = (nextRotation: number) => {
@@ -216,6 +393,7 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     pressedObject.current = objectElement
       ? {
           id: objectElement.dataset.objectId ?? '',
+          index: Number(objectElement.dataset.objectIndex ?? 0),
           isCenter: objectElement.dataset.isCenter === 'true',
         }
       : null;
@@ -248,8 +426,10 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
     pressedObject.current = null;
 
     if (stepCount === 0) {
-      if (!didDrag.current && clickTarget?.isCenter && ['camera', 'jangma', 'diary'].includes(clickTarget.id)) {
+      if (!didDrag.current && clickTarget?.isCenter && ['lp', 'camera', 'jangma', 'diary'].includes(clickTarget.id)) {
         onNavigate(`#${clickTarget.id}`);
+      } else if (!didDrag.current && clickTarget && !clickTarget.isCenter) {
+        moveToRotation(clickTarget.index);
       }
       return;
     }
@@ -266,15 +446,16 @@ function HeroObjects({ onNavigate }: HeroObjectsProps) {
         onPointerUp={handlePointerEnd}
         onPointerCancel={handlePointerEnd}
       >
-      {visibleObjects.map(({ object, style, isCenter }) => (
+      {visibleObjects.map(({ object, style, isCenter }, objectIndex) => (
         <div
           className={`gallery-object asset-${object.id}${
-            ['camera', 'jangma', 'diary'].includes(object.id) && isCenter ? ' is-clickable' : ''
+            ['lp', 'camera', 'jangma', 'diary'].includes(object.id) ? ' is-clickable' : ''
           }`}
           aria-label={object.label}
           key={object.id}
           style={style}
           data-object-id={object.id}
+          data-object-index={objectIndex}
           data-is-center={isCenter}
         >
           <img className="object-image" src={asset(object.image)} alt="" />
@@ -378,7 +559,7 @@ type JangmaPageProps = {
 };
 
 function JangmaPage({ locale }: JangmaPageProps) {
-  const [openWindows, setOpenWindows] = useState<JangmaWindow[]>([]);
+  const [openWindows, setOpenWindows] = useState<JangmaWindow[]>(['stills', 'playlist', 'profile']);
   const [currentStill, setCurrentStill] = useState(0);
   const [sceneScale, setSceneScale] = useState(1);
   const [sceneOffsetX, setSceneOffsetX] = useState(0);
@@ -501,25 +682,16 @@ function JangmaPage({ locale }: JangmaPageProps) {
     <main className="jangma-page">
       <img className="jangma-bg" src={asset('jangma-bg.png')} alt="" />
 
-      <button
-        className="jangma-temp-back"
-        type="button"
-        aria-label="Back"
-        onClick={() => {
-          window.location.hash = '';
-        }}
-      >
-        <img src={asset('button-next.svg')} alt="" />
-      </button>
-
       <div className="jangma-scene" style={{ transform: `translateX(${sceneOffsetX}px) scale(${sceneScale})` }}>
+        <HomeButton className="home-button-jangma" variant="light" />
+
         <aside className="jangma-sidebar" aria-label="Jangma controls">
           <div className="jangma-profile-card">
             <img src={asset('jangma-profile.png')} alt="Jangma profile" />
             <p>Jangma</p>
           </div>
 
-          <nav className={`jangma-button-stack${activeWindow === null ? ' is-idle' : ''}`} aria-label="Jangma page sections">
+          <nav className="jangma-button-stack" aria-label="Jangma page sections">
             {[
               ['profile', 'Profile'],
               ['playlist', 'Playlist'],
@@ -658,7 +830,10 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
 
   useEffect(() => {
     const updateScale = () => {
-    setSceneScale(Math.min(window.innerWidth / trackArchiveDesignWidth, 1) * trackArchiveFitRatio);
+      setSceneScale(
+        Math.min(window.innerWidth / trackArchiveDesignWidth, window.innerHeight / trackArchiveDesignHeight, 1) *
+          trackArchiveFitRatio,
+      );
     };
 
     updateScale();
@@ -670,6 +845,18 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
     ko: {
       albumTitle: ['장마 1st EP', '‘ 화이트 레코드 ’'],
       tracks: ['하나 둘', '맨발로 걷는 하루', '나만의 반딧불', '황혼성 사냥', '나만의 반딧불'],
+      mvPlaces: [
+        {
+          title: '용소웰빙공원',
+          description:
+            '호수처럼 잔잔한 저수지와 울창한 숲이 조화를 이루는 기장의 숨겨진 보석입니다. 나무 그림자, 호수에 떠 있는 배 등 마치 꿈속을 거니는 듯한 몽환적인 풍경을 마주할 수 있습니다.',
+        },
+        {
+          title: '중앙공원 편백숲',
+          description:
+            '하늘을 향해 곧게 뻗은 편백나무들이 청량한 공기를 전합니다. 우거진 나뭇가지 사이로 부드러운 햇살이 조각조각 부서져 내리는 모습이 무척 아름답습니다. 바람에 숲이 일렁이는 소리와 짙은 녹음은 지친 마음을 차분하게 가라앉혀 줍니다.',
+        },
+      ],
       trackDetails: [
         ['하나 둘', '노래를 피우는 사람들'],
         ['맨발로 걷는 하루', '아무 의미 없지는\n않았다고 생각해'],
@@ -680,6 +867,18 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
     en: {
       albumTitle: ['Jangma 1st EP', '‘ White Record ’'],
       tracks: ['mic test', 'Hop Step Jump', 'fairytale', 'Twilight hunting', 'fairytale'],
+      mvPlaces: [
+        {
+          title: 'Yongso Wellbeing Park',
+          description:
+            'A hidden gem in Gijang where a lake-like reservoir and a dense forest harmonize. With the shadows of the trees and a small boat drifting on the water, you will encounter a dreamy landscape that feels like walking through a dream.',
+        },
+        {
+          title: 'Jungang Park Cypress Forest',
+          description:
+            'Cypress trees stretching straight toward the sky deliver crisp refreshing air. The way the soft sunlight breaks into pieces through the thick canopy is incredibly beautiful. The sound of the woods swaying in the wind and the deep greenery gently calm a weary heart.',
+        },
+      ],
       trackDetails: [
         ['mic test', 'The song smokers'],
         ['Hop Step Jump', 'I think it wasn’t all for nothing'],
@@ -690,10 +889,23 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   };
 
   const pageCopy = trackArchiveCopy[locale];
-  const videoSources: Record<TrackArchiveMode, string> = {
-    mv: 'https://www.youtube.com/embed/jEdoHGAi3lw?si=yLAS_tk_Eiqf9eDn',
-    lyric: 'https://www.youtube.com/embed/jEdoHGAi3lw?si=yLAS_tk_Eiqf9eDn',
+  const videoSources = {
+    mv: 'https://www.youtube.com/embed/mAQSh8NP_Y0?si=sh9jUIXzFMcMW37V',
+    lyric: {
+      '01': 'https://www.youtube.com/embed/MA_ngGO4_Ss?si=pcBtrr-Pwjm3WnVf',
+      '02': 'https://www.youtube.com/embed/526UPWqRXVA?si=G9Tn1LIWM-QgIwzV',
+      '04': 'https://www.youtube.com/embed/pzfrsOkinQU?si=9ehOqQ6K6bWkBTtZ',
+    },
   };
+  const mvImages = [
+    'KakaoTalk_Photo_2026-07-16-15-26-49 002.jpeg',
+    'KakaoTalk_Photo_2026-07-16-15-26-51 003.jpeg',
+    'KakaoTalk_Photo_2026-07-16-15-26-52 004.jpeg',
+    'KakaoTalk_Photo_2026-07-16-15-26-54 005.jpeg',
+  ].map((image, index) => ({
+    src: asset(image),
+    alt: `MV still ${index + 1}`,
+  }));
   const lyricTracks = [
     {
       id: '01',
@@ -745,6 +957,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
     },
   ];
   const activeLyricTrack = lyricTracks.find((track) => track.id === selectedLyricTrack) ?? lyricTracks[0];
+  const activeVideoSource = trackMode === 'mv' ? videoSources.mv : videoSources.lyric[selectedLyricTrack as keyof typeof videoSources.lyric];
   const activeLyricImages = Array.from({ length: activeLyricTrack.imageCount }, (_, index) => {
     const imageNumber = index + 1;
     const src = asset(`${activeLyricTrack.id}-${imageNumber}.jpg`);
@@ -757,21 +970,10 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
       isWideCrop,
     };
   });
-  const sceneHeight = trackMode === 'lyric' ? trackArchiveDesignHeight + 832 : trackArchiveDesignHeight;
+  const sceneHeight = trackArchiveDesignHeight + 832;
 
   return (
     <main className="track-archive-page">
-      <button
-        className="track-temp-back"
-        type="button"
-        aria-label="Back"
-        onClick={() => {
-          window.location.hash = '';
-        }}
-      >
-        <img src={asset('button-next.svg')} alt="" />
-      </button>
-
       <div
         className="track-archive-scale"
         style={{
@@ -783,6 +985,8 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
           className={`track-archive-scene${trackMode === 'lyric' ? ' is-lyric' : ''}`}
           style={{ height: sceneHeight, transform: `scale(${sceneScale})` }}
         >
+          <HomeButton className="home-button-track" />
+
           <aside className="track-album-panel" aria-label="White Record album track list">
             {trackMode === 'lyric' ? (
               <>
@@ -831,6 +1035,14 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     </li>
                   </ol>
                 </div>
+                <div className="track-place-list track-place-list-mv">
+                  {pageCopy.mvPlaces.map((place) => (
+                    <section className="track-place-card" key={place.title}>
+                      <h2>{place.title}</h2>
+                      <p>{place.description}</p>
+                    </section>
+                  ))}
+                </div>
               </>
             )}
           </aside>
@@ -863,7 +1075,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
 
             <div className="track-video-frame">
               <iframe
-                src={videoSources[trackMode]}
+                src={activeVideoSource}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -887,12 +1099,11 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                 ))}
               </div>
             ) : (
-              <div className="track-card-grid" aria-label="Track descriptions">
-                {pageCopy.trackDetails.map(([title, description]) => (
-                  <article className="track-info-card" key={title}>
-                    <h2>{title}</h2>
-                    <p>{description}</p>
-                  </article>
+              <div className="track-lyric-photo-grid" aria-label="Music video photos">
+                {mvImages.map((image) => (
+                  <div className="track-lyric-photo" key={image.src}>
+                    <img src={image.src} alt={image.alt} />
+                  </div>
                 ))}
               </div>
             )}
@@ -1043,7 +1254,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '상상하던 거랑 비슷한가 하고.',
       '',
       '',
-      '2026.  8.  16.',
+      '2026.  7.  31.',
     ],
     photos: [{ src: 'white-diary-photo-pond.png', className: 'white-diary-photo-pond', side: 'right' }],
     stickers: [
@@ -1068,7 +1279,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '그렇지도 않을 것 같은데.',
     ],
     photos: [],
-    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-4', src: 'https://www.youtube.com/embed/WbBM_K6f2wQ', title: '시간이 흘러' }],
+    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-4', src: 'https://www.youtube.com/embed/6cqMBKg33iA', title: '간질간질 #shorts' }],
   },
   {
     copySide: 'right',
@@ -1083,7 +1294,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
     ],
     photos: [{ src: 'white-diary-photo-rivergrass.png', className: 'white-diary-photo-rivergrass', side: 'right' }],
     stickers: [{ className: 'white-diary-tape-gold-rivergrass', side: 'right' }],
-    embeds: [{ side: 'left', className: 'white-diary-shorts-left', src: 'https://www.youtube.com/embed/WbBM_K6f2wQ', title: '시간이 흘러' }],
+    embeds: [{ side: 'left', className: 'white-diary-shorts-left', src: 'https://www.youtube.com/embed/sOwlwlf3Jd0', title: '고양이 #shorts' }],
   },
   {
     copySide: 'right',
@@ -1168,7 +1379,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '가당찮은 소리죠? 압니다...',
     ],
     photos: [],
-    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-8', src: 'https://www.youtube.com/embed/WbBM_K6f2wQ', title: '시간이 흘러' }],
+    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-8', src: 'https://www.youtube.com/embed/Y55GEgkmuS8', title: '누 #shorts' }],
   },
   {
     copySide: 'right',
@@ -1229,7 +1440,289 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
   },
 ];
 
-function WhiteDiaryArchivePage() {
+const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] }> = [
+  {
+    lines: [
+      'Every year, I find myself wishing',
+      'I could just hide away all summer',
+      'in an old countryside house.',
+      '',
+      'I picture myself',
+      'lying on the wooden floor,',
+      'passing the time',
+      'listening to the hum of cicadas',
+      'and the rush of the wind',
+      'shaking through the forest.',
+      'Doing nothing but blinking.',
+      '',
+      'Then, as twilight falls,',
+      'I’d head out for a night walk',
+      'to spot fireflies.',
+      '',
+      'Have you ever seen a firefly?',
+      "I haven't.",
+      'Or at least, I have no memory of it,',
+      "which pretty much means I haven't.",
+    ],
+  },
+  {
+    lines: [
+      'It’s something I always dream of,',
+      'yet I’ve never',
+      'spent a summer that way.',
+      '',
+      'So, I decided to create it.',
+      '',
+      'Even if it’s not based on a fact,',
+      'I believe a memory is something',
+      'you can build.',
+    ],
+  },
+  {
+    lines: [
+      'If the day comes when I',
+      'finally get to be in that place',
+      'just as I’ve always wanted,',
+      'I’d love to put this album on',
+      'and compare.',
+      '',
+      'To see',
+      'if it’s anything like I imagined.',
+      '',
+      '',
+      '2026. 7. 31.',
+    ],
+  },
+  {
+    lines: [
+      'Hello.',
+      '',
+      'I’m truly overwhelmed with emotion',
+      'to finally release my first EP.',
+      'If I were to say that, even just a',
+      'few years ago, I never imagined',
+      'this day would come...',
+      'Well, I couldn’t say that',
+      'even as a joke. I always knew',
+      'this day would come, because I’ve',
+      'spent my whole life thinking,',
+      '"I have to keep making music"~',
+      '',
+      'Yet, I find myself wondering why',
+      'this moment feels so exceptionally',
+      'special. Will the second or third EP',
+      'feel any less special?',
+      "I don't think so, either.",
+    ],
+  },
+  {
+    lines: [
+      "Taste changes so often, doesn't it?",
+      'I used to love the color blue,',
+      'but now I prefer green.',
+      'I used to hate milk tea, but now',
+      'I’ve grown to love it.',
+      'And I always dislike spring.',
+      'Just a single gust of wind makes me',
+      'sneeze about ten times... haha',
+      'And for some reason,',
+      'the spring sunlight makes me feel',
+      'a bit nauseous, so I’m not a fan.',
+      '',
+      'But there are also many things',
+      'I love unconditionally.',
+      'One of them is the word ‘eternity’.',
+      'I just love that word.',
+    ],
+  },
+  {
+    lines: [
+      'I even had the arrogant thought,',
+      '"It would be so much easier if I',
+      'just liked things that were',
+      'perfect from the very start", haha',
+      'Even though I know myself well enough',
+      'to know that if they were perfect,',
+      'they wouldn’t catch my eye in the first place.',
+      'Writing it out like this makes me worry',
+      'that I might seem like someone with a',
+      'twisted taste who only loves weak and',
+      "imperfect things, but that's",
+      'not it at all...',
+      'They just appear that way,',
+      'but they are actually strong.',
+      'Strong enough to need none of my worries.',
+      'So, thinking that they were fragile was',
+      'completely my own misconception.',
+    ],
+    extraCopies: [
+      [
+        'Do you believe in eternity?',
+        "I'm on the side that wants to",
+        'believe in it. If you ask me whether',
+        'I actually believe in it or not,',
+        "honestly, I don't know. And until",
+        "recently, I didn't really know why",
+        'I wanted to believe in it so badly,',
+        'either.',
+        '',
+        'Last night, I gave it some thought.',
+        'Just lying quietly on my bed',
+        'in a dark room. And it hit me—I think',
+        'I wanted to believe in it',
+        'out of affection. Because I loved',
+        'those things. But whatever it was,',
+        'everything I loved seemed as though',
+        'it would crumble away someday.',
+        '',
+        "Maybe that scared me, and that's why",
+        'I wanted to believe that eternity exists.',
+        'Not that believing would make something',
+        'out of nothing, or keep what is',
+        'already there from disappearing.',
+      ],
+    ],
+  },
+  {
+    lines: [
+      'I know it too. That a person can’t live',
+      'inside a dream. We live in a reality',
+      'where things you just have to do are',
+      'constantly handed down to you, the moment',
+      'you take a breath.',
+      'Handed down? No, "thrown at you" would',
+      'probably be a better way to put it.',
+      '',
+      'Anyway, dealing with what’s in front of me',
+      'right now is already giving me a massive',
+      'headache, but then people go on about',
+      'what you need to do next,',
+      'what about next year,',
+      'what about ten years from now,',
+      'blah blah blah...',
+    ],
+    extraCopies: [
+      [
+        'How wonderful would it be if we could',
+        'live our lives doing only what we want',
+        'to do?',
+        'This is another thought I have all the',
+        'time, but adults always say that’s',
+        'impossible. They ask,',
+        '"How can anyone live doing only',
+        'the things they like?"',
+        '',
+        'Is that really true?',
+        "Do you think so too? Maybe it's just",
+        'my childish rebelliousness showing,',
+        'but I mean,',
+        "why shouldn't we be able to?",
+      ],
+    ],
+  },
+  {
+    lines: [
+      'Still, I hope that as choices expand',
+      'over time, a day will come when we',
+      "genuinely don't have to choose the things",
+      'we absolutely hate. If there’s only one',
+      'option, you have no choice but to pick it,',
+      'even if you utterly detest it.',
+      'Either that, or you stop.',
+      'Is stopping a choice too?',
+      'Either way, I just hate accepting things',
+      'like that...',
+      '',
+      "So, what I'm trying to say is—even if it's",
+      'not a life where we can just pick out',
+      'the strawberries from a strawberry cake',
+      'or the shrimp from a shrimp pasta',
+      '—I hope everyone can live without having',
+      'to do the things they truly cannot stand.',
+      "Wouldn't that mean less hating and",
+      'scratching at one another? And that’s how',
+      'we achieve world peace,',
+      'or even universe peace.',
+      '',
+      'Sounds ridiculous, right?',
+      'I know...',
+    ],
+  },
+  {
+    lines: [
+      'Still, it means I’ve gained one more way',
+      'to process things, so I guess that’s a',
+      'good thing. I just hope this attitude',
+      'sticks around for a long time.',
+      '',
+      'If I were to name one of my wishes,',
+      'it’s that I’d live my life with a bit',
+      'less urgency. And maybe stop',
+      'getting scared over nothing.',
+      'But then again, there’s probably no point',
+      'in pushing myself like this, right?',
+      'I wonder if even this is just me being greedy.',
+      '',
+      'Then should I just accept it?',
+      'But I really hate the thought of',
+      'doing that, too.',
+    ],
+    extraCopies: [
+      [
+        'I am a deeply greedy person,',
+        "but thankfully, I feel like I'm currently",
+        'living my life satisfying that greed',
+        'to a certain degree. At least for now.',
+        '',
+        'I have no idea what tomorrow will bring,',
+        'though. I cannot explain my life without',
+        "using the word 'aspiration.' Naturally,",
+        "I've broken down many times and lost",
+        'a lot along the way, but now I’ve come',
+        'to think that there must have been',
+        'a reason for it all. Though,',
+        "I don't always try to",
+        'sugarcoat it like that,,',
+      ],
+    ],
+  },
+  {
+    lines: [
+      'I want to go somewhere very far away.',
+      "There is still so much I don't know.",
+      "I don't necessarily want to know everything,",
+      "and even if I wander my whole life, there's",
+      "no way I'd ever figure it all out anyway...",
+      'So maybe',
+      "I shouldn't jump to conclusions?",
+      '',
+      "As I write this, it's June 22nd.",
+      'It had been hot for a while, but after a',
+      'few days of rain, it’s quite chilly today.',
+      'Watch out for the heat,',
+      'be careful not to catch a cold from the AC,',
+      "and if you're passing through a season",
+      "that isn't hot, please be careful",
+      'of other things.',
+      '',
+      'Like... what... well, take care of your health!',
+      'You have to be healthy to do anything, right?',
+      'And if you have the time,',
+      'it would be even better if you listened',
+      'to my songs ˘◡˘',
+      '',
+      'Thank you for reading this long letter.',
+      "I'll wrap it up here.",
+      'See you again!',
+    ],
+  },
+];
+
+type WhiteDiaryArchivePageProps = {
+  locale: Locale;
+};
+
+function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
   const [sceneScale, setSceneScale] = useState(1);
   const [diaryPage, setDiaryPage] = useState(0);
   const [isPageTurning, setIsPageTurning] = useState(false);
@@ -1243,7 +1736,10 @@ function WhiteDiaryArchivePage() {
 
   useEffect(() => {
     const updateScale = () => {
-      setSceneScale(Math.min(Math.max(window.innerWidth / whitePagesDesignWidth, window.innerHeight / whitePagesDesignHeight), 1));
+      setSceneScale(
+        Math.min(window.innerWidth / whitePagesDesignWidth, window.innerHeight / whitePagesDesignHeight, 1) *
+          whitePagesFitRatio,
+      );
     };
 
     updateScale();
@@ -1273,8 +1769,16 @@ function WhiteDiaryArchivePage() {
       {[{ side: page.copySide, className: page.copyClassName, lines: page.lines }, ...(page.extraCopies ?? [])]
         .filter((copyBlock) => visibleSides.includes(copyBlock.side))
         .map((copyBlock, copyIndex) => (
-          <div className={`white-diary-copy ${copyBlock.className ?? ''}`} key={`copy-${pageIndex}-${copyBlock.side}-${copyIndex}`}>
-            {copyBlock.lines.map((line, index) => (
+          <div
+            className={`white-diary-copy ${locale === 'en' ? 'is-en' : ''} ${copyBlock.className ?? ''}`}
+            key={`copy-${pageIndex}-${copyBlock.side}-${copyIndex}`}
+          >
+            {(locale === 'en'
+              ? copyIndex === 0
+                ? whiteDiaryEnglishLines[pageIndex]?.lines
+                : whiteDiaryEnglishLines[pageIndex]?.extraCopies?.[copyIndex - 1]
+              : copyBlock.lines
+            )?.map((line, index) => (
               <p key={`${pageIndex}-${copyIndex}-${index}`}>{line || '\u00a0'}</p>
             ))}
           </div>
@@ -1325,17 +1829,6 @@ function WhiteDiaryArchivePage() {
 
   return (
     <main className="white-diary-page">
-      <button
-        className="white-diary-back"
-        type="button"
-        aria-label="Back"
-        onClick={() => {
-          window.location.hash = '';
-        }}
-      >
-        <img src={asset('button-next.svg')} alt="" />
-      </button>
-
       <div
         className="white-diary-scale"
         style={{
@@ -1348,6 +1841,8 @@ function WhiteDiaryArchivePage() {
           style={{ transform: `scale(${sceneScale})` }}
           aria-label="White Diary"
         >
+          <HomeButton className="home-button-white-diary" />
+
           <img className="white-diary-book" src={asset('white-diary-book.png')} alt="" />
           <div className="white-diary-paper">
             <img src={asset('white-diary-paper.png')} alt="" />
@@ -1420,6 +1915,560 @@ function WhiteDiaryArchivePage() {
   );
 }
 
+function WhiteRecordPage() {
+  const [sceneScale, setSceneScale] = useState(1);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [durationSeconds, setDurationSeconds] = useState(whiteRecordMaxSeconds);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [pressedControl, setPressedControl] = useState<WhiteRecordControlId | null>(null);
+  const [activeAmbientPad, setActiveAmbientPad] = useState<WhiteRecordPadId | null>(null);
+  const [selectedRecordChoice, setSelectedRecordChoice] = useState<WhiteRecordChoiceId>('sunset');
+  const timerRef = useRef<number | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recorderChunksRef = useRef<Blob[]>([]);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioPlaybackContextRef = useRef<AudioContext | null>(null);
+  const ambientPlaybackContextRef = useRef<AudioContext | null>(null);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
+  const objectAudioRefs = useRef<Record<string, HTMLAudioElement>>({});
+  const discImageRef = useRef<HTMLImageElement | null>(null);
+  const recordedAudioUrlRef = useRef<string | null>(null);
+  const streamsRef = useRef<MediaStream[]>([]);
+  const elapsedSecondsRef = useRef(0);
+  const durationSecondsRef = useRef(whiteRecordMaxSeconds);
+  const shouldSaveRecordingRef = useRef(false);
+  const discAnimationFrameRef = useRef<number | null>(null);
+  const discLastFrameTimeRef = useRef<number | null>(null);
+  const discRotationRef = useRef(0);
+
+  const clearTimer = () => {
+    if (timerRef.current !== null) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const stopDiscSpin = () => {
+    if (discAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(discAnimationFrameRef.current);
+      discAnimationFrameRef.current = null;
+    }
+    discLastFrameTimeRef.current = null;
+  };
+
+  const applyDiscRotation = () => {
+    if (discImageRef.current) {
+      discImageRef.current.style.transform = `rotate(${discRotationRef.current}deg)`;
+    }
+  };
+
+  const setElapsed = (seconds: number) => {
+    const nextSeconds = Math.min(Math.max(0, seconds), durationSecondsRef.current);
+    elapsedSecondsRef.current = nextSeconds;
+    setElapsedSeconds(nextSeconds);
+  };
+
+  const setDuration = (seconds: number) => {
+    const nextSeconds = Math.min(Math.max(0, seconds), whiteRecordMaxSeconds);
+    durationSecondsRef.current = nextSeconds;
+    setDurationSeconds(nextSeconds);
+    if (elapsedSecondsRef.current > nextSeconds) {
+      setElapsed(nextSeconds);
+    }
+  };
+
+  const stopStreams = () => {
+    streamsRef.current.forEach((stream) => {
+      stream.getTracks().forEach((track) => track.stop());
+    });
+    streamsRef.current = [];
+  };
+
+  const closeAudioContext = () => {
+    if (audioContextRef.current) {
+      void audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+  };
+
+  const closePlaybackContext = (contextRef: { current: AudioContext | null }) => {
+    if (contextRef.current) {
+      void contextRef.current.close();
+      contextRef.current = null;
+    }
+  };
+
+  const stopAudioElement = () => {
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+      audioElementRef.current.currentTime = 0;
+      audioElementRef.current = null;
+    }
+    closePlaybackContext(audioPlaybackContextRef);
+  };
+
+  const stopAmbientAudio = () => {
+    if (ambientAudioRef.current) {
+      ambientAudioRef.current.pause();
+      ambientAudioRef.current.currentTime = 0;
+      ambientAudioRef.current = null;
+    }
+    closePlaybackContext(ambientPlaybackContextRef);
+  };
+
+  const stopObjectAudio = (objectId: string) => {
+    const audio = objectAudioRefs.current[objectId];
+    if (!audio) return;
+    audio.pause();
+    audio.currentTime = 0;
+  };
+
+  const stopAllObjectAudio = () => {
+    Object.values(objectAudioRefs.current).forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+  };
+
+  const playObjectAudio = (object: (typeof whiteRecordObjects)[number]) => {
+    let audio = objectAudioRefs.current[object.id];
+
+    if (!audio) {
+      audio = new Audio(asset(object.audio));
+      audio.preload = 'auto';
+      audio.loop = true;
+      audio.volume = 1;
+      objectAudioRefs.current[object.id] = audio;
+    }
+
+    audio.pause();
+    audio.currentTime = 0;
+    audio.loop = true;
+    void audio.play().catch(() => {
+      // Browsers can block audio until the first user gesture; the next hover/click will retry.
+    });
+  };
+
+  const clearRecordedAudio = () => {
+    if (recordedAudioUrlRef.current) {
+      URL.revokeObjectURL(recordedAudioUrlRef.current);
+      recordedAudioUrlRef.current = null;
+    }
+  };
+
+  const stopRecorder = () => {
+    const recorder = mediaRecorderRef.current;
+    if (recorder && recorder.state !== 'inactive') {
+      recorder.stop();
+    }
+  };
+
+  const resetRecordState = () => {
+    clearTimer();
+    stopAudioElement();
+    shouldSaveRecordingRef.current = false;
+    stopRecorder();
+    stopStreams();
+    closeAudioContext();
+    clearRecordedAudio();
+    recorderChunksRef.current = [];
+    mediaRecorderRef.current = null;
+    setIsPlaying(false);
+    setIsRecording(false);
+    setDuration(whiteRecordMaxSeconds);
+    setElapsed(0);
+  };
+
+  const cleanupWhiteRecordPage = () => {
+    resetRecordState();
+    stopAmbientAudio();
+    stopAllObjectAudio();
+    setActiveAmbientPad(null);
+  };
+
+  useEffect(() => {
+    const updateScale = () => {
+      setSceneScale(Math.min(window.innerWidth / whiteRecordDesignWidth, window.innerHeight / whiteRecordDesignHeight, 1));
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
+  useEffect(() => cleanupWhiteRecordPage, []);
+
+  useEffect(() => {
+    whiteRecordObjects.forEach((object) => {
+      const audio = new Audio(asset(object.audio));
+      audio.preload = 'auto';
+      audio.loop = true;
+      audio.volume = 1;
+      objectAudioRefs.current[object.id] = audio;
+      audio.load();
+    });
+
+    return () => {
+      stopAllObjectAudio();
+      objectAudioRefs.current = {};
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPlaying && !isRecording) {
+      stopDiscSpin();
+      applyDiscRotation();
+      return;
+    }
+
+    const spin = (timestamp: number) => {
+      if (discLastFrameTimeRef.current !== null) {
+        const elapsedMs = timestamp - discLastFrameTimeRef.current;
+        discRotationRef.current = (discRotationRef.current + elapsedMs * 0.12) % 360;
+        applyDiscRotation();
+      }
+
+      discLastFrameTimeRef.current = timestamp;
+      discAnimationFrameRef.current = window.requestAnimationFrame(spin);
+    };
+
+    stopDiscSpin();
+    discAnimationFrameRef.current = window.requestAnimationFrame(spin);
+    return stopDiscSpin;
+  }, [isPlaying, isRecording]);
+
+  const startTimer = (limitSeconds: number, onComplete?: () => void) => {
+    clearTimer();
+    timerRef.current = window.setInterval(() => {
+      const nextSeconds = elapsedSecondsRef.current + 1;
+      if (nextSeconds >= limitSeconds) {
+        setElapsed(limitSeconds);
+        clearTimer();
+        onComplete?.();
+        return;
+      }
+      setElapsed(nextSeconds);
+    }, 1000);
+  };
+
+  const playBoostedAudio = async (audio: HTMLAudioElement, contextRef: { current: AudioContext | null }) => {
+    closePlaybackContext(contextRef);
+
+    const AudioContextClass =
+      window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) {
+      await audio.play();
+      return;
+    }
+
+    const playbackContext = new AudioContextClass();
+    const source = playbackContext.createMediaElementSource(audio);
+    const gainNode = playbackContext.createGain();
+    gainNode.gain.value = whiteRecordPlaybackGain;
+    source.connect(gainNode).connect(playbackContext.destination);
+    contextRef.current = playbackContext;
+    await playbackContext.resume();
+    await audio.play();
+  };
+
+  const handlePlay = () => {
+    if (isRecording) return;
+
+    stopAudioElement();
+    setIsPlaying(true);
+
+    if (elapsedSecondsRef.current >= durationSecondsRef.current) {
+      setElapsed(0);
+    }
+
+    if (recordedAudioUrlRef.current) {
+      const audio = new Audio(recordedAudioUrlRef.current);
+      audio.volume = 1;
+      audio.currentTime = elapsedSecondsRef.current;
+      audioElementRef.current = audio;
+      void playBoostedAudio(audio, audioPlaybackContextRef);
+    }
+
+    startTimer(durationSecondsRef.current, () => {
+      stopAudioElement();
+      setIsPlaying(false);
+    });
+  };
+
+  const handlePause = () => {
+    clearTimer();
+    if (mediaRecorderRef.current?.state === 'recording') {
+      mediaRecorderRef.current.pause();
+    }
+    stopAudioElement();
+    setIsPlaying(false);
+  };
+
+  const finishRecording = (nextDuration: number) => {
+    clearTimer();
+    setDuration(nextDuration);
+    setElapsed(0);
+    setIsPlaying(false);
+    setIsRecording(false);
+    shouldSaveRecordingRef.current = true;
+    stopRecorder();
+    closeAudioContext();
+  };
+
+  const handleStop = () => {
+    if (isRecording) {
+      finishRecording(Math.max(1, elapsedSecondsRef.current));
+    } else {
+      clearTimer();
+      stopAudioElement();
+      setIsPlaying(false);
+      setElapsed(0);
+    }
+  };
+
+  const addStreamToDestination = (context: AudioContext, destination: MediaStreamAudioDestinationNode, stream: MediaStream) => {
+    const audioTracks = stream.getAudioTracks();
+    if (audioTracks.length === 0) return false;
+
+    const audioOnlyStream = new MediaStream(audioTracks);
+    context.createMediaStreamSource(audioOnlyStream).connect(destination);
+    return true;
+  };
+
+  const handleRecord = async () => {
+    if (isRecording) return;
+
+    resetRecordState();
+
+    try {
+      const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamsRef.current.push(micStream);
+
+      const systemStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
+      });
+      systemStream.getVideoTracks().forEach((track) => track.stop());
+      streamsRef.current.push(systemStream);
+
+      if (systemStream.getAudioTracks().length === 0) {
+        throw new Error('화면 공유 창에서 오디오 공유를 켜주세요.');
+      }
+
+      const AudioContextClass =
+        window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioContextClass) {
+        throw new Error('AudioContext is not available in this browser.');
+      }
+      const audioContext = new AudioContextClass();
+      const destination = audioContext.createMediaStreamDestination();
+      audioContextRef.current = audioContext;
+
+      const hasMicAudio = addStreamToDestination(audioContext, destination, micStream);
+      const hasSystemAudio = addStreamToDestination(audioContext, destination, systemStream);
+
+      if (!hasMicAudio && !hasSystemAudio) {
+        throw new Error('No audio input was available.');
+      }
+
+      const recorder = new MediaRecorder(destination.stream);
+      mediaRecorderRef.current = recorder;
+      recorderChunksRef.current = [];
+
+      recorder.addEventListener('dataavailable', (event) => {
+        if (event.data.size > 0) {
+          recorderChunksRef.current.push(event.data);
+        }
+      });
+
+      recorder.addEventListener('stop', () => {
+        if (shouldSaveRecordingRef.current && recorderChunksRef.current.length > 0) {
+          clearRecordedAudio();
+          const blob = new Blob(recorderChunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+          recordedAudioUrlRef.current = URL.createObjectURL(blob);
+        }
+        shouldSaveRecordingRef.current = false;
+        stopStreams();
+      });
+
+      setDuration(whiteRecordMaxSeconds);
+      setElapsed(0);
+      setIsRecording(true);
+      recorder.start();
+      startTimer(whiteRecordMaxSeconds, () => finishRecording(whiteRecordMaxSeconds));
+    } catch (error) {
+      resetRecordState();
+      window.alert(
+        error instanceof Error
+          ? `녹음을 시작할 수 없어요. 마이크 권한과 화면/시스템 오디오 공유를 확인해주세요.\n${error.message}`
+          : '녹음을 시작할 수 없어요. 마이크 권한과 화면/시스템 오디오 공유를 확인해주세요.',
+      );
+    }
+  };
+
+  const handleReset = () => {
+    resetRecordState();
+  };
+
+  const handleControlClick = (controlId: WhiteRecordControlId) => {
+    if (controlId === 'play') handlePlay();
+    if (controlId === 'pause') handlePause();
+    if (controlId === 'stop') handleStop();
+    if (controlId === 'record') void handleRecord();
+    if (controlId === 'reset') handleReset();
+  };
+
+  const getControlImage = (control: (typeof whiteRecordControls)[number]) => {
+    const isActive = control.id === 'record' ? isRecording : pressedControl === control.id;
+    return isActive ? control.activeImage : control.image;
+  };
+
+  const selectedChoice = whiteRecordChoices.find((choice) => choice.id === selectedRecordChoice) ?? whiteRecordChoices[0];
+
+  const handleAmbientPadClick = (pad: (typeof whiteRecordPads)[number]) => {
+    if (activeAmbientPad === pad.id) {
+      stopAmbientAudio();
+      setActiveAmbientPad(null);
+      return;
+    }
+
+    stopAmbientAudio();
+    const audio = new Audio(asset(pad.audio));
+    audio.loop = true;
+    audio.volume = 1;
+    audio.currentTime = 0;
+    ambientAudioRef.current = audio;
+    setActiveAmbientPad(pad.id);
+    void playBoostedAudio(audio, ambientPlaybackContextRef).catch(() => {
+      stopAmbientAudio();
+      setActiveAmbientPad(null);
+    });
+  };
+
+  return (
+    <main className="white-record-page">
+      <div
+        className="white-record-scale"
+        style={{
+          width: whiteRecordDesignWidth * sceneScale,
+          height: whiteRecordDesignHeight * sceneScale,
+        }}
+      >
+        <section className="white-record-scene" style={{ transform: `scale(${sceneScale})` }} aria-label="White Record">
+          <HomeButton className="home-button-white-record" />
+
+          <div className="white-record-title-badge">
+            <span>WHITE RECORD</span>
+          </div>
+
+          <div className="white-record-transport" aria-label="White Record player controls">
+            <div className="white-record-time" aria-label="Recording time">
+              <span>{formatRecordTime(elapsedSeconds)}</span>
+              <span>/</span>
+              <span>{formatRecordTime(durationSeconds)}</span>
+            </div>
+            <div className="white-record-control-group">
+              {whiteRecordControls.map((control) => (
+                <button
+                  className="white-record-control"
+                  type="button"
+                  aria-label={control.label}
+                  aria-pressed={control.id === 'record' ? isRecording : undefined}
+                  key={control.id}
+                  onPointerDown={() => setPressedControl(control.id)}
+                  onPointerLeave={() => {
+                    if (control.id !== 'record') setPressedControl(null);
+                  }}
+                  onPointerUp={() => {
+                    if (control.id !== 'record') setPressedControl(null);
+                  }}
+                  onClick={() => handleControlClick(control.id)}
+                >
+                  <img src={asset(getControlImage(control))} alt="" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="white-record-object-layer" aria-label="White Record objects">
+            {whiteRecordObjects.map((object) => (
+              <button
+                className={`white-record-object ${object.className}`}
+                type="button"
+                aria-label={object.label}
+                key={object.id}
+                onPointerEnter={() => playObjectAudio(object)}
+                onPointerLeave={() => stopObjectAudio(object.id)}
+                onFocus={() => playObjectAudio(object)}
+                onBlur={() => stopObjectAudio(object.id)}
+              >
+                <img className="white-record-object-image-off" src={asset(object.offImage)} alt="" />
+                <img className="white-record-object-image-on" src={asset(object.onImage)} alt="" />
+              </button>
+            ))}
+          </div>
+
+          <section className="white-record-player" aria-label="White Record main part">
+            <img className="white-record-turntable-base" src={asset('white-record-turntable-base.png')} alt="" />
+            <img
+              className="white-record-disc"
+              ref={discImageRef}
+              src={asset(selectedChoice.discImage)}
+              alt=""
+            />
+            <div className="white-record-tonearm">
+              <img src={asset('white-record-tonearm.png')} alt="" />
+            </div>
+          </section>
+
+          <div className="white-record-choice-panel" aria-label="Choose one">
+            <div className="white-record-choice-title">Choose one!</div>
+            <div className="white-record-choice-list">
+              {whiteRecordChoices.map((choice) => {
+                const isSelected = selectedRecordChoice === choice.id;
+
+                return (
+                  <button
+                    className={`white-record-choice${isSelected ? ' is-active' : ''}`}
+                    type="button"
+                    aria-label={choice.label}
+                    aria-pressed={isSelected}
+                    key={choice.id}
+                    onClick={() => setSelectedRecordChoice(choice.id)}
+                  >
+                    <img src={asset(isSelected ? choice.activeImage : choice.image)} alt="" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="white-record-pad-row" aria-label="White Record pads">
+            {whiteRecordPads.map((pad, index) => {
+              const isActive = activeAmbientPad === pad.id;
+
+              return (
+              <button
+                className={`white-record-pad white-record-pad-${index + 1}${isActive ? ' is-active' : ''}`}
+                type="button"
+                aria-label={pad.label}
+                aria-pressed={isActive}
+                key={pad.id}
+                onClick={() => handleAmbientPadClick(pad)}
+              >
+                <img src={asset(isActive ? pad.activeImage : pad.image)} alt="" />
+              </button>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
 type FooterProps = {
   locale: Locale;
 };
@@ -1473,6 +2522,7 @@ export default function App() {
   const [locale, setLocale] = useState<Locale>('ko');
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<AppPage>(() => {
+    if (window.location.hash === '#lp') return 'lp';
     if (window.location.hash === '#jangma') return 'jangma';
     if (window.location.hash === '#camera') return 'track';
     if (window.location.hash === '#diary') return 'diary';
@@ -1505,6 +2555,10 @@ export default function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
+      if (window.location.hash === '#lp') {
+        setCurrentPage('lp');
+        return;
+      }
       if (window.location.hash === '#jangma') {
         setCurrentPage('jangma');
         return;
@@ -1540,18 +2594,22 @@ export default function App() {
   const handleInternalNavigation = (href: string) => {
     showPageLoading(() => {
       window.location.hash = href;
-      setCurrentPage(href === '#jangma' ? 'jangma' : href === '#camera' ? 'track' : href === '#diary' ? 'diary' : 'main');
+      setCurrentPage(
+        href === '#lp' ? 'lp' : href === '#jangma' ? 'jangma' : href === '#camera' ? 'track' : href === '#diary' ? 'diary' : 'main',
+      );
     });
   };
 
   return (
     <>
-      {currentPage === 'jangma' ? (
+      {currentPage === 'lp' ? (
+        <WhiteRecordPage />
+      ) : currentPage === 'jangma' ? (
         <JangmaPage locale={locale} />
       ) : currentPage === 'track' ? (
         <TrackArchivePage locale={locale} />
       ) : currentPage === 'diary' ? (
-        <WhiteDiaryArchivePage />
+        <WhiteDiaryArchivePage locale={locale} />
       ) : (
         <main className="page-shell" aria-busy={isLoading}>
           <div className="main-frame">
@@ -1563,7 +2621,9 @@ export default function App() {
                 <p>Welcome to White Record!</p>
               </header>
 
-              <HeroObjects onNavigate={handleInternalNavigation} />
+              <div className="hero-stage-center">
+                <HeroObjects onNavigate={handleInternalNavigation} />
+              </div>
             </div>
 
             <Footer locale={locale} />
