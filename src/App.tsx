@@ -116,6 +116,7 @@ const jangmaFitRatio = 0.94;
 const jangmaContentCenterX = (149 + 1726) / 2;
 const jangmaDragMinLeft = 420;
 const stillFrameWidth = 924;
+const mobileStillFrameWidth = 329;
 const trackArchiveDesignWidth = 1920;
 const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
@@ -577,6 +578,7 @@ function JangmaPage({ locale }: JangmaPageProps) {
     startTop: number;
   } | null>(null);
   const activeWindow = openWindows[openWindows.length - 1] ?? null;
+  const isMobile = useIsMobileViewport();
 
   useEffect(() => {
     const updateScale = () => {
@@ -677,6 +679,109 @@ function JangmaPage({ locale }: JangmaPageProps) {
       snapStillTo(currentStill + (dragDistance > 0 ? -1 : 1));
     }
   };
+
+  const handleMobileStillPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (stillDragStartX.current === null) return;
+    const nextOffset = event.clientX - stillDragStartX.current;
+    if (Math.abs(nextOffset) > 8) {
+      stillDidDrag.current = true;
+    }
+    setStillDragOffset(nextOffset);
+  };
+
+  const handleMobileStillPointerEnd = (event: PointerEvent<HTMLDivElement>) => {
+    if (stillDragStartX.current === null) return;
+    const dragDistance = event.clientX - stillDragStartX.current;
+    stillDragStartX.current = null;
+    setStillDragOffset(0);
+    setIsStillDragging(false);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+
+    const stepCount = Math.round(-dragDistance / mobileStillFrameWidth);
+    if (stepCount !== 0) {
+      snapStillTo(currentStill + stepCount);
+      return;
+    }
+
+    if (Math.abs(dragDistance) > 48) {
+      snapStillTo(currentStill + (dragDistance > 0 ? -1 : 1));
+    }
+  };
+
+  if (isMobile) {
+    return (
+      <main className="jangma-mobile-page">
+        <section className="jangma-mobile-scene" aria-label="Jangma">
+          <img className="jangma-mobile-bg" src={asset('jangma-bg.png')} alt="" />
+          <HomeButton className="home-button-jangma-mobile" variant="light" />
+
+          <section className="jangma-mobile-profile-card" aria-label="Jangma profile">
+            <img src={asset('jangma-profile.png')} alt="Jangma profile" />
+            <p>Jangma</p>
+          </section>
+
+          <section className="jangma-mobile-window jangma-mobile-stills-window" aria-label="Music Video Stills">
+            <header className="jangma-mobile-window-bar">
+              <span>Muisic Video Stills</span>
+            </header>
+            <div
+              className={`jangma-mobile-stills-body${isStillDragging ? ' is-dragging' : ''}`}
+              onPointerDown={handleStillPointerDown}
+              onPointerMove={handleMobileStillPointerMove}
+              onPointerUp={handleMobileStillPointerEnd}
+              onPointerCancel={handleMobileStillPointerEnd}
+            >
+              <div className="jangma-mobile-stills-viewport">
+                <div
+                  className="jangma-mobile-stills-track"
+                  style={{ transform: `translateX(${-currentStill * mobileStillFrameWidth + stillDragOffset}px)` }}
+                >
+                  {jangmaStills.map((still) => (
+                    <img src={asset(still)} alt="" key={still} />
+                  ))}
+                </div>
+              </div>
+              <div className="jangma-mobile-stills-dots" aria-hidden="true">
+                {jangmaStills.map((still, index) => (
+                  <span className={index === currentStill ? 'is-active' : ''} key={still} />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="jangma-mobile-window jangma-mobile-intro-window" aria-label="Jangma intro">
+            <header className="jangma-mobile-window-bar">
+              <span>Jangma</span>
+            </header>
+            <div className="jangma-mobile-intro-body">
+              {copy[locale].jangmaIntro.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </section>
+
+          <section className="jangma-mobile-window jangma-mobile-playlist-window" aria-label="Playlist">
+            <header className="jangma-mobile-window-bar">
+              <span>Playlist</span>
+            </header>
+            <div className="jangma-mobile-playlist-body">
+              {playlistItems.map((item) => (
+                <a className="jangma-mobile-playlist-row" href={item.link} target="_blank" rel="noreferrer" key={item.enTitle}>
+                  <span className="jangma-mobile-playlist-row-inner">
+                    <span>
+                      <img src={asset(item.image)} alt="" />
+                      <span className="jangma-mobile-playlist-title">{item.koTitle}</span>
+                    </span>
+                    <span className="jangma-mobile-playlist-time">{item.time}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="jangma-page">
@@ -823,6 +928,7 @@ type TrackArchivePageProps = {
 };
 
 function TrackArchivePage({ locale }: TrackArchivePageProps) {
+  const isMobile = useIsMobileViewport();
   const [trackMode, setTrackMode] = useState<TrackArchiveMode>('mv');
   const [selectedLyricTrack, setSelectedLyricTrack] = useState('01');
   const [expandedLyricImageIndex, setExpandedLyricImageIndex] = useState<number | null>(null);
@@ -971,6 +1077,198 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
     };
   });
   const sceneHeight = trackArchiveDesignHeight + 832;
+
+  if (isMobile) {
+    const isLyricMode = trackMode === 'lyric';
+    const mobileLyricPhotoTop = 1034;
+    const mobilePhotoGridHeight = activeLyricImages.length * 258 + Math.max(activeLyricImages.length - 1, 0) * 24;
+    const mobileMvPhotoTop = 1994;
+    const mobileMvPhotoGridHeight = mvImages.length * 258 + Math.max(mvImages.length - 1, 0) * 24;
+    const mobileSceneHeight = isLyricMode
+      ? mobileLyricPhotoTop + 43 + 24 + mobilePhotoGridHeight + 48
+      : mobileMvPhotoTop + 43 + 24 + mobileMvPhotoGridHeight + 48;
+    const activePlaceCards = isLyricMode
+      ? activeLyricTrack.places.map((place) => ({
+          title: locale === 'ko' ? place.koName : place.enName,
+          description: locale === 'ko' ? place.koDescription : place.enDescription,
+        }))
+      : pageCopy.mvPlaces;
+
+    return (
+      <main className="track-archive-mobile-page">
+        <section className="track-archive-mobile-scene" style={{ minHeight: mobileSceneHeight }} aria-label="Track Archive">
+          <HomeButton className="home-button-track-mobile" />
+
+          <div className="track-archive-mobile-title">
+            <span>TRACK ARCHIVE</span>
+          </div>
+
+          <nav className="track-archive-mobile-tabs" aria-label="Track archive mode">
+            <button
+              className={`track-archive-mobile-tab ${trackMode === 'mv' ? 'is-active' : ''}`}
+              type="button"
+              onClick={() => {
+                setTrackMode('mv');
+                setExpandedLyricImageIndex(null);
+              }}
+            >
+              MV
+            </button>
+            <button
+              className={`track-archive-mobile-tab ${trackMode === 'lyric' ? 'is-active' : ''}`}
+              type="button"
+              onClick={() => setTrackMode('lyric')}
+            >
+              Lyric Video
+            </button>
+          </nav>
+
+          <div className="track-archive-mobile-video">
+            <iframe
+              src={activeVideoSource}
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+
+          {isLyricMode ? (
+            <>
+              <nav className="track-archive-mobile-song-list" aria-label="Lyric video tracks">
+                {lyricTracks.map((track) => (
+                  <button
+                    className={`track-archive-mobile-wide-button ${selectedLyricTrack === track.id ? 'is-active' : ''}`}
+                    type="button"
+                    key={track.id}
+                    onClick={() => {
+                      setSelectedLyricTrack(track.id);
+                      setExpandedLyricImageIndex(null);
+                    }}
+                  >
+                    {locale === 'ko' ? track.koTitle : track.enTitle}
+                  </button>
+                ))}
+              </nav>
+
+              <div className="track-archive-mobile-place-list track-archive-mobile-place-list-lyric">
+                {activePlaceCards.map((place) => (
+                  <section className="track-archive-mobile-card" key={place.title}>
+                    <h2>{place.title}</h2>
+                    <p>{place.description}</p>
+                  </section>
+                ))}
+              </div>
+
+              <section
+                className="track-archive-mobile-photo-section"
+                style={{ top: mobileLyricPhotoTop }}
+                aria-label="Lyric video photos"
+              >
+                <h2>Photo</h2>
+                <div className="track-archive-mobile-photo-list">
+                  {activeLyricImages.map((image, index) => (
+                    <button
+                      className={`track-archive-mobile-photo${image.isWideCrop ? ' is-wide-crop' : ''}${
+                        image.isTopCrop ? ' is-top-crop' : ''
+                      }`}
+                      type="button"
+                      key={image.src}
+                      onClick={() => setExpandedLyricImageIndex(index)}
+                    >
+                      <img src={image.src} alt={image.alt} />
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </>
+          ) : (
+            <>
+              <section className="track-archive-mobile-album">
+                <h2>White Record</h2>
+                <div>
+                  <p>
+                    {pageCopy.albumTitle[0]}
+                    <br />
+                    {pageCopy.albumTitle[1]}
+                  </p>
+                  <ol>
+                    {pageCopy.tracks.slice(0, 4).map((track) => (
+                      <li key={track}>{track}</li>
+                    ))}
+                    <li>
+                      {pageCopy.tracks[4]}
+                      <br />
+                      <span>(Inst.)</span>
+                    </li>
+                  </ol>
+                </div>
+              </section>
+
+              <section className="track-archive-mobile-track-detail-list" aria-label="Track list">
+                {pageCopy.trackDetails.map(([title, description]) => (
+                  <div className="track-archive-mobile-card track-archive-mobile-track-detail" key={title}>
+                    <h2>{title}</h2>
+                    <p>{description}</p>
+                  </div>
+                ))}
+              </section>
+
+              <div className="track-archive-mobile-place-list track-archive-mobile-place-list-mv">
+                {activePlaceCards.map((place) => (
+                  <section className="track-archive-mobile-card" key={place.title}>
+                    <h2>{place.title}</h2>
+                    <p>{place.description}</p>
+                  </section>
+                ))}
+              </div>
+
+              <section className="track-archive-mobile-photo-section track-archive-mobile-photo-section-mv" aria-label="Music video photos">
+                <h2>Photo</h2>
+                <div className="track-archive-mobile-photo-list">
+                  {mvImages.map((image) => (
+                    <div className="track-archive-mobile-photo" key={image.src}>
+                      <img src={image.src} alt={image.alt} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
+
+          {expandedLyricImageIndex !== null ? (
+            <div
+              className="track-photo-modal track-photo-modal-mobile"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Enlarged lyric video photo"
+              onClick={() => setExpandedLyricImageIndex(null)}
+            >
+              <div className="track-photo-modal-window" onClick={(event) => event.stopPropagation()}>
+                <div className="track-photo-modal-bar">
+                  <span>Photo</span>
+                  <button type="button" aria-label="Close photo" onClick={() => setExpandedLyricImageIndex(null)}>
+                    <img src={asset('window-close.svg')} alt="" />
+                  </button>
+                </div>
+                <div className="track-photo-modal-body">
+                  <div className="track-photo-modal-image-frame">
+                    <img
+                      className={`${activeLyricImages[expandedLyricImageIndex].isWideCrop ? 'is-wide-crop' : ''}${
+                        activeLyricImages[expandedLyricImageIndex].isTopCrop ? ' is-top-crop' : ''
+                      }`}
+                      src={activeLyricImages[expandedLyricImageIndex].src}
+                      alt={activeLyricImages[expandedLyricImageIndex].alt}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="track-archive-page">
@@ -1279,7 +1577,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '그렇지도 않을 것 같은데.',
     ],
     photos: [],
-    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-4', src: 'https://www.youtube.com/embed/6cqMBKg33iA', title: '간질간질 #shorts' }],
+    embeds: [{ side: 'right', className: 'white-diary-shorts-right-page-4', src: 'https://www.youtube.com/embed/BS-2oZrYJng', title: '간질간질 #shorts' }],
   },
   {
     copySide: 'right',
@@ -1294,7 +1592,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
     ],
     photos: [{ src: 'white-diary-photo-rivergrass.png', className: 'white-diary-photo-rivergrass', side: 'right' }],
     stickers: [{ className: 'white-diary-tape-gold-rivergrass', side: 'right' }],
-    embeds: [{ side: 'left', className: 'white-diary-shorts-left', src: 'https://www.youtube.com/embed/sOwlwlf3Jd0', title: '고양이 #shorts' }],
+    embeds: [{ side: 'left', className: 'white-diary-shorts-left', src: 'https://www.youtube.com/embed/JARChWvPmUo', title: '고양이 #shorts' }],
   },
   {
     copySide: 'right',
@@ -1718,6 +2016,192 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
   },
 ];
 
+const whiteDiaryMobileKoreanLines: Record<string, string[]> = {
+  '0-left': [
+    '시골 고택에 혼자 콕 박혀서',
+    '여름을 보내고 싶다는 생각을',
+    '매년 해요.',
+    '',
+    '마룻바닥에 누워서 매미 소리, 바람에',
+    '숲이 와르르 흔들리는 소리 같은 걸',
+    '들으며 시간을 보내는 거예요. 눈 깜빡',
+    '이는 것 외에는 아무것도 안 하면서.',
+    '',
+    '그러다 밖이 어스름해지면',
+    '반딧불을 보러 밤 산책을 나가고요.',
+    '',
+    '반디 본 적 있으세요? 저는 없거든요...',
+    '기억에 없으니까 없는 게 맞을 거예요.',
+  ],
+  '1-right': [
+    '늘 바라는데 한 번도 그런 식으로',
+    '여름을 나본 적이 없어요.',
+    '',
+    '그래서 만들어 보려고요.',
+    '',
+    '기억은 사실이 아니어도',
+    '만들 수 있다고 생각해요.',
+  ],
+  '2-left': [
+    '언젠가 바라는 대로 있을 수 있게 되면',
+    '이 앨범을 틀어놓고 비교해 보고',
+    '싶어요.',
+    '',
+    '상상하던 거랑 비슷한가 하고.',
+    '',
+    '',
+    '2026.  7.  31.',
+  ],
+  '3-left': [
+    '안녕하세요.',
+    ' ',
+    '첫 EP라니 정말이지 감개가 무량합니다.',
+    '몇 년 전까지만 해도 이런 날이 올 줄은',
+    '몰랐...다는 말은 농담으로도',
+    '못 하겠고요.',
+    '이런 날이 올 줄은 알고 있었죠',
+    '계속 음악을 해야겠다고 생각하며',
+    '살았으니까요~',
+    '',
+    '그런데도 지금이 유달리 특별하게',
+    '느껴지는 건 대체 왜일까 싶습니다.',
+    '두 번째, 세 번째에는 덜 특별할까요?',
+    '그렇지도 않을 것 같은데.',
+  ],
+  '4-right': [
+    '취향은 자주 바뀌잖아요.',
+    '저는 파란색을 좋아했었는데,',
+    '지금은 초록이 더 좋아요.',
+    '밀크티를 싫어했었는데 좋아하게 됐고. 또 봄은 늘상 싫어요. 바람 한 번에',
+    '재채기를 열 번쯤 하게 돼서요...ㅋㅋㅋ',
+    '봄볕도 왠지 속이 메슥거려서',
+    '별로던데요.',
+    '',
+    '한결같이 좋아하는 것도 많아요.',
+    '그중 하나가 ‘영원’이에요.',
+    '그 말이 좋아요.',
+  ],
+  '5-left': [
+    '영원을 믿으세요?',
+    '전 믿고 싶은 쪽이에요. 믿는지,',
+    '안 믿는지만 따지면 어느 쪽인지 솔직히 모르겠어요. 그동안은 왜 믿고 싶은지도',
+    '잘 몰랐고요.',
+    '',
+    '어젯밤에 생각을 해 봤거든요?',
+    '불 꺼진 방 침대 위에 가만히 누워서요.',
+    '생각해 봤는데, 애정이 있어서',
+    '믿고 싶었나 봐요. 좋아서. 그런데',
+    '뭐가 됐든 제가 좋아하는 건 다',
+    '언젠가는 스러질 것 같이 보이더라고요.',
+    '',
+    '그게 무서워서 영원이 있다고',
+    '믿고 싶었나 봐요.',
+    '',
+  ],
+  '5-right': [
+    '그런다고 없는 게 있게 되고',
+    '있는 게 없어지지 않을 텐데.',
+    '',
+    '또 처음부터 완전한 걸 좋아하면',
+    '편할 텐데 하고 오만한 생각도',
+    '했어요 ㅋㅋㅋ막상 그러면 또 눈길이 안 가는 걸 알면서도요.',
+    '',
+    '이렇게 써 놓으니 제가 무슨 약하고 불완전한 것만 사랑하는 취향 고약한 사람으로 비칠까 걱정도 되는데',
+    '그렇지도 않아요... 그렇게 보일',
+    '뿐이지 사실 강하더라고요. 걱정',
+    '따위는 필요 없을 만큼. 그러니까',
+    '불안하다고 생각한 건 전부 다',
+    '제 착각이었던 거죠.',
+  ],
+  '6-left': [
+    '하고 싶은 일만 하며 살 수 있으면',
+    '얼마나 좋을까. 이것도 매번 하는 생각 중 하난데, 어른들은 그럴 수 없다고',
+    '그러잖아요. 어떻게 좋아하는 일만 하며 살겠냐면서.',
+    '',
+    '정말 그런가? 그렇게 생각하세요?',
+    '제가 아직 덜 자라 반발심이라도',
+    '있는 건진 모르겠지만 왜 그럴 수',
+    '없겠어요?',
+    '',
+  ],
+  '6-right': [
+    '저도 알죠. 사람이 꿈속에 살 수 없다는 걸. 숨만 쉬어도 해야 할 일이 턱턱 주어지는 현실이잖아요.',
+    '주어진다? 던져진다는 표현이',
+    '더 맞겠어요.',
+    '',
+    '아무튼 지금 것만 해도 머리 아파',
+    '죽겠는데 다음에는 뭘 해야 하고,',
+    '내년에는, 십 년 뒤에는',
+    '어쩌고 저쩌고... ',
+  ],
+  '7-left': [
+    '그래도 선택지가 점점 더 늘어나서',
+    '언젠가 정말 싫은 건 고르지 않아도',
+    '되는 날이 오면 좋겠어요. 선택지가',
+    '하나밖에 없으면 그게 정말 정말 싫어도 고를 수밖에 없잖아요.',
+    '아니면 멈추거나. 멈추는 것도',
+    '선택인가요. 무튼 전 그런 걸',
+    '받아들이기 싫다고요...',
+    '그러니까 제가 하고 싶은 말은',
+    '딸기 케이크에 딸기만, 새우 파스타의 새우만 쏙쏙 뽑아먹는 그런 삶이',
+    '아니더라도 다들 정말 못 견디겠는 건 안 하며 살 수 있으면 좋겠다,',
+    '그 말이에요. 그럼 서로 미워하고',
+    '할퀼 일도 줄어들지 않겠어요. 그렇게 세계 평화, 우주 평화가 이루어지고.',
+    '가당찮은 소리죠? 압니다...',
+  ],
+  '8-left': [
+    '저는 욕심이 정말 많은데, 감사하게도 지금은 그 욕심을 어느 정도 선까지는 해소하며 살고 있는 것 같아요.',
+    '일단 지금은요.',
+    '',
+    '내일은 또 어떻게 될지 모르겠네요.',
+    '열망이란 말 없이는 제 인생을',
+    '설명할 수가 없어요.',
+    '당연히 부러진 적도 많고, 잃은 것도',
+    '많은데 이제는 이유가 있었겠거니',
+    '생각하게 됐어요. 늘 그런 식으로',
+    '포장하지는 않고요,,',
+    '',
+  ],
+  '8-right': [
+    '그래도 소화하는 방법이 하나 더',
+    '생긴 셈이니 좋은 거죠. 이 태도가 오래 가주면 좋으련만.',
+    '',
+    '바람 중 하나인데 저는 제가 좀',
+    '덜 급하게 살면 좋겠어요. 지레',
+    '겁먹는 것도 그만 좀 하고.',
+    '근데 이렇게 스스로를 다그쳐봤자',
+    '좋을 게 없겠죠?',
+    '이것도 제 욕심일까요.',
+    '',
+    '그럼 그냥 받아들여야 하나.',
+    '그러긴 또 싫은데.',
+  ],
+  '9-right': [
+    '아주 멀리까지 가고 싶어요.',
+    '모르는 게 너무 많아요.',
+    '다 알고 싶지는 않은데 평생을',
+    '헤매더라도 다 알게 될 리 없고...',
+    '단정 짓지 말까요?',
+    '',
+    '이 글을 쓰고 있는 지금은 6월 22일',
+    '입니다. 한동안 쭉 더웠는데, 요 며칠 비가 오더니 오늘은 또 서늘하네요.',
+    '더위 조심하시고, 냉방병 조심하시고. 덥지 않은 계절을 지나고 계시면',
+    '다른 걸 조심하시고요.',
+    '',
+    '',
+  ],
+  '9-right-final': [
+    '가령... 뭘... 그래 건강을',
+    '챙기세요!',
+    '건강해야 뭐든 할 수 있잖아요.',
+    '여유 될 때 제 노래도 들어주시면',
+    '더 더 좋고요 ㅋㅋㅋ',
+    '',
+    '긴 글 읽어주셔서 감사합니다.',
+    '이만 줄일게요. 또 봐요!',
+  ],
+};
+
 type WhiteDiaryArchivePageProps = {
   locale: Locale;
 };
@@ -1725,8 +2209,10 @@ type WhiteDiaryArchivePageProps = {
 function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
   const [sceneScale, setSceneScale] = useState(1);
   const [diaryPage, setDiaryPage] = useState(0);
+  const [mobileDiaryPage, setMobileDiaryPage] = useState(0);
   const [isPageTurning, setIsPageTurning] = useState(false);
   const [turnDirection, setTurnDirection] = useState<'next' | 'prev'>('next');
+  const isMobile = useIsMobileViewport();
   const [pageTransition, setPageTransition] = useState<{
     direction: 'next' | 'prev';
     nextPage: number;
@@ -1827,6 +2313,191 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
   const clickedSide = pageTransition?.direction === 'prev' ? 'left' : 'right';
   const stableSide = pageTransition?.direction === 'prev' ? 'right' : 'left';
 
+  if (isMobile) {
+    const inlineMobileMedia: Record<
+      string,
+      {
+        photos?: string[];
+        stickers?: string[];
+        embeds?: string[];
+      }
+    > = {
+      '4-right': {
+        photos: ['white-diary-photo-rivergrass'],
+        stickers: ['white-diary-tape-gold-rivergrass'],
+      },
+      '6-left': {
+        photos: ['white-diary-photo-water'],
+        stickers: ['white-diary-tape-pink-water-left', 'white-diary-tape-pink-water-right'],
+      },
+      '6-right': {
+        photos: ['white-diary-photo-curtain'],
+        stickers: ['white-diary-tape-pink-curtain'],
+      },
+      '8-left': {
+        photos: ['white-diary-photo-sun-tree'],
+        stickers: ['white-diary-tape-blue-sun-tree'],
+      },
+      '9-right': {
+        photos: ['white-diary-photo-forest-wide'],
+        stickers: ['white-diary-tape-green-forest-wide'],
+      },
+      '9-right-final': {
+        photos: ['white-diary-photo-window-vine'],
+        stickers: ['white-diary-tape-green-window-left', 'white-diary-tape-green-window-right'],
+      },
+    };
+    const inlinePhotoClasses = new Set(Object.values(inlineMobileMedia).flatMap((entry) => entry.photos ?? []));
+    const inlineStickerClasses = new Set(Object.values(inlineMobileMedia).flatMap((entry) => entry.stickers ?? []));
+    const inlineEmbedClasses = new Set(Object.values(inlineMobileMedia).flatMap((entry) => entry.embeds ?? []));
+    type MobileDiaryEntry =
+      | { kind: 'copy'; pageIndex: number; copyBlock: WhiteDiaryCopy; copyKey: string }
+      | { kind: 'media'; pageIndex: number; side: 'left' | 'right' };
+    const mobileEntries = whiteDiaryPages.flatMap<MobileDiaryEntry>((page, pageIndex) => {
+      const copyBlocks = [
+        { side: page.copySide, className: page.copyClassName, lines: page.lines },
+        ...(page.extraCopies ?? []),
+      ].sort((a, b) => (a.side === b.side ? 0 : a.side === 'left' ? -1 : 1));
+      const copyEntries = copyBlocks.flatMap<MobileDiaryEntry>((copyBlock) => {
+        const copyKey = `${pageIndex}-${copyBlock.side}`;
+        if (copyKey === '9-right') {
+          return [
+            { kind: 'copy' as const, pageIndex, copyBlock, copyKey: '9-right' },
+            { kind: 'copy' as const, pageIndex, copyBlock, copyKey: '9-right-final' },
+          ];
+        }
+        return [{ kind: 'copy' as const, pageIndex, copyBlock, copyKey }];
+      });
+      const mediaSides = (['left', 'right'] as const).filter((side) => {
+        const hasStandaloneMedia =
+          page.photos.some((photo) => photo.side === side && !inlinePhotoClasses.has(photo.className)) ||
+          (page.stickers ?? []).some((sticker) => sticker.side === side && !inlineStickerClasses.has(sticker.className)) ||
+          (page.embeds ?? []).some((embed) => embed.side === side && !inlineEmbedClasses.has(embed.className));
+        return hasStandaloneMedia;
+      });
+
+      return [
+        ...copyEntries,
+        ...mediaSides.map((side) => ({ kind: 'media' as const, pageIndex, side })),
+      ];
+    });
+    const mobileTotalPages = mobileEntries.length;
+    const mobileEntry = mobileEntries[Math.min(mobileDiaryPage, mobileTotalPages - 1)];
+    const mobileSpreadIndex = mobileEntry.pageIndex;
+    const mobileSide: 'left' | 'right' = mobileDiaryPage % 2 === 0 ? 'left' : 'right';
+    const mobilePage = whiteDiaryPages[mobileSpreadIndex];
+    const mobileCopies = mobileEntry.kind === 'copy' ? [mobileEntry.copyBlock] : [];
+    const contentSide = mobileEntry.kind === 'copy' ? mobileEntry.copyBlock.side : mobileEntry.side;
+    const inlineMedia = mobileEntry.kind === 'copy' ? inlineMobileMedia[mobileEntry.copyKey] : undefined;
+    const mobilePhotos =
+      mobileEntry.kind === 'copy'
+        ? mobilePage.photos.filter((photo) => inlineMedia?.photos?.includes(photo.className))
+        : mobilePage.photos.filter((photo) => photo.side === contentSide && !inlinePhotoClasses.has(photo.className));
+    const mobileStickers =
+      mobileEntry.kind === 'copy'
+        ? (mobilePage.stickers ?? []).filter((sticker) => inlineMedia?.stickers?.includes(sticker.className))
+        : (mobilePage.stickers ?? []).filter((sticker) => sticker.side === contentSide && !inlineStickerClasses.has(sticker.className));
+    const mobileEmbeds =
+      mobileEntry.kind === 'copy'
+        ? (mobilePage.embeds ?? []).filter((embed) => inlineMedia?.embeds?.includes(embed.className))
+        : (mobilePage.embeds ?? []).filter((embed) => embed.side === contentSide && !inlineEmbedClasses.has(embed.className));
+
+    return (
+      <main className="white-diary-mobile-page">
+        <section className={`white-diary-mobile-scene is-${mobileSide} mobile-diary-spread-${mobileSpreadIndex}`} aria-label="White Diary">
+          <HomeButton className="home-button-white-diary-mobile" variant={mobileSide === 'left' ? 'light' : 'dark'} />
+
+          <div className="white-diary-mobile-lp" aria-hidden="true">
+            <img src={asset('white-diary-lp-a.png')} alt="" />
+            <img src={asset('white-diary-lp-b.png')} alt="" />
+          </div>
+
+          <img className="white-diary-mobile-book" src={asset('white-diary-book.png')} alt="" />
+          <div className="white-diary-mobile-paper">
+            <img src={asset('white-diary-paper.png')} alt="" />
+          </div>
+
+          <div className="white-diary-mobile-title">
+            <span>WHITE DIARY</span>
+          </div>
+
+          {mobileSide === 'left' ? <img className="white-diary-mobile-tape" src={asset('white-diary-tape.png')} alt="" /> : null}
+          {mobileSide === 'right' ? (
+            <>
+              <div className="white-diary-mobile-pencil">
+                <img src={asset('white-diary-pencil.png')} alt="" />
+              </div>
+              <div className="white-diary-mobile-pen">
+                <img src={asset('white-diary-pen.png')} alt="" />
+              </div>
+              <div className="white-diary-mobile-eraser">
+                <img src={asset('white-diary-eraser.png')} alt="" />
+              </div>
+            </>
+          ) : null}
+
+          {mobileCopies.map((copyBlock, copyIndex) => (
+            <div className={`white-diary-mobile-copy ${locale === 'en' ? 'is-en' : ''}`} key={`mobile-copy-${mobileSpreadIndex}-${copyIndex}`}>
+              {(locale === 'en'
+                ? copyIndex === 0
+                  ? whiteDiaryEnglishLines[mobileSpreadIndex]?.lines
+                  : whiteDiaryEnglishLines[mobileSpreadIndex]?.extraCopies?.[copyIndex - 1]
+                : copyIndex === 0
+                  ? whiteDiaryMobileKoreanLines[mobileEntry.kind === 'copy' ? mobileEntry.copyKey : `${mobileSpreadIndex}-${copyBlock.side}`] ?? copyBlock.lines
+                  : copyBlock.lines
+              )?.map((line, index) => (
+                <p key={`mobile-copy-line-${mobileSpreadIndex}-${copyIndex}-${index}`}>{line || '\u00a0'}</p>
+              ))}
+            </div>
+          ))}
+
+          <div className={`white-diary-mobile-media white-diary-mobile-media-${mobilePhotos.length}`}>
+            {mobilePhotos.map((photo) =>
+              photo.frame === 'polaroid' ? (
+                <div className={`white-diary-mobile-polaroid ${photo.className}`} key={`mobile-photo-${mobileSpreadIndex}-${photo.className}`}>
+                  <div>
+                    <img src={asset(photo.src)} alt="" />
+                  </div>
+                </div>
+              ) : (
+                <div className={`white-diary-mobile-photo ${photo.className}`} key={`mobile-photo-${mobileSpreadIndex}-${photo.className}`}>
+                  <img src={asset(photo.src)} alt="" />
+                </div>
+              ),
+            )}
+          </div>
+
+          {mobileStickers.map((sticker) => (
+            <span className={`white-diary-mobile-sticker ${sticker.className}`} aria-hidden="true" key={`mobile-sticker-${mobileSpreadIndex}-${sticker.className}`} />
+          ))}
+
+          {mobileEmbeds.map((embed) => (
+            <div className="white-diary-mobile-embed" key={`mobile-embed-${mobileSpreadIndex}-${embed.className}`}>
+              <iframe
+                src={embed.src}
+                title={embed.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+          ))}
+
+          {mobileDiaryPage > 0 ? (
+            <button className="white-diary-mobile-nav white-diary-mobile-nav-prev" type="button" aria-label="Previous diary page" onClick={() => setMobileDiaryPage(mobileDiaryPage - 1)}>
+              <img src={asset('white-diary-arrow-prev.svg')} alt="" />
+            </button>
+          ) : null}
+          {mobileDiaryPage < mobileTotalPages - 1 ? (
+            <button className="white-diary-mobile-nav white-diary-mobile-nav-next" type="button" aria-label="Next diary page" onClick={() => setMobileDiaryPage(mobileDiaryPage + 1)}>
+              <img src={asset('white-diary-arrow-next.svg')} alt="" />
+            </button>
+          ) : null}
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="white-diary-page">
       <div
@@ -1916,12 +2587,14 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
 }
 
 function WhiteRecordPage() {
+  const isMobile = useIsMobileViewport();
   const [sceneScale, setSceneScale] = useState(1);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [durationSeconds, setDurationSeconds] = useState(whiteRecordMaxSeconds);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [pressedControl, setPressedControl] = useState<WhiteRecordControlId | null>(null);
+  const [pressedObjectId, setPressedObjectId] = useState<string | null>(null);
   const [activeAmbientPad, setActiveAmbientPad] = useState<WhiteRecordPadId | null>(null);
   const [selectedRecordChoice, setSelectedRecordChoice] = useState<WhiteRecordChoiceId>('sunset');
   const timerRef = useRef<number | null>(null);
@@ -2347,6 +3020,142 @@ function WhiteRecordPage() {
     });
   };
 
+  const handleMobileObjectPress = (object: (typeof whiteRecordObjects)[number]) => {
+    setPressedObjectId(object.id);
+    playObjectAudio(object);
+  };
+
+  const handleMobileObjectRelease = (objectId: string) => {
+    setPressedObjectId((current) => (current === objectId ? null : current));
+    stopObjectAudio(objectId);
+  };
+
+  const renderControls = (className: string) => (
+    <div className={className}>
+      {whiteRecordControls.map((control) => (
+        <button
+          className="white-record-control"
+          type="button"
+          aria-label={control.label}
+          aria-pressed={control.id === 'record' ? isRecording : undefined}
+          key={control.id}
+          onPointerDown={() => setPressedControl(control.id)}
+          onPointerLeave={() => {
+            if (control.id !== 'record') setPressedControl(null);
+          }}
+          onPointerUp={() => {
+            if (control.id !== 'record') setPressedControl(null);
+          }}
+          onClick={() => handleControlClick(control.id)}
+        >
+          <img src={asset(getControlImage(control))} alt="" />
+        </button>
+      ))}
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <main className="white-record-mobile-page">
+        <section className="white-record-mobile-scene" aria-label="White Record">
+          <div className="white-record-mobile-inner">
+            <HomeButton className="home-button-white-record-mobile" />
+
+            <div className="white-record-mobile-title">
+              <span>WHITE RECORD</span>
+            </div>
+
+            <div className="white-record-mobile-time" aria-label="Recording time">
+              <span>{formatRecordTime(elapsedSeconds)}</span>
+              <span>/</span>
+              <span>{formatRecordTime(durationSeconds)}</span>
+            </div>
+
+            {renderControls('white-record-mobile-control-row')}
+
+            <section className="white-record-mobile-player" aria-label="White Record main part">
+              <img className="white-record-mobile-turntable-base" src={asset('white-record-turntable-base.png')} alt="" />
+              <img className="white-record-mobile-disc" ref={discImageRef} src={asset(selectedChoice.discImage)} alt="" />
+              <div className="white-record-mobile-tonearm">
+                <img src={asset('white-record-tonearm.png')} alt="" />
+              </div>
+            </section>
+
+            <div className="white-record-mobile-choice-panel" aria-label="Choose one">
+              <div className="white-record-mobile-choice-title">Choose one!</div>
+              <div className="white-record-mobile-choice-list">
+                {whiteRecordChoices.map((choice) => {
+                  const isSelected = selectedRecordChoice === choice.id;
+
+                  return (
+                    <button
+                      className={`white-record-mobile-choice${isSelected ? ' is-active' : ''}`}
+                      type="button"
+                      aria-label={choice.label}
+                      aria-pressed={isSelected}
+                      key={choice.id}
+                      onClick={() => setSelectedRecordChoice(choice.id)}
+                    >
+                      <img src={asset(isSelected ? choice.activeImage : choice.image)} alt="" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="white-record-mobile-pad-row" aria-label="White Record pads">
+              {whiteRecordPads.map((pad, index) => {
+                const isActive = activeAmbientPad === pad.id;
+
+                return (
+                  <button
+                    className={`white-record-mobile-pad white-record-mobile-pad-${index + 1}${isActive ? ' is-active' : ''}`}
+                    type="button"
+                    aria-label={pad.label}
+                    aria-pressed={isActive}
+                    key={pad.id}
+                    onClick={() => handleAmbientPadClick(pad)}
+                  >
+                    <img src={asset(isActive ? pad.activeImage : pad.image)} alt="" />
+                  </button>
+                );
+              })}
+            </div>
+            <p className="white-record-mobile-object-hint">아래 아이템을 눌러 소리를 들어보세요</p>
+
+            <div className="white-record-mobile-object-layer" aria-label="White Record objects">
+              {whiteRecordObjects.map((object) => {
+                const isPressed = pressedObjectId === object.id;
+
+                return (
+                  <button
+                    className={`white-record-mobile-object ${object.className}${isPressed ? ' is-pressed' : ''}`}
+                    type="button"
+                    aria-label={object.label}
+                    key={object.id}
+                    onPointerDown={(event) => {
+                      event.currentTarget.setPointerCapture(event.pointerId);
+                      handleMobileObjectPress(object);
+                    }}
+                    onPointerUp={(event) => {
+                      event.currentTarget.releasePointerCapture(event.pointerId);
+                      handleMobileObjectRelease(object.id);
+                    }}
+                    onPointerCancel={() => handleMobileObjectRelease(object.id)}
+                    onPointerLeave={() => handleMobileObjectRelease(object.id)}
+                  >
+                    <img className="white-record-object-image-off" src={asset(object.offImage)} alt="" />
+                    <img className="white-record-object-image-on" src={asset(object.onImage)} alt="" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="white-record-page">
       <div
@@ -2496,6 +3305,39 @@ function Footer({ locale }: FooterProps) {
   );
 }
 
+function MobileFooter({ locale }: FooterProps) {
+  return (
+    <footer className="mobile-main-footer">
+      <div className="mobile-main-footer-logos">
+        <img className="mobile-main-busan-logo" src={asset('busan-logo.png')} alt="Busan Metropolitan City" />
+        <img className="mobile-main-foundation-logo" src={asset('footer-busan.svg')} alt="Busan Cultural Foundation" />
+        <strong>ACCORD</strong>
+      </div>
+      <p className="mobile-main-support-copy">
+        {locale === 'ko' ? (
+          <>
+            본 사업은 2026년 부산광역시, 부산문화재단
+            <br />
+            &lt;청년 신진예술가 창작활동 지원사업&gt;의 지원을 받았습니다.
+          </>
+        ) : (
+          copy.en.support
+        )}
+      </p>
+      <address className="mobile-main-contact">
+        <a href="https://www.youtube.com/@jangma.1515" className="mobile-main-contact-item" target="_blank" rel="noreferrer">
+          <img src={asset('icon-person.svg')} alt="" />
+          <span>Jangma</span>
+        </a>
+        <a href="mailto:1515accord@gmail.com" className="mobile-main-contact-item">
+          <img src={asset('icon-mail.svg')} alt="" />
+          <span>1515accord@gmail.com</span>
+        </a>
+      </address>
+    </footer>
+  );
+}
+
 function LoadingScreen() {
   return (
     <main className="loading-screen" aria-label="Loading">
@@ -2518,9 +3360,78 @@ function LoadingScreen() {
   );
 }
 
+function useIsMobileViewport() {
+  const getIsMobile = () => window.matchMedia('(max-width: 767px), (pointer: coarse)').matches;
+  const [isMobile, setIsMobile] = useState(getIsMobile);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+    const updateMobile = () => setIsMobile(mediaQuery.matches);
+
+    updateMobile();
+    mediaQuery.addEventListener('change', updateMobile);
+    window.addEventListener('resize', updateMobile);
+    return () => {
+      mediaQuery.removeEventListener('change', updateMobile);
+      window.removeEventListener('resize', updateMobile);
+    };
+  }, []);
+
+  return isMobile;
+}
+
+type MobileMainProps = {
+  locale: Locale;
+  onLocaleChange: (locale: Locale) => void;
+  onNavigate: (href: string) => void;
+  isLoading: boolean;
+};
+
+function MobileMain({ locale, onLocaleChange, onNavigate, isLoading }: MobileMainProps) {
+  const mobileLinks = [
+    { id: 'lp', label: 'White Record', image: 'mobile-main-lp.png', className: 'mobile-main-lp' },
+    { id: 'camera', label: 'Track Archive', image: 'mobile-main-camera.png', className: 'mobile-main-camera' },
+    { id: 'jangma', label: 'Jangma', image: 'mobile-main-jangma.png', className: 'mobile-main-jangma' },
+    { id: 'diary', label: 'White Diary', image: 'mobile-main-diary.png', className: 'mobile-main-diary' },
+  ];
+
+  return (
+    <main className="mobile-main-page" aria-busy={isLoading}>
+      <div className="mobile-main-scene">
+        <LanguageSwitch locale={locale} onLocaleChange={onLocaleChange} />
+
+        <header className="mobile-main-brand">
+          <img src={asset('pixelated-white-record.png')} alt="White Record" />
+          <p>Welcome to White Record!</p>
+        </header>
+
+        <nav className="mobile-main-object-list" aria-label="White Record archives">
+          {mobileLinks.map((link) => (
+            <a
+              className={`mobile-main-object ${link.className}`}
+              href={`#${link.id}`}
+              key={link.id}
+              onClick={(event) => {
+                event.preventDefault();
+                onNavigate(`#${link.id}`);
+              }}
+            >
+              <img src={asset(link.image)} alt="" />
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </nav>
+
+        <MobileFooter locale={locale} />
+      </div>
+    </main>
+  );
+}
+
 export default function App() {
   const [locale, setLocale] = useState<Locale>('ko');
   const [isLoading, setIsLoading] = useState(true);
+  const isMobile = useIsMobileViewport();
   const [currentPage, setCurrentPage] = useState<AppPage>(() => {
     if (window.location.hash === '#lp') return 'lp';
     if (window.location.hash === '#jangma') return 'jangma';
@@ -2610,6 +3521,8 @@ export default function App() {
         <TrackArchivePage locale={locale} />
       ) : currentPage === 'diary' ? (
         <WhiteDiaryArchivePage locale={locale} />
+      ) : isMobile ? (
+        <MobileMain locale={locale} onLocaleChange={setLocale} onNavigate={handleInternalNavigation} isLoading={isLoading} />
       ) : (
         <main className="page-shell" aria-busy={isLoading}>
           <div className="main-frame">
