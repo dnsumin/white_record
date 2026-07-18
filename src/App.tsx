@@ -122,7 +122,6 @@ const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
 const whitePagesDesignWidth = 1920;
 const whitePagesDesignHeight = 1080;
-const whitePagesFrameWidth = 2048;
 const whitePagesFitRatio = 1;
 const whiteRecordDesignWidth = 1440;
 const whiteRecordDesignHeight = 900;
@@ -2239,7 +2238,7 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
   useEffect(() => {
     const updateScale = () => {
       setSceneScale(
-        Math.min(window.innerWidth / whitePagesFrameWidth, window.innerHeight / whitePagesDesignHeight, 1) *
+        Math.min(window.innerWidth / whitePagesDesignWidth, window.innerHeight / whitePagesDesignHeight, 1) *
           whitePagesFitRatio,
       );
     };
@@ -2525,13 +2524,13 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
       <div
         className="white-diary-scale"
         style={{
-          width: whitePagesFrameWidth * sceneScale,
+          width: whitePagesDesignWidth * sceneScale,
           height: whitePagesDesignHeight * sceneScale,
         }}
       >
         <section
           className={`white-diary-scene is-turning-${turnDirection}${isPageTurning ? ' is-turning' : ''}`}
-          style={{ transform: `translateX(${(whitePagesFrameWidth - whitePagesDesignWidth) / 2}px) scale(${sceneScale})` }}
+          style={{ transform: `scale(${sceneScale})` }}
           aria-label="White Diary"
         >
           <HomeButton className="home-button-white-diary" />
