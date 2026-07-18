@@ -2350,6 +2350,8 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
     const inlinePhotoClasses = new Set(Object.values(inlineMobileMedia).flatMap((entry) => entry.photos ?? []));
     const inlineStickerClasses = new Set(Object.values(inlineMobileMedia).flatMap((entry) => entry.stickers ?? []));
     const inlineEmbedClasses = new Set(Object.values(inlineMobileMedia).flatMap((entry) => entry.embeds ?? []));
+    const skippedMobilePhotoClasses = new Set(['white-diary-photo-branches']);
+    const skippedMobileStickerClasses = new Set(['white-diary-tape-gold-branches']);
     type MobileDiaryEntry =
       | { kind: 'copy'; pageIndex: number; copyBlock: WhiteDiaryCopy; copyKey: string }
       | { kind: 'media'; pageIndex: number; side: 'left' | 'right' };
@@ -2370,8 +2372,8 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
       });
       const mediaSides = (['left', 'right'] as const).filter((side) => {
         const hasStandaloneMedia =
-          page.photos.some((photo) => photo.side === side && !inlinePhotoClasses.has(photo.className)) ||
-          (page.stickers ?? []).some((sticker) => sticker.side === side && !inlineStickerClasses.has(sticker.className)) ||
+          page.photos.some((photo) => photo.side === side && !inlinePhotoClasses.has(photo.className) && !skippedMobilePhotoClasses.has(photo.className)) ||
+          (page.stickers ?? []).some((sticker) => sticker.side === side && !inlineStickerClasses.has(sticker.className) && !skippedMobileStickerClasses.has(sticker.className)) ||
           (page.embeds ?? []).some((embed) => embed.side === side && !inlineEmbedClasses.has(embed.className));
         return hasStandaloneMedia;
       });
@@ -2392,11 +2394,11 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
     const mobilePhotos =
       mobileEntry.kind === 'copy'
         ? mobilePage.photos.filter((photo) => inlineMedia?.photos?.includes(photo.className))
-        : mobilePage.photos.filter((photo) => photo.side === contentSide && !inlinePhotoClasses.has(photo.className));
+        : mobilePage.photos.filter((photo) => photo.side === contentSide && !inlinePhotoClasses.has(photo.className) && !skippedMobilePhotoClasses.has(photo.className));
     const mobileStickers =
       mobileEntry.kind === 'copy'
         ? (mobilePage.stickers ?? []).filter((sticker) => inlineMedia?.stickers?.includes(sticker.className))
-        : (mobilePage.stickers ?? []).filter((sticker) => sticker.side === contentSide && !inlineStickerClasses.has(sticker.className));
+        : (mobilePage.stickers ?? []).filter((sticker) => sticker.side === contentSide && !inlineStickerClasses.has(sticker.className) && !skippedMobileStickerClasses.has(sticker.className));
     const mobileEmbeds =
       mobileEntry.kind === 'copy'
         ? (mobilePage.embeds ?? []).filter((embed) => inlineMedia?.embeds?.includes(embed.className))

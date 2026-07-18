@@ -2749,8 +2749,8 @@ button {
   width: 298px;
   color: #567c65;
   font-family: 'DosGothic', 'DotGothic16', monospace;
-  font-size: 16px;
-  line-height: 23px;
+  font-size: 14px;
+  line-height: 21px;
   white-space: normal;
   word-break: keep-all;
 }
@@ -2761,8 +2761,8 @@ button {
 }
 
 .white-diary-mobile-copy.is-en {
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 12px;
+  line-height: 16px;
   word-break: break-word;
 }
 
