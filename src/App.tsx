@@ -3134,15 +3134,24 @@ function WhiteRecordPage() {
                     aria-label={object.label}
                     key={object.id}
                     onPointerDown={(event) => {
+                      event.preventDefault();
                       event.currentTarget.setPointerCapture(event.pointerId);
                       handleMobileObjectPress(object);
                     }}
                     onPointerUp={(event) => {
+                      event.preventDefault();
                       event.currentTarget.releasePointerCapture(event.pointerId);
                       handleMobileObjectRelease(object.id);
                     }}
-                    onPointerCancel={() => handleMobileObjectRelease(object.id)}
-                    onPointerLeave={() => handleMobileObjectRelease(object.id)}
+                    onPointerCancel={(event) => {
+                      event.preventDefault();
+                      handleMobileObjectRelease(object.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      event.preventDefault();
+                      handleMobileObjectRelease(object.id);
+                    }}
+                    onContextMenu={(event) => event.preventDefault()}
                   >
                     <img className="white-record-object-image-off" src={asset(object.offImage)} alt="" />
                     <img className="white-record-object-image-on" src={asset(object.onImage)} alt="" />
@@ -3447,9 +3456,16 @@ export default function App() {
         event.preventDefault();
       }
     };
+    const preventTextSelection = (event: Event) => {
+      event.preventDefault();
+    };
 
     document.addEventListener('dragstart', preventImageDrag);
-    return () => document.removeEventListener('dragstart', preventImageDrag);
+    document.addEventListener('selectstart', preventTextSelection);
+    return () => {
+      document.removeEventListener('dragstart', preventImageDrag);
+      document.removeEventListener('selectstart', preventTextSelection);
+    };
   }, []);
 
   useEffect(() => {

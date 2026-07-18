@@ -36,6 +36,9 @@
 
 * {
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
 html,
@@ -2260,7 +2263,7 @@ button {
 .white-record-mobile-page {
   min-width: 320px;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: visible;
   background: var(--white);
 }
 
@@ -2511,6 +2514,10 @@ button {
   position: absolute;
   inset: 0;
   z-index: 5;
+  overflow: visible;
+  clip-path: none;
+  mask-image: none;
+  -webkit-mask-image: none;
 }
 
 .white-record-mobile-object {
@@ -2521,31 +2528,53 @@ button {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   overflow: visible;
+  clip-path: none;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.white-record-mobile-object::before {
+  content: '';
+  position: absolute;
+  left: -72px;
+  top: -72px;
+  z-index: 0;
+  width: calc(100% + 144px);
+  height: calc(100% + 144px);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(153, 196, 165, 0.54), rgba(153, 196, 165, 0.38) 24%, rgba(153, 196, 165, 0.2) 43%, rgba(153, 196, 165, 0.08) 61%, rgba(153, 196, 165, 0) 76%);
+  clip-path: none;
+  mask-image: none;
+  -webkit-mask-image: none;
 }
 
 .white-record-mobile-object img {
   position: absolute;
   left: 22px;
   top: 22px;
+  z-index: 1;
   width: calc(100% - 44px);
   height: calc(100% - 44px);
 }
 
 .white-record-mobile-object .white-record-object-image-on {
-  opacity: 0;
+  display: none;
 }
 
 .white-record-mobile-object.is-pressed .white-record-object-image-off {
   opacity: 1;
-  filter:
-    brightness(1.08)
-    drop-shadow(0 0 12px rgba(153, 196, 165, 0.95))
-    drop-shadow(0 0 28px rgba(153, 196, 165, 0.72))
-    drop-shadow(0 0 54px rgba(153, 196, 165, 0.48));
+  filter: brightness(1.08) saturate(1.06);
 }
 
 .white-record-mobile-object.is-pressed .white-record-object-image-on {
-  opacity: 0;
+  display: none;
+}
+
+.white-record-mobile-object.is-pressed::before {
+  opacity: 1;
 }
 
 .white-record-mobile-object.white-record-object-watering-can {
