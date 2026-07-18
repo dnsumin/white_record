@@ -122,9 +122,14 @@ const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
 const whitePagesDesignWidth = 1920;
 const whitePagesDesignHeight = 1080;
-const whitePagesFitRatio = 0.96;
+const whitePagesFitRatio = 1;
 const whiteRecordDesignWidth = 1440;
 const whiteRecordDesignHeight = 900;
+const scrollToPageTop = () => {
+  window.scrollTo({ left: 0, top: 0, behavior: 'auto' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+};
 
 const whiteRecordObjects = [
   {
@@ -2403,6 +2408,10 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
       mobileEntry.kind === 'copy'
         ? (mobilePage.embeds ?? []).filter((embed) => inlineMedia?.embeds?.includes(embed.className))
         : (mobilePage.embeds ?? []).filter((embed) => embed.side === contentSide && !inlineEmbedClasses.has(embed.className));
+    const changeMobileDiaryPage = (nextPage: number) => {
+      setMobileDiaryPage(nextPage);
+      scrollToPageTop();
+    };
 
     return (
       <main className="white-diary-mobile-page">
@@ -2486,12 +2495,12 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
           ))}
 
           {mobileDiaryPage > 0 ? (
-            <button className="white-diary-mobile-nav white-diary-mobile-nav-prev" type="button" aria-label="Previous diary page" onClick={() => setMobileDiaryPage(mobileDiaryPage - 1)}>
+            <button className="white-diary-mobile-nav white-diary-mobile-nav-prev" type="button" aria-label="Previous diary page" onClick={() => changeMobileDiaryPage(mobileDiaryPage - 1)}>
               <img src={asset('white-diary-arrow-prev.svg')} alt="" />
             </button>
           ) : null}
           {mobileDiaryPage < mobileTotalPages - 1 ? (
-            <button className="white-diary-mobile-nav white-diary-mobile-nav-next" type="button" aria-label="Next diary page" onClick={() => setMobileDiaryPage(mobileDiaryPage + 1)}>
+            <button className="white-diary-mobile-nav white-diary-mobile-nav-next" type="button" aria-label="Next diary page" onClick={() => changeMobileDiaryPage(mobileDiaryPage + 1)}>
               <img src={asset('white-diary-arrow-next.svg')} alt="" />
             </button>
           ) : null}
@@ -3453,6 +3462,18 @@ export default function App() {
   const loadingTimer = useRef<number | null>(null);
 
   useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
+    scrollToPageTop();
+  }, [currentPage]);
+
+  useEffect(() => {
     const preventImageDrag = (event: DragEvent) => {
       if (event.target instanceof HTMLImageElement) {
         event.preventDefault();
@@ -3495,6 +3516,7 @@ export default function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
+      scrollToPageTop();
       if (window.location.hash === '#lp') {
         setCurrentPage('lp');
         return;
@@ -3533,6 +3555,7 @@ export default function App() {
 
   const handleInternalNavigation = (href: string) => {
     showPageLoading(() => {
+      scrollToPageTop();
       window.location.hash = href;
       setCurrentPage(
         href === '#lp' ? 'lp' : href === '#jangma' ? 'jangma' : href === '#camera' ? 'track' : href === '#diary' ? 'diary' : 'main',
