@@ -3822,7 +3822,7 @@ button {
   opacity: 0;
   background:
     linear-gradient(90deg, rgba(86, 124, 101, 0.24), rgba(255, 254, 247, 0.9) 22%, rgba(255, 254, 247, 0.68)),
-    url('/assets/white-diary-paper.png') center / 1400px 930px;
+    url('../assets/white-diary-paper.png') center / 1400px 930px;
   box-shadow: -26px 0 32px rgba(47, 79, 66, 0.18);
 }
 
@@ -3838,7 +3838,7 @@ button {
   transform-origin: right center;
   background:
     linear-gradient(270deg, rgba(86, 124, 101, 0.24), rgba(255, 254, 247, 0.9) 22%, rgba(255, 254, 247, 0.68)),
-    url('/assets/white-diary-paper.png') center / 1400px 930px;
+    url('../assets/white-diary-paper.png') center / 1400px 930px;
   box-shadow: 26px 0 32px rgba(47, 79, 66, 0.18);
 }
 

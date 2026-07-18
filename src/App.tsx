@@ -1,6 +1,6 @@
 import { type CSSProperties, type PointerEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
-const asset = (name: string) => `/assets/${name}`;
+const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}`;
 
 type ArchiveObject = {
   id: string;
