@@ -122,6 +122,7 @@ const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
 const whitePagesDesignWidth = 1920;
 const whitePagesDesignHeight = 1080;
+const whitePagesFrameWidth = 2048;
 const whitePagesFitRatio = 1;
 const whiteRecordDesignWidth = 1440;
 const whiteRecordDesignHeight = 900;
@@ -936,7 +937,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   const isMobile = useIsMobileViewport();
   const [trackMode, setTrackMode] = useState<TrackArchiveMode>('mv');
   const [selectedLyricTrack, setSelectedLyricTrack] = useState('01');
-  const [expandedLyricImageIndex, setExpandedLyricImageIndex] = useState<number | null>(null);
+  const [expandedTrackImageIndex, setExpandedTrackImageIndex] = useState<number | null>(null);
   const [sceneScale, setSceneScale] = useState(1);
 
   useEffect(() => {
@@ -1016,6 +1017,8 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   ].map((image, index) => ({
     src: asset(image),
     alt: `MV still ${index + 1}`,
+    isTopCrop: false,
+    isWideCrop: false,
   }));
   const lyricTracks = [
     {
@@ -1081,6 +1084,8 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
       isWideCrop,
     };
   });
+  const modalTrackImages = trackMode === 'mv' ? mvImages : activeLyricImages;
+  const expandedTrackImage = expandedTrackImageIndex !== null ? modalTrackImages[expandedTrackImageIndex] : null;
   const sceneHeight = trackArchiveDesignHeight + 832;
 
   if (isMobile) {
@@ -1114,7 +1119,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
               type="button"
               onClick={() => {
                 setTrackMode('mv');
-                setExpandedLyricImageIndex(null);
+                setExpandedTrackImageIndex(null);
               }}
             >
               MV
@@ -1122,7 +1127,10 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
             <button
               className={`track-archive-mobile-tab ${trackMode === 'lyric' ? 'is-active' : ''}`}
               type="button"
-              onClick={() => setTrackMode('lyric')}
+              onClick={() => {
+                setTrackMode('lyric');
+                setExpandedTrackImageIndex(null);
+              }}
             >
               Lyric Video
             </button>
@@ -1148,7 +1156,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     key={track.id}
                     onClick={() => {
                       setSelectedLyricTrack(track.id);
-                      setExpandedLyricImageIndex(null);
+                      setExpandedTrackImageIndex(null);
                     }}
                   >
                     {locale === 'ko' ? track.koTitle : track.enTitle}
@@ -1179,7 +1187,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                       }`}
                       type="button"
                       key={image.src}
-                      onClick={() => setExpandedLyricImageIndex(index)}
+                      onClick={() => setExpandedTrackImageIndex(index)}
                     >
                       <img src={image.src} alt={image.alt} />
                     </button>
@@ -1231,39 +1239,39 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
               <section className="track-archive-mobile-photo-section track-archive-mobile-photo-section-mv" aria-label="Music video photos">
                 <h2>Photo</h2>
                 <div className="track-archive-mobile-photo-list">
-                  {mvImages.map((image) => (
-                    <div className="track-archive-mobile-photo" key={image.src}>
+                  {mvImages.map((image, index) => (
+                    <button className="track-archive-mobile-photo" type="button" key={image.src} onClick={() => setExpandedTrackImageIndex(index)}>
                       <img src={image.src} alt={image.alt} />
-                    </div>
+                    </button>
                   ))}
                 </div>
               </section>
             </>
           )}
 
-          {expandedLyricImageIndex !== null ? (
+          {expandedTrackImage ? (
             <div
               className="track-photo-modal track-photo-modal-mobile"
               role="dialog"
               aria-modal="true"
-              aria-label="Enlarged lyric video photo"
-              onClick={() => setExpandedLyricImageIndex(null)}
+              aria-label="Enlarged photo"
+              onClick={() => setExpandedTrackImageIndex(null)}
             >
               <div className="track-photo-modal-window" onClick={(event) => event.stopPropagation()}>
                 <div className="track-photo-modal-bar">
                   <span>Photo</span>
-                  <button type="button" aria-label="Close photo" onClick={() => setExpandedLyricImageIndex(null)}>
+                  <button type="button" aria-label="Close photo" onClick={() => setExpandedTrackImageIndex(null)}>
                     <img src={asset('window-close.svg')} alt="" />
                   </button>
                 </div>
                 <div className="track-photo-modal-body">
                   <div className="track-photo-modal-image-frame">
                     <img
-                      className={`${activeLyricImages[expandedLyricImageIndex].isWideCrop ? 'is-wide-crop' : ''}${
-                        activeLyricImages[expandedLyricImageIndex].isTopCrop ? ' is-top-crop' : ''
+                      className={`${expandedTrackImage.isWideCrop ? 'is-wide-crop' : ''}${
+                        expandedTrackImage.isTopCrop ? ' is-top-crop' : ''
                       }`}
-                      src={activeLyricImages[expandedLyricImageIndex].src}
-                      alt={activeLyricImages[expandedLyricImageIndex].alt}
+                      src={expandedTrackImage.src}
+                      alt={expandedTrackImage.alt}
                     />
                   </div>
                 </div>
@@ -1301,7 +1309,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                       key={track.id}
                       onClick={() => {
                         setSelectedLyricTrack(track.id);
-                        setExpandedLyricImageIndex(null);
+                        setExpandedTrackImageIndex(null);
                       }}
                     >
                       {locale === 'ko' ? track.koTitle : track.enTitle}
@@ -1361,7 +1369,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                   type="button"
                   onClick={() => {
                     setTrackMode('mv');
-                    setExpandedLyricImageIndex(null);
+                    setExpandedTrackImageIndex(null);
                   }}
                 >
                   MV
@@ -1369,7 +1377,10 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                 <button
                   className={`track-mode-button ${trackMode === 'lyric' ? 'is-active' : ''}`}
                   type="button"
-                  onClick={() => setTrackMode('lyric')}
+                  onClick={() => {
+                    setTrackMode('lyric');
+                    setExpandedTrackImageIndex(null);
+                  }}
                 >
                   Lyric Video
                 </button>
@@ -1395,7 +1406,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     }`}
                     type="button"
                     key={image.src}
-                    onClick={() => setExpandedLyricImageIndex(index)}
+                    onClick={() => setExpandedTrackImageIndex(index)}
                   >
                     <img src={image.src} alt={image.alt} />
                   </button>
@@ -1403,10 +1414,10 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
               </div>
             ) : (
               <div className="track-lyric-photo-grid" aria-label="Music video photos">
-                {mvImages.map((image) => (
-                  <div className="track-lyric-photo" key={image.src}>
+                {mvImages.map((image, index) => (
+                  <button className="track-lyric-photo" type="button" key={image.src} onClick={() => setExpandedTrackImageIndex(index)}>
                     <img src={image.src} alt={image.alt} />
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -1414,47 +1425,47 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
         </div>
       </div>
 
-      {expandedLyricImageIndex !== null ? (
+      {expandedTrackImage ? (
         <div
           className="track-photo-modal"
           role="dialog"
           aria-modal="true"
-          aria-label="Enlarged lyric video photo"
-          onClick={() => setExpandedLyricImageIndex(null)}
+          aria-label="Enlarged photo"
+          onClick={() => setExpandedTrackImageIndex(null)}
         >
           <div className="track-photo-modal-window" onClick={(event) => event.stopPropagation()}>
             <div className="track-photo-modal-bar">
               <span>Photo</span>
-              <button type="button" aria-label="Close photo" onClick={() => setExpandedLyricImageIndex(null)}>
+              <button type="button" aria-label="Close photo" onClick={() => setExpandedTrackImageIndex(null)}>
                 <img src={asset('window-close.svg')} alt="" />
               </button>
             </div>
             <div className="track-photo-modal-body">
               <div className="track-photo-modal-image-frame">
                 <img
-                  className={`${activeLyricImages[expandedLyricImageIndex].isWideCrop ? 'is-wide-crop' : ''}${
-                    activeLyricImages[expandedLyricImageIndex].isTopCrop ? ' is-top-crop' : ''
+                  className={`${expandedTrackImage.isWideCrop ? 'is-wide-crop' : ''}${
+                    expandedTrackImage.isTopCrop ? ' is-top-crop' : ''
                   }`}
-                  src={activeLyricImages[expandedLyricImageIndex].src}
-                  alt={activeLyricImages[expandedLyricImageIndex].alt}
+                  src={expandedTrackImage.src}
+                  alt={expandedTrackImage.alt}
                 />
               </div>
-              {expandedLyricImageIndex > 0 ? (
+              {expandedTrackImageIndex !== null && expandedTrackImageIndex > 0 ? (
                 <button
                   className="track-photo-arrow track-photo-arrow-prev"
                   type="button"
                   aria-label="Previous photo"
-                  onClick={() => setExpandedLyricImageIndex(expandedLyricImageIndex - 1)}
+                  onClick={() => setExpandedTrackImageIndex(expandedTrackImageIndex - 1)}
                 >
                   <img src={asset('button-next.svg')} alt="" />
                 </button>
               ) : null}
-              {expandedLyricImageIndex < activeLyricImages.length - 1 ? (
+              {expandedTrackImageIndex !== null && expandedTrackImageIndex < modalTrackImages.length - 1 ? (
                 <button
                   className="track-photo-arrow track-photo-arrow-next"
                   type="button"
                   aria-label="Next photo"
-                  onClick={() => setExpandedLyricImageIndex(expandedLyricImageIndex + 1)}
+                  onClick={() => setExpandedTrackImageIndex(expandedTrackImageIndex + 1)}
                 >
                   <img src={asset('button-next.svg')} alt="" />
                 </button>
@@ -2228,7 +2239,7 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
   useEffect(() => {
     const updateScale = () => {
       setSceneScale(
-        Math.min(window.innerWidth / whitePagesDesignWidth, window.innerHeight / whitePagesDesignHeight, 1) *
+        Math.min(window.innerWidth / whitePagesFrameWidth, window.innerHeight / whitePagesDesignHeight, 1) *
           whitePagesFitRatio,
       );
     };
@@ -2514,13 +2525,13 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
       <div
         className="white-diary-scale"
         style={{
-          width: whitePagesDesignWidth * sceneScale,
+          width: whitePagesFrameWidth * sceneScale,
           height: whitePagesDesignHeight * sceneScale,
         }}
       >
         <section
           className={`white-diary-scene is-turning-${turnDirection}${isPageTurning ? ' is-turning' : ''}`}
-          style={{ transform: `scale(${sceneScale})` }}
+          style={{ transform: `translateX(${(whitePagesFrameWidth - whitePagesDesignWidth) / 2}px) scale(${sceneScale})` }}
           aria-label="White Diary"
         >
           <HomeButton className="home-button-white-diary" />

@@ -3179,7 +3179,7 @@ button {
   top: 0;
   width: 1920px;
   height: 1080px;
-  overflow: hidden;
+  overflow: visible;
   transform-origin: top left;
 }
 
@@ -3219,7 +3219,7 @@ button {
 
 .white-diary-lp {
   position: absolute;
-  left: -334px;
+  left: -250px;
   top: -235px;
   z-index: 1;
   width: 735px;
@@ -3664,7 +3664,7 @@ button {
 }
 
 .white-diary-tape {
-  left: -155px;
+  left: -90px;
   top: 579px;
   z-index: 2;
   width: 384px;
@@ -3680,7 +3680,7 @@ button {
 }
 
 .white-diary-pencil {
-  left: 1658px;
+  left: 1586px;
   top: 258px;
   width: 196.834px;
   height: 652.552px;
@@ -3698,7 +3698,7 @@ button {
 }
 
 .white-diary-pen {
-  left: 1618.43px;
+  left: 1546px;
   top: 515.69px;
   width: 125.139px;
   height: 434.617px;
@@ -3716,7 +3716,7 @@ button {
 }
 
 .white-diary-eraser {
-  left: 1740px;
+  left: 1662px;
   top: 149.05px;
   width: 136.626px;
   height: 165.765px;
