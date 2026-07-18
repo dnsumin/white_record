@@ -1515,8 +1515,8 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '기억에 없으니까 없는 게 맞을 거예요.',
     ],
     photos: [
-      { src: 'white-diary-photo-forest.png', className: 'white-diary-photo-forest', side: 'right' },
-      { src: 'white-diary-photo-glass.png', className: 'white-diary-polaroid-page-1', side: 'right', frame: 'polaroid' },
+      { src: 'white-diary-photo-forest.jpg', className: 'white-diary-photo-forest', side: 'right' },
+      { src: 'white-diary-photo-glass.jpg', className: 'white-diary-polaroid-page-1', side: 'right', frame: 'polaroid' },
     ],
     stickers: [{ className: 'white-diary-tape-pink-long', side: 'right' }],
   },
@@ -1533,8 +1533,8 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '만들 수 있다고 생각해요.',
     ],
     photos: [
-      { src: 'white-diary-photo-meadow.png', className: 'white-diary-photo-meadow', side: 'left' },
-      { src: 'white-diary-photo-bubbles.png', className: 'white-diary-photo-bubbles', side: 'left' },
+      { src: 'white-diary-photo-meadow.jpg', className: 'white-diary-photo-meadow', side: 'left' },
+      { src: 'white-diary-photo-bubbles.jpg', className: 'white-diary-photo-bubbles', side: 'left' },
     ],
     stickers: [
       { className: 'white-diary-tape-green-meadow', side: 'left' },
@@ -1554,7 +1554,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '',
       '2026.  7.  31.',
     ],
-    photos: [{ src: 'white-diary-photo-pond.png', className: 'white-diary-photo-pond', side: 'right' }],
+    photos: [{ src: 'white-diary-photo-pond.jpg', className: 'white-diary-photo-pond', side: 'right' }],
     stickers: [
       { className: 'white-diary-tape-green-pond-top', side: 'right' },
       { className: 'white-diary-tape-green-pond-bottom', side: 'right' },
@@ -1590,7 +1590,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '한결같이 좋아하는 것도 많아요.',
       '그중 하나가 ‘영원’이에요. 그 말이 좋아요.',
     ],
-    photos: [{ src: 'white-diary-photo-rivergrass.png', className: 'white-diary-photo-rivergrass', side: 'right' }],
+    photos: [{ src: 'white-diary-photo-rivergrass.jpg', className: 'white-diary-photo-rivergrass', side: 'right' }],
     stickers: [{ className: 'white-diary-tape-gold-rivergrass', side: 'right' }],
     embeds: [{ side: 'left', className: 'white-diary-shorts-left', src: 'https://www.youtube.com/embed/JARChWvPmUo', title: '고양이 #shorts' }],
   },
@@ -1626,7 +1626,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
         ],
       },
     ],
-    photos: [{ src: 'white-diary-photo-branches.png', className: 'white-diary-photo-branches', side: 'right' }],
+    photos: [{ src: 'white-diary-photo-branches.jpg', className: 'white-diary-photo-branches', side: 'right' }],
     stickers: [{ className: 'white-diary-tape-gold-branches', side: 'right' }],
   },
   {
@@ -1655,8 +1655,8 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       },
     ],
     photos: [
-      { src: 'white-diary-photo-water.png', className: 'white-diary-photo-water', side: 'left' },
-      { src: 'white-diary-photo-curtain.png', className: 'white-diary-photo-curtain', side: 'right' },
+      { src: 'white-diary-photo-water.jpg', className: 'white-diary-photo-water', side: 'left' },
+      { src: 'white-diary-photo-curtain.jpg', className: 'white-diary-photo-curtain', side: 'right' },
     ],
     stickers: [
       { className: 'white-diary-tape-pink-water-left', side: 'left' },
@@ -1707,7 +1707,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
         ],
       },
     ],
-    photos: [{ src: 'white-diary-photo-sun-tree.png', className: 'white-diary-photo-sun-tree', side: 'left' }],
+    photos: [{ src: 'white-diary-photo-sun-tree.jpg', className: 'white-diary-photo-sun-tree', side: 'left' }],
     stickers: [{ className: 'white-diary-tape-blue-sun-tree', side: 'left' }],
   },
   {
@@ -1727,8 +1727,8 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '이만 줄일게요. 또 봐요!',
     ],
     photos: [
-      { src: 'white-diary-photo-forest-wide.png', className: 'white-diary-photo-forest-wide', side: 'left' },
-      { src: 'white-diary-photo-window-vine.png', className: 'white-diary-photo-window-vine', side: 'left' },
+      { src: 'white-diary-photo-forest-wide.jpg', className: 'white-diary-photo-forest-wide', side: 'left' },
+      { src: 'white-diary-photo-window-vine.jpg', className: 'white-diary-photo-window-vine', side: 'left' },
     ],
     stickers: [
       { className: 'white-diary-tape-green-forest-wide', side: 'left' },
