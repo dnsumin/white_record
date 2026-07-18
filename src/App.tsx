@@ -3442,6 +3442,17 @@ export default function App() {
   const loadingTimer = useRef<number | null>(null);
 
   useEffect(() => {
+    const preventImageDrag = (event: DragEvent) => {
+      if (event.target instanceof HTMLImageElement) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('dragstart', preventImageDrag);
+    return () => document.removeEventListener('dragstart', preventImageDrag);
+  }, []);
+
+  useEffect(() => {
     const startedAt = Date.now();
 
     const finishInitialLoading = () => {

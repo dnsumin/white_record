@@ -53,6 +53,9 @@ body {
 
 img {
   display: block;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
 a {
@@ -2516,6 +2519,7 @@ button {
   display: block;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
   overflow: visible;
 }
 
@@ -2532,14 +2536,16 @@ button {
 }
 
 .white-record-mobile-object.is-pressed .white-record-object-image-off {
-  opacity: 0;
+  opacity: 1;
+  filter:
+    brightness(1.08)
+    drop-shadow(0 0 12px rgba(153, 196, 165, 0.95))
+    drop-shadow(0 0 28px rgba(153, 196, 165, 0.72))
+    drop-shadow(0 0 54px rgba(153, 196, 165, 0.48));
 }
 
 .white-record-mobile-object.is-pressed .white-record-object-image-on {
-  opacity: 1;
-  filter:
-    drop-shadow(0 0 18px rgba(153, 196, 165, 0.85))
-    drop-shadow(0 0 34px rgba(153, 196, 165, 0.6));
+  opacity: 0;
 }
 
 .white-record-mobile-object.white-record-object-watering-can {
