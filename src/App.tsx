@@ -2964,23 +2964,31 @@ function WhiteRecordPage() {
         }
       }
 
-      const AudioContextClass =
-        window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (!AudioContextClass) {
-        throw new Error('AudioContext is not available in this browser.');
-      }
-      const audioContext = new AudioContextClass();
-      const destination = audioContext.createMediaStreamDestination();
-      audioContextRef.current = audioContext;
+      let recorderStream = micStream;
 
-      const hasMicAudio = addStreamToDestination(audioContext, destination, micStream);
-      const hasSystemAudio = systemStream ? addStreamToDestination(audioContext, destination, systemStream) : false;
+      if (systemStream) {
+        const AudioContextClass =
+          window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (!AudioContextClass) {
+          throw new Error('AudioContext is not available in this browser.');
+        }
+        const audioContext = new AudioContextClass();
+        const destination = audioContext.createMediaStreamDestination();
+        audioContextRef.current = audioContext;
 
-      if (!hasMicAudio && !hasSystemAudio) {
+        const hasMicAudio = addStreamToDestination(audioContext, destination, micStream);
+        const hasSystemAudio = addStreamToDestination(audioContext, destination, systemStream);
+
+        if (!hasMicAudio && !hasSystemAudio) {
+          throw new Error('No audio input was available.');
+        }
+
+        recorderStream = destination.stream;
+      } else if (micStream.getAudioTracks().length === 0) {
         throw new Error('No audio input was available.');
       }
 
-      const recorder = new MediaRecorder(destination.stream);
+      const recorder = new MediaRecorder(recorderStream);
       mediaRecorderRef.current = recorder;
       recorderChunksRef.current = [];
 
