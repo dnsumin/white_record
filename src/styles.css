@@ -3023,7 +3023,7 @@ button {
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-pond-top {
-  left: 50px;
+  left: 60px;
   top: 212px;
   height: 53px;
   background-image: url('/assets/white-diary-tape-green-bottom.svg');
@@ -3031,7 +3031,7 @@ button {
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-pond-bottom {
-  left: 279px;
+  left: 289px;
   top: 554px;
   height: 53px;
   background-image: url('/assets/white-diary-tape-green-bottom.svg');
@@ -3058,7 +3058,7 @@ button {
 }
 
 .white-diary-mobile-sticker.white-diary-tape-pink-water-left {
-  left: 125px;
+  left: 115px;
   top: 564px;
   width: 15px;
   height: 42px;
@@ -3066,7 +3066,7 @@ button {
 }
 
 .white-diary-mobile-sticker.white-diary-tape-pink-water-right {
-  left: 325px;
+  left: 315px;
   top: 439px;
   width: 15px;
   height: 42px;
@@ -3127,7 +3127,7 @@ button {
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-window-left {
-  left: 122px;
+  left: 112px;
   top: 426px;
   width: 16px;
   height: 39px;
@@ -3141,7 +3141,7 @@ button {
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-window-right {
-  left: 308px;
+  left: 298px;
   top: 542px;
   width: 16px;
   height: 48px;
@@ -3640,7 +3640,7 @@ button {
 }
 
 .white-diary-tape-pink-long {
-  left: 1314px;
+  left: 1324px;
   top: 127px;
   height: 91.67px;
   background-image: url('/assets/white-diary-tape-pink-bottom.svg');
@@ -3720,14 +3720,14 @@ button {
 }
 
 .white-diary-tape-pink-water-left {
-  left: 418px;
+  left: 438px;
   top: 788.57px;
   height: 91.67px;
   transform: rotate(-49.37deg);
 }
 
 .white-diary-tape-pink-water-right {
-  left: 796.58px;
+  left: 816.58px;
   top: 541px;
   height: 91.67px;
   background-image: url('/assets/white-diary-tape-pink-bottom.svg');
