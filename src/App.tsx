@@ -2937,18 +2937,31 @@ function WhiteRecordPage() {
     resetRecordState();
 
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error('이 브라우저에서는 마이크 녹음을 지원하지 않아요.');
+      }
+
+      if (!window.MediaRecorder) {
+        throw new Error('이 브라우저에서는 녹음 저장을 지원하지 않아요.');
+      }
+
       const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamsRef.current.push(micStream);
 
-      const systemStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true,
-      });
-      systemStream.getVideoTracks().forEach((track) => track.stop());
-      streamsRef.current.push(systemStream);
+      let systemStream: MediaStream | null = null;
+      const canCaptureSystemAudio = typeof navigator.mediaDevices.getDisplayMedia === 'function';
 
-      if (systemStream.getAudioTracks().length === 0) {
-        throw new Error('화면 공유 창에서 오디오 공유를 켜주세요.');
+      if (canCaptureSystemAudio) {
+        systemStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true,
+        });
+        systemStream.getVideoTracks().forEach((track) => track.stop());
+        streamsRef.current.push(systemStream);
+
+        if (systemStream.getAudioTracks().length === 0) {
+          throw new Error('화면 공유 창에서 오디오 공유를 켜주세요.');
+        }
       }
 
       const AudioContextClass =
@@ -2961,7 +2974,7 @@ function WhiteRecordPage() {
       audioContextRef.current = audioContext;
 
       const hasMicAudio = addStreamToDestination(audioContext, destination, micStream);
-      const hasSystemAudio = addStreamToDestination(audioContext, destination, systemStream);
+      const hasSystemAudio = systemStream ? addStreamToDestination(audioContext, destination, systemStream) : false;
 
       if (!hasMicAudio && !hasSystemAudio) {
         throw new Error('No audio input was available.');
