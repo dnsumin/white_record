@@ -959,7 +959,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   const trackArchiveCopy = {
     ko: {
       albumTitle: ['장마 1st EP', '‘ 화이트 레코드 ’'],
-      tracks: ['하나 둘', '맨발로 걷는 하루', '나만의 반딧불', '황혼성 사냥', '나만의 반딧불'],
+      tracks: ['하나 둘', '맨발로 걷는 하루', '나만의 반딧불', '황혼성 사냥', '나만의 반딧불 (inst.)'],
       mvPlaces: [
         {
           title: '용소웰빙공원',
@@ -981,7 +981,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
     },
     en: {
       albumTitle: ['Jangma 1st EP', '‘ White Record ’'],
-      tracks: ['mic test', 'Hop Step Jump', 'fairytale', 'Twilight hunting', 'fairytale'],
+      tracks: ['mic test', 'Hop Step Jump', 'fairytale', 'Twilight hunting', 'fairytale (inst.)'],
       mvPlaces: [
         {
           title: 'Yongso Wellbeing Park',
@@ -1215,11 +1215,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     {pageCopy.tracks.slice(0, 4).map((track) => (
                       <li key={track}>{track}</li>
                     ))}
-                    <li>
-                      {pageCopy.tracks[4]}
-                      {' '}
-                      <span>(inst.)</span>
-                    </li>
+                    <li>{pageCopy.tracks[4]}</li>
                   </ol>
                 </div>
               </section>
@@ -1345,11 +1341,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     {pageCopy.tracks.slice(0, 4).map((track) => (
                       <li key={track}>{track}</li>
                     ))}
-                    <li>
-                      {pageCopy.tracks[4]}
-                      {' '}
-                      <span>(inst.)</span>
-                    </li>
+                    <li>{pageCopy.tracks[4]}</li>
                   </ol>
                 </div>
                 <div className="track-place-list track-place-list-mv">
