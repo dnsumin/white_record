@@ -31,7 +31,7 @@ const copy = {
   en: {
     support:
       'Supported by Busan Metropolitan City & Busan Cultural Foundation <2026 Emerging Young Artists Creative Support Program>',
-    jangmaIntro: ['If I Could Become a Grain of Sand, Someday.', "Hello, I'm Jangma, a singer-songwriter."],
+    jangmaIntro: ['If I could become part of the sand someday', '', 'Hello', "I'm Jangma, a singer-songwriter"],
     jangmaMobileIntro: ['If I could become', 'part of the sand someday', '', 'Hello', "I'm Jangma, a singer-songwriter"],
   },
 };
