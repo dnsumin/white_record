@@ -26,11 +26,13 @@ const copy = {
     support:
       '본 사업은 2026년 부산광역시, 부산문화재단 <2026 청년 신진예술가 창작활동 지원사업>의 지원을 받았습니다.',
     jangmaIntro: ['언젠가 모래의 일부가 될 수 있다면', '안녕하세요. 싱어송라이터 장마입니다.'],
+    jangmaMobileIntro: ['언젠가', '모래의 일부가 될 수 있다면', '', '안녕하세요', '싱어송라이터 장마입니다.'],
   },
   en: {
     support:
       'Supported by Busan Metropolitan City & Busan Cultural Foundation <2026 Emerging Young Artists Creative Support Program>',
     jangmaIntro: ['If I Could Become a Grain of Sand, Someday.', "Hello, I'm Jangma, a singer-songwriter."],
+    jangmaMobileIntro: ['If I could become part of the sand someday', '', 'Hello', "I'm Jangma, a singer-songwriter"],
   },
 };
 
@@ -116,7 +118,7 @@ const jangmaFitRatio = 0.94;
 const jangmaContentCenterX = (149 + 1726) / 2;
 const jangmaDragMinLeft = 420;
 const stillFrameWidth = 924;
-const mobileStillFrameWidth = 329;
+const mobileStillFrameWidth = 323;
 const trackArchiveDesignWidth = 1920;
 const trackArchiveDesignHeight = 1129;
 const trackArchiveFitRatio = 0.98;
@@ -722,7 +724,7 @@ function JangmaPage({ locale }: JangmaPageProps) {
 
           <section className="jangma-mobile-profile-card" aria-label="Jangma profile">
             <img src={asset('jangma-profile.png')} alt="Jangma profile" />
-            <p>Jangma</p>
+            <p>{locale === 'ko' ? '장마' : 'Jangma'}</p>
           </section>
 
           <section className="jangma-mobile-window jangma-mobile-stills-window" aria-label="Music Video Stills">
@@ -759,8 +761,10 @@ function JangmaPage({ locale }: JangmaPageProps) {
               <span>Jangma</span>
             </header>
             <div className="jangma-mobile-intro-body">
-              {copy[locale].jangmaIntro.map((line) => (
-                <p key={line}>{line}</p>
+              {copy[locale].jangmaMobileIntro.map((line, lineIndex) => (
+                <p className={line ? undefined : 'is-gap'} key={`${line}-${lineIndex}`}>
+                  {line || '\u00a0'}
+                </p>
               ))}
             </div>
           </section>
@@ -775,7 +779,7 @@ function JangmaPage({ locale }: JangmaPageProps) {
                   <span className="jangma-mobile-playlist-row-inner">
                     <span>
                       <img src={asset(item.image)} alt="" />
-                      <span className="jangma-mobile-playlist-title">{item.koTitle}</span>
+                      <span className="jangma-mobile-playlist-title">{locale === 'ko' ? item.koTitle : item.enTitle}</span>
                     </span>
                     <span className="jangma-mobile-playlist-time">{item.time}</span>
                   </span>
@@ -798,7 +802,7 @@ function JangmaPage({ locale }: JangmaPageProps) {
         <aside className="jangma-sidebar" aria-label="Jangma controls">
           <div className="jangma-profile-card">
             <img src={asset('jangma-profile.png')} alt="Jangma profile" />
-            <p>Jangma</p>
+            <p>{locale === 'ko' ? '장마' : 'Jangma'}</p>
           </div>
 
           <nav className="jangma-button-stack" aria-label="Jangma page sections">
@@ -985,7 +989,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
             'A hidden gem in Gijang where a lake-like reservoir and a dense forest harmonize. With the shadows of the trees and a small boat drifting on the water, you will encounter a dreamy landscape that feels like walking through a dream.',
         },
         {
-          title: 'Jungang Park Cypress Forest',
+          title: 'Cypress Forest',
           description:
             'Cypress trees stretching straight toward the sky deliver crisp refreshing air. The way the soft sunlight breaks into pieces through the thick canopy is incredibly beautiful. The sound of the woods swaying in the wind and the deep greenery gently calm a weary heart.',
         },
@@ -1060,7 +1064,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
       places: [
         {
           koName: '황령산 봉수대',
-          enName: 'Hwangnyeongsan Beacon Fire Station',
+          enName: 'Hwangnyeongsan',
           koDescription:
             '부산의 화려한 도심과 푸른 바다를 사방으로 시원하게 내려다볼 수 있는 공간입니다. 낮에는 탁 트인 풍경으로 해방감을 주고, 해가 저물면 하나둘 불빛이 켜지며 아늑한 야경으로 변합니다. 웅장함과 서글픈 아름다움이 공존하는 장소입니다.',
           enDescription:
@@ -1210,8 +1214,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     ))}
                     <li>
                       {pageCopy.tracks[4]}
-                      <br />
-                      <span>(Inst.)</span>
+                      <span>(inst.)</span>
                     </li>
                   </ol>
                 </div>
@@ -1340,8 +1343,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     ))}
                     <li>
                       {pageCopy.tracks[4]}
-                      <br />
-                      <span>(Inst.)</span>
+                      <span>(inst.)</span>
                     </li>
                   </ol>
                 </div>
@@ -1581,6 +1583,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
     lines: [
       '안녕하세요.',
       ' ',
+      '',
       '첫 EP라니 정말이지 감개가 무량합니다.',
       '몇 년 전까지만 해도 이런 날이 올 줄은',
       '몰랐...다는 말은 농담으로도 못 하겠고요.',
@@ -1648,7 +1651,7 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
     copySide: 'right',
     copyClassName: 'white-diary-copy-page-7-right',
     lines: [
-      '저도 알죠. 사람이 꿈속에 살 수 없다는 걸. 숨만 쉬어도 해야 할 일이 턱턱 주어지는',
+      '저도 알죠. 사람이 꿈속에 살 수 없다는 걸. 숨만 쉬어도 해야 할 일이 턱턱 주어지는\u00a0게',
       '현실이잖아요.',
       '주어진다? 던져진다는 표현이 더 맞겠어요.',
       '',
@@ -1686,7 +1689,12 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '그래도 선택지가 점점 더 늘어나서 언젠가 정말 싫은 건 고르지 않아도 되는 날이 오면 좋겠어요. 선택지가 하나밖에 없으면 그게 정말 정말 싫어도 고를 수밖에 없잖아요.',
       '아니면 멈추거나. 멈추는 것도 선택인가요. 무튼 전 그런 걸 받아들이기 싫다고요...',
       '',
-      '그러니까 제가 하고 싶은 말은 딸기 케이크에 딸기만, 새우 파스타의 새우만 쏙쏙 뽑아먹는 그런 삶이 아니더라도 다들 정말 못 견디겠는 건 안 하며 살 수 있으면 좋겠다, 그 말이에요. 그럼 서로 미워하고 할퀼 일도 줄어들지 않겠어요. 그렇게 세계 평화,',
+      '그러니까 제가 하고 싶은 말은 딸기케이크',
+      '에 딸기만, 새우 파스타의 새우만 쏙쏙뽑아',
+      '먹는 그런 삶이 아니더라도 다들 정말 못',
+      '견디겠는 건 안 하며 살 수 있으면 좋겠다,',
+      '그 말이에요. 그럼 서로 미워하고 할퀼 일도',
+      '줄어들지 않겠어요. 그렇게 세계 평화,',
       '우주 평화가 이루어지고.',
       '',
       '가당찮은 소리죠? 압니다...',
@@ -1854,18 +1862,12 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
       '"It would be so much easier if I',
       'just liked things that were',
       'perfect from the very start", haha',
-      'Even though I know myself well enough',
-      'to know that if they were perfect,',
-      'they wouldn’t catch my eye in the first place.',
-      'Writing it out like this makes me worry',
-      'that I might seem like someone with a',
-      'twisted taste who only loves weak and',
-      "imperfect things, but that's",
+      'Even though I know myself well enough to know that if they were perfect, they wouldn’t catch my eye in the first place.',
+      "Writing it out like this makes me worry that I might seem like someone with a twisted taste who only loves weak and imperfect things, but that's",
       'not it at all...',
       'They just appear that way,',
       'but they are actually strong.',
-      'Strong enough to need none of my worries.',
-      'So, thinking that they were fragile was',
+      'Strong enough to need none of my worries. So, thinking that they were fragile was',
       'completely my own misconception.',
     ],
     extraCopies: [
@@ -1898,17 +1900,11 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
   },
   {
     lines: [
-      'I know it too. That a person can’t live',
-      'inside a dream. We live in a reality',
-      'where things you just have to do are',
-      'constantly handed down to you, the moment',
+      'I know it too. That a person can’t live inside a dream. We live in a reality where things you just have to do are constantly handed down to you, the moment',
       'you take a breath.',
-      'Handed down? No, "thrown at you" would',
-      'probably be a better way to put it.',
+      'Handed down? No, "thrown at you" would probably be a better way to put it.',
       '',
-      'Anyway, dealing with what’s in front of me',
-      'right now is already giving me a massive',
-      'headache, but then people go on about',
+      'Anyway, dealing with what’s in front of me right now is already giving me a massive headache, but then people go on about',
       'what you need to do next,',
       'what about next year,',
       'what about ten years from now,',
@@ -1916,12 +1912,9 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
     ],
     extraCopies: [
       [
-        'How wonderful would it be if we could',
-        'live our lives doing only what we want',
-        'to do?',
+        'How wonderful would it be if we could live our lives doing only what we want to do?',
         'This is another thought I have all the',
-        'time, but adults always say that’s',
-        'impossible. They ask,',
+        'time, but adults always say that’s impossible. They ask,',
         '"How can anyone live doing only',
         'the things they like?"',
         '',
@@ -1936,25 +1929,14 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
   {
     lines: [
       'Still, I hope that as choices expand',
-      'over time, a day will come when we',
-      "genuinely don't have to choose the things",
-      'we absolutely hate. If there’s only one',
-      'option, you have no choice but to pick it,',
-      'even if you utterly detest it.',
+      "over time, a day will come when we genuinely don't have to choose the things we absolutely hate. If there's only one option, you have no choice but to pick it, even if you utterly detest it.",
       'Either that, or you stop.',
       'Is stopping a choice too?',
-      'Either way, I just hate accepting things',
-      'like that...',
+      'Either way, I just hate accepting things like that...',
       '',
-      "So, what I'm trying to say is—even if it's",
-      'not a life where we can just pick out',
-      'the strawberries from a strawberry cake',
-      'or the shrimp from a shrimp pasta',
+      "So, what I'm trying to say is—even if it's not a life where we can just pick out the strawberries from a strawberry cake or the shrimp from a shrimp pasta",
       '—I hope everyone can live without having',
-      'to do the things they truly cannot stand.',
-      "Wouldn't that mean less hating and",
-      'scratching at one another? And that’s how',
-      'we achieve world peace,',
+      "to do the things they truly cannot stand. Wouldn't that mean less hating and scratching at one another? And that's how we achieve world peace,",
       'or even universe peace.',
       '',
       'Sounds ridiculous, right?',
@@ -1965,15 +1947,13 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
     lines: [
       'Still, it means I’ve gained one more way',
       'to process things, so I guess that’s a',
-      'good thing. I just hope this attitude',
-      'sticks around for a long time.',
+      'good thing. I just hope this attitude sticks around for a long time.',
       '',
       'If I were to name one of my wishes,',
       'it’s that I’d live my life with a bit',
       'less urgency. And maybe stop',
       'getting scared over nothing.',
-      'But then again, there’s probably no point',
-      'in pushing myself like this, right?',
+      'But then again, there’s probably no point in pushing myself like this, right?',
       'I wonder if even this is just me being greedy.',
       '',
       'Then should I just accept it?',
@@ -1983,46 +1963,28 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
     extraCopies: [
       [
         'I am a deeply greedy person,',
-        "but thankfully, I feel like I'm currently",
-        'living my life satisfying that greed',
-        'to a certain degree. At least for now.',
+        "but thankfully, I feel like I'm currently living my life satisfying that greed to a certain degree. At least for now.",
         '',
-        'I have no idea what tomorrow will bring,',
-        'though. I cannot explain my life without',
-        "using the word 'aspiration.' Naturally,",
-        "I've broken down many times and lost",
-        'a lot along the way, but now I’ve come',
-        'to think that there must have been',
-        'a reason for it all. Though,',
-        "I don't always try to",
+        "I have no idea what tomorrow will bring, though. I cannot explain my life without using the word 'aspiration.' Naturally, I've broken down many times and lost",
+        "a lot along the way, but now I've come to think that there must have been a reason for it all. Though, I don't always try to",
         'sugarcoat it like that,,',
       ],
     ],
   },
   {
     lines: [
-      'I want to go somewhere very far away.',
-      "There is still so much I don't know.",
-      "I don't necessarily want to know everything,",
-      "and even if I wander my whole life, there's",
-      "no way I'd ever figure it all out anyway...",
-      'So maybe',
-      "I shouldn't jump to conclusions?",
+      'I want to go somewhere very far away. There is still so much I don’t know.',
+      "I don’t necessarily want to know everything, and even if I wander my whole life, there’s no way I’d ever figure it all out anyway... So maybe",
+      'I shouldn’t jump to conclusions?',
       '',
-      "As I write this, it's June 22nd.",
-      'It had been hot for a while, but after a',
-      'few days of rain, it’s quite chilly today.',
-      'Watch out for the heat,',
-      'be careful not to catch a cold from the AC,',
-      "and if you're passing through a season",
-      "that isn't hot, please be careful",
+      'As I write this, it’s June 22nd.',
+      'It had been hot for a while, but after a few days of rain, it’s quite chilly today. Watch out for the heat,',
+      "be careful not to catch a cold from the AC, and if you're passing through a season that isn't hot, please be careful",
       'of other things.',
       '',
-      'Like... what... well, take care of your health!',
-      'You have to be healthy to do anything, right?',
+      'Like... what... well, take care of your health! You have to be healthy to do anything, right?',
       'And if you have the time,',
-      'it would be even better if you listened',
-      'to my songs ˘◡˘',
+      'it would be even better if you listened to my songs ˘◡˘',
       '',
       'Thank you for reading this long letter.',
       "I'll wrap it up here.",
@@ -2070,6 +2032,7 @@ const whiteDiaryMobileKoreanLines: Record<string, string[]> = {
   '3-left': [
     '안녕하세요.',
     ' ',
+    '',
     '첫 EP라니 정말이지 감개가 무량합니다.',
     '몇 년 전까지만 해도 이런 날이 올 줄은',
     '몰랐...다는 말은 농담으로도',
@@ -2140,7 +2103,7 @@ const whiteDiaryMobileKoreanLines: Record<string, string[]> = {
     '',
   ],
   '6-right': [
-    '저도 알죠. 사람이 꿈속에 살 수 없다는 걸. 숨만 쉬어도 해야 할 일이 턱턱 주어지는 현실이잖아요.',
+    '저도 알죠. 사람이 꿈속에 살 수 없다는 걸. 숨만 쉬어도 해야 할 일이 턱턱 주어지는\u00a0게 현실이잖아요.',
     '주어진다? 던져진다는 표현이',
     '더 맞겠어요.',
     '',
@@ -2214,6 +2177,111 @@ const whiteDiaryMobileKoreanLines: Record<string, string[]> = {
     '',
     '긴 글 읽어주셔서 감사합니다.',
     '이만 줄일게요. 또 봐요!',
+  ],
+};
+
+const whiteDiaryMobileEnglishLines: Record<string, string[]> = {
+  '5-left': [
+    'Do you believe in eternity?',
+    "I'm on the side that wants to",
+    'believe in it. If you ask me whether',
+    "I actually believe in it or not, honestly, I don't know. And until",
+    "recently, I didn't really know why",
+    'I wanted to believe in it so badly,',
+    'either.',
+    '',
+    'Last night, I gave it some thought.',
+    'Just lying quietly on my bed',
+    'in a dark room. And it hit me—I think I wanted to believe in it',
+    'out of affection. Because I loved',
+    'those things. But whatever it was,',
+    'everything I loved seemed as though',
+    'it would crumble away someday.',
+    '',
+    "Maybe that scared me, and that's why",
+    'I wanted to believe that eternity exists. Not that believing would make something out of nothing, or keep what is already there from disappearing.',
+  ],
+  '5-right': [
+    'I even had the arrogant thought,',
+    '"It would be so much easier if I',
+    'just liked things that were',
+    'perfect from the very start", haha',
+    'Even though I know myself well enough to know that if they were perfect, they wouldn’t catch my eye in the first place.',
+    '',
+    "Writing it out like this makes me worry that I might seem like someone with a twisted taste who only loves weak and imperfect things, but that's not it at all...",
+    '',
+    'They just appear that way,',
+    'but they are actually strong.',
+    'Strong enough to need none of my worries. So, thinking that they were fragile was completely my own misconception.',
+  ],
+  '6-left': [
+    'How wonderful would it be if we could live our lives doing only what we want to do?',
+    'This is another thought I have all the',
+    'time, but adults always say that’s impossible. They ask,',
+    '"How can anyone live doing only',
+    'the things they like?"',
+    '',
+    'Is that really true?',
+    "Do you think so too? Maybe it's just",
+    'my childish rebelliousness showing,',
+    'but I mean,',
+    "why shouldn't we be able to?",
+  ],
+  '6-right': [
+    'I know it too. That a person can’t live inside a dream. We live in a reality where things you just have to do are constantly handed down to you, the moment you take a breath. Handed down?',
+    'No, "thrown at you" would probably be a better way to put it.',
+    '',
+    'Anyway, dealing with what’s in front of me right now is already giving me a massive headache, but then people go on about',
+    'what you need to do next,',
+    'what about next year,',
+    'what about ten years from now,',
+    'blah blah blah...',
+  ],
+  '7-left': [
+    'Still, I hope that as choices expand',
+    "over time, a day will come when we genuinely don't have to choose the things we absolutely hate. If there's only one option, you have no choice but to pick it, even if you utterly detest it. Either that, or you stop.",
+    'Is stopping a choice too?',
+    'Either way, I just hate accepting things like that...',
+    '',
+    "So, what I'm trying to say is—even if it's not a life where we can just pick out the strawberries from a strawberry cake or the shrimp from a shrimp pasta—I hope everyone can live without having to do the things they truly cannot stand. Wouldn't that mean less hating and scratching at one another? And that's how we achieve world peace, or even universe peace.",
+    '',
+    'Sounds ridiculous, right?',
+    'I know...',
+  ],
+  '8-left': [
+    'I am a deeply greedy person,',
+    "but thankfully, I feel like I'm currently living my life satisfying that greed to a certain degree. At least for now.",
+    '',
+    "I have no idea what tomorrow will bring, though. I cannot explain my life without using the word 'aspiration.' Naturally, I've broken down many times and lost a lot along the way, but now I've come to think that there must have been a reason for it all. Though, I don't always try to sugarcoat it like that,,",
+  ],
+  '8-right': [
+    'Still, it means I’ve gained one more way to process things, so I guess that’s a good thing. I just hope this attitude sticks around for a long time.',
+    '',
+    'If I were to name one of my wishes, it’s that I’d live my life with a bit less urgency. And maybe stop getting scared over nothing.',
+    'But then again, there’s probably no point in pushing myself like this, right? I wonder if even this is just me being greedy.',
+    '',
+    'Then should I just accept it?',
+    'But I really hate the thought of',
+    'doing that, too.',
+  ],
+  '9-right': [
+    "I want to go somewhere very far away. There is still so much I don't know.",
+    "I don't necessarily want to know everything, and even if I wander my whole life, there's no way I'd ever figure it all out anyway... So maybe",
+    "I shouldn't jump to conclusions?",
+    '',
+    "As I write this, it's June 22nd.",
+    'It had been hot for a while, but after a few days of rain, it’s quite chilly today. Watch out for the heat,',
+    "be careful not to catch a cold from the AC, and if you're passing through a season that isn't hot, please be careful of other things.",
+    '',
+    '',
+  ],
+  '9-right-final': [
+    'Like... what... well, take care of your health! You have to be healthy to do anything, right?',
+    'And if you have the time,',
+    'it would be even better if you listened to my songs ˘◡˘',
+    '',
+    "Thank you for reading this long letter. I'll wrap it up here.",
+    'See you again!',
   ],
 };
 
@@ -2425,7 +2493,7 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
 
     return (
       <main className="white-diary-mobile-page">
-        <section className={`white-diary-mobile-scene is-${mobileSide} mobile-diary-spread-${mobileSpreadIndex}`} aria-label="White Diary">
+        <section className={`white-diary-mobile-scene is-${mobileSide}${locale === 'en' ? ' is-en' : ''} mobile-diary-spread-${mobileSpreadIndex}`} aria-label="White Diary">
           <HomeButton className="home-button-white-diary-mobile" variant={mobileSide === 'left' ? 'light' : 'dark'} />
 
           <div className="white-diary-mobile-lp" aria-hidden="true">
@@ -2460,9 +2528,7 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
           {mobileCopies.map((copyBlock, copyIndex) => (
             <div className={`white-diary-mobile-copy ${locale === 'en' ? 'is-en' : ''}`} key={`mobile-copy-${mobileSpreadIndex}-${copyIndex}`}>
               {(locale === 'en'
-                ? copyIndex === 0
-                  ? whiteDiaryEnglishLines[mobileSpreadIndex]?.lines
-                  : whiteDiaryEnglishLines[mobileSpreadIndex]?.extraCopies?.[copyIndex - 1]
+                ? whiteDiaryMobileEnglishLines[mobileEntry.kind === 'copy' ? mobileEntry.copyKey : `${mobileSpreadIndex}-${copyBlock.side}`] ?? whiteDiaryEnglishLines[mobileSpreadIndex]?.lines
                 : copyIndex === 0
                   ? whiteDiaryMobileKoreanLines[mobileEntry.kind === 'copy' ? mobileEntry.copyKey : `${mobileSpreadIndex}-${copyBlock.side}`] ?? copyBlock.lines
                   : copyBlock.lines
@@ -2529,7 +2595,7 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
         }}
       >
         <section
-          className={`white-diary-scene is-turning-${turnDirection}${isPageTurning ? ' is-turning' : ''}`}
+          className={`white-diary-scene ${locale === 'en' ? 'is-en' : ''} is-turning-${turnDirection}${isPageTurning ? ' is-turning' : ''}`}
           style={{ transform: `scale(${sceneScale})` }}
           aria-label="White Diary"
         >
@@ -2627,6 +2693,10 @@ function WhiteRecordPage() {
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
   const objectAudioRefs = useRef<Record<string, HTMLAudioElement>>({});
+  const recordingDestinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
+  const recordingObjectBuffersRef = useRef<Record<string, AudioBuffer>>({});
+  const recordingObjectSourcesRef = useRef<Record<string, AudioBufferSourceNode>>({});
+  const activeObjectAudioIdsRef = useRef<Set<string>>(new Set());
   const discImageRef = useRef<HTMLImageElement | null>(null);
   const recordedAudioUrlRef = useRef<string | null>(null);
   const streamsRef = useRef<MediaStream[]>([]);
@@ -2685,6 +2755,7 @@ function WhiteRecordPage() {
       void audioContextRef.current.close();
       audioContextRef.current = null;
     }
+    recordingDestinationRef.current = null;
   };
 
   const closePlaybackContext = (contextRef: { current: AudioContext | null }) => {
@@ -2713,20 +2784,77 @@ function WhiteRecordPage() {
   };
 
   const stopObjectAudio = (objectId: string) => {
+    activeObjectAudioIdsRef.current.delete(objectId);
     const audio = objectAudioRefs.current[objectId];
-    if (!audio) return;
-    audio.pause();
-    audio.currentTime = 0;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+
+    const recordingSource = recordingObjectSourcesRef.current[objectId];
+    if (recordingSource) {
+      try {
+        recordingSource.stop();
+      } catch {
+        // The source may already have stopped naturally or during cleanup.
+      }
+      delete recordingObjectSourcesRef.current[objectId];
+    }
   };
 
   const stopAllObjectAudio = () => {
+    activeObjectAudioIdsRef.current.clear();
     Object.values(objectAudioRefs.current).forEach((audio) => {
       audio.pause();
       audio.currentTime = 0;
     });
+    Object.values(recordingObjectSourcesRef.current).forEach((source) => {
+      try {
+        source.stop();
+      } catch {
+        // The source may already have stopped naturally or during cleanup.
+      }
+    });
+    recordingObjectSourcesRef.current = {};
+  };
+
+  const playObjectAudioIntoRecording = async (object: (typeof whiteRecordObjects)[number]) => {
+    const audioContext = audioContextRef.current;
+    const destination = recordingDestinationRef.current;
+    if (!audioContext || !destination) return;
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
+    let buffer = recordingObjectBuffersRef.current[object.id];
+    if (!buffer) {
+      const response = await fetch(asset(object.audio));
+      const arrayBuffer = await response.arrayBuffer();
+      buffer = await audioContext.decodeAudioData(arrayBuffer);
+      recordingObjectBuffersRef.current[object.id] = buffer;
+    }
+
+    if (!activeObjectAudioIdsRef.current.has(object.id) || audioContextRef.current !== audioContext) return;
+
+    const currentSource = recordingObjectSourcesRef.current[object.id];
+    if (currentSource) {
+      try {
+        currentSource.stop();
+      } catch {
+        // The source may already have stopped naturally or during cleanup.
+      }
+    }
+
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    source.connect(destination);
+    source.start();
+    recordingObjectSourcesRef.current[object.id] = source;
   };
 
   const playObjectAudio = (object: (typeof whiteRecordObjects)[number]) => {
+    activeObjectAudioIdsRef.current.add(object.id);
     let audio = objectAudioRefs.current[object.id];
 
     if (!audio) {
@@ -2740,9 +2868,10 @@ function WhiteRecordPage() {
     audio.pause();
     audio.currentTime = 0;
     audio.loop = true;
-    void audio.play().catch(() => {
-      // Browsers can block audio until the first user gesture; the next hover/click will retry.
+    void playObjectAudioIntoRecording(object).catch(() => {
+      stopObjectAudio(object.id);
     });
+    return audio.play();
   };
 
   const clearRecordedAudio = () => {
@@ -2768,6 +2897,7 @@ function WhiteRecordPage() {
     closeAudioContext();
     clearRecordedAudio();
     recorderChunksRef.current = [];
+    stopAllObjectAudio();
     mediaRecorderRef.current = null;
     setIsPlaying(false);
     setIsRecording(false);
@@ -2966,18 +3096,20 @@ function WhiteRecordPage() {
 
       let recorderStream = micStream;
 
-      if (systemStream) {
-        const AudioContextClass =
-          window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        if (!AudioContextClass) {
-          throw new Error('AudioContext is not available in this browser.');
-        }
+      const AudioContextClass =
+        window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+
+      if (AudioContextClass) {
         const audioContext = new AudioContextClass();
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
         const destination = audioContext.createMediaStreamDestination();
         audioContextRef.current = audioContext;
+        recordingDestinationRef.current = destination;
 
         const hasMicAudio = addStreamToDestination(audioContext, destination, micStream);
-        const hasSystemAudio = addStreamToDestination(audioContext, destination, systemStream);
+        const hasSystemAudio = systemStream ? addStreamToDestination(audioContext, destination, systemStream) : false;
 
         if (!hasMicAudio && !hasSystemAudio) {
           throw new Error('No audio input was available.');
@@ -3062,14 +3194,19 @@ function WhiteRecordPage() {
     });
   };
 
-  const handleMobileObjectPress = (object: (typeof whiteRecordObjects)[number]) => {
-    setPressedObjectId(object.id);
-    playObjectAudio(object);
-  };
+  const handleMobileObjectToggle = (object: (typeof whiteRecordObjects)[number]) => {
+    if (pressedObjectId === object.id) {
+      stopObjectAudio(object.id);
+      setPressedObjectId(null);
+      return;
+    }
 
-  const handleMobileObjectRelease = (objectId: string) => {
-    setPressedObjectId((current) => (current === objectId ? null : current));
-    stopObjectAudio(objectId);
+    stopAllObjectAudio();
+    setPressedObjectId(object.id);
+    void playObjectAudio(object).catch(() => {
+      stopObjectAudio(object.id);
+      setPressedObjectId(null);
+    });
   };
 
   const renderControls = (className: string) => (
@@ -3174,25 +3311,9 @@ function WhiteRecordPage() {
                     className={`white-record-mobile-object ${object.className}${isPressed ? ' is-pressed' : ''}`}
                     type="button"
                     aria-label={object.label}
+                    aria-pressed={isPressed}
                     key={object.id}
-                    onPointerDown={(event) => {
-                      event.preventDefault();
-                      event.currentTarget.setPointerCapture(event.pointerId);
-                      handleMobileObjectPress(object);
-                    }}
-                    onPointerUp={(event) => {
-                      event.preventDefault();
-                      event.currentTarget.releasePointerCapture(event.pointerId);
-                      handleMobileObjectRelease(object.id);
-                    }}
-                    onPointerCancel={(event) => {
-                      event.preventDefault();
-                      handleMobileObjectRelease(object.id);
-                    }}
-                    onPointerLeave={(event) => {
-                      event.preventDefault();
-                      handleMobileObjectRelease(object.id);
-                    }}
+                    onClick={() => handleMobileObjectToggle(object)}
                     onContextMenu={(event) => event.preventDefault()}
                   >
                     <img className="white-record-object-image-off" src={asset(object.offImage)} alt="" />
@@ -3259,9 +3380,17 @@ function WhiteRecordPage() {
                 type="button"
                 aria-label={object.label}
                 key={object.id}
-                onPointerEnter={() => playObjectAudio(object)}
+                onPointerEnter={() => {
+                  void playObjectAudio(object).catch(() => {
+                    // Browsers can block audio until the first user gesture; the next hover/click will retry.
+                  });
+                }}
                 onPointerLeave={() => stopObjectAudio(object.id)}
-                onFocus={() => playObjectAudio(object)}
+                onFocus={() => {
+                  void playObjectAudio(object).catch(() => {
+                    // Browsers can block audio until the first user gesture; the next hover/click will retry.
+                  });
+                }}
                 onBlur={() => stopObjectAudio(object.id)}
               >
                 <img className="white-record-object-image-off" src={asset(object.offImage)} alt="" />

@@ -477,11 +477,13 @@ button {
 
 .mobile-main-object span {
   position: absolute;
+  left: 50%;
   display: block;
   white-space: nowrap;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+  transform: translateX(-50%);
 }
 
 .mobile-main-lp {
@@ -496,7 +498,7 @@ button {
 }
 
 .mobile-main-lp span {
-  left: -6.18%;
+  left: calc(50% - 60px);
   top: 181px;
 }
 
@@ -508,7 +510,7 @@ button {
 }
 
 .mobile-main-camera span {
-  left: calc(12.59% + 30px);
+  left: calc(50% + 10px);
   top: 165px;
 }
 
@@ -520,7 +522,7 @@ button {
 }
 
 .mobile-main-jangma span {
-  left: calc(10.7% + 30px);
+  left: calc(50% + 20px);
   top: 230px;
 }
 
@@ -532,7 +534,7 @@ button {
 }
 
 .mobile-main-diary span {
-  left: calc(-18.43% + 80px);
+  left: calc(50% - 10px);
   top: 239px;
 }
 
@@ -709,6 +711,7 @@ button {
 
 .jangma-profile-card p {
   margin: 0;
+  font-family: 'Galmuri11', 'DotGothic16', monospace;
   font-size: 25px;
   line-height: 36px;
   text-align: center;
@@ -1019,10 +1022,11 @@ button {
 }
 
 .jangma-mobile-profile-card p {
-  width: 75px;
+  width: 100%;
   height: 36px;
   margin: 0;
   color: var(--green-deep);
+  font-family: 'Galmuri11', 'DotGothic16', monospace;
   font-size: 25px;
   line-height: 36px;
   text-align: center;
@@ -1088,15 +1092,16 @@ button {
 }
 
 .jangma-mobile-stills-viewport {
-  width: 329px;
-  height: 182px;
+  width: 323px;
+  height: 176px;
+  margin: 0 auto;
   overflow: hidden;
 }
 
 .jangma-mobile-stills-track {
   display: flex;
   width: max-content;
-  height: 182px;
+  height: 176px;
   transition: transform 340ms ease;
   will-change: transform;
 }
@@ -1106,11 +1111,11 @@ button {
 }
 
 .jangma-mobile-stills-track img {
-  width: 329px;
-  height: 182px;
+  width: 323px;
+  height: 176px;
   object-fit: cover;
   object-position: center;
-  flex: 0 0 329px;
+  flex: 0 0 323px;
   pointer-events: none;
 }
 
@@ -1137,12 +1142,11 @@ button {
 .jangma-mobile-intro-window {
   left: 50%;
   top: 794px;
-  height: 194px;
+  height: auto;
   transform: translateX(-50%);
 }
 
 .jangma-mobile-intro-body {
-  min-height: 167px;
   padding: 16px;
   border: 3px solid var(--green);
   background: #fffef7;
@@ -1154,7 +1158,12 @@ button {
 }
 
 .jangma-mobile-intro-body p {
-  margin: 0 0 24px;
+  margin: 0 0 8px;
+}
+
+.jangma-mobile-intro-body p.is-gap {
+  margin-bottom: 18px;
+  line-height: 1;
 }
 
 .jangma-mobile-intro-body p:last-child {
@@ -1163,7 +1172,7 @@ button {
 
 .jangma-mobile-playlist-window {
   left: 20px;
-  top: 1027px;
+  top: 1062px;
 }
 
 .jangma-mobile-playlist-body {
@@ -1365,7 +1374,8 @@ button {
 .track-sidebar-copy li {
   counter-increment: track-list;
   display: grid;
-  grid-template-columns: 50px 1fr;
+  grid-template-columns: 34px 1fr;
+  white-space: nowrap;
 }
 
 .track-sidebar-copy li::before {
@@ -1375,7 +1385,7 @@ button {
 
 .track-sidebar-copy span {
   display: inline-block;
-  margin-left: 50px;
+  margin-left: 8px;
 }
 
 .track-content {
@@ -1792,12 +1802,13 @@ button {
 .track-archive-mobile-album li {
   counter-increment: mobile-track-list;
   display: block;
+  white-space: nowrap;
 }
 
 .track-archive-mobile-album li::before {
   content: counter(mobile-track-list, decimal-leading-zero);
   display: inline-block;
-  margin-right: 34px;
+  margin-right: 17px;
   font-weight: 700;
 }
 
@@ -2749,8 +2760,8 @@ button {
   width: 298px;
   color: #567c65;
   font-family: 'DosGothic', 'DotGothic16', monospace;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 16px;
+  line-height: 23px;
   white-space: normal;
   word-break: keep-all;
 }
@@ -2761,7 +2772,7 @@ button {
 }
 
 .white-diary-mobile-copy.is-en {
-  font-size: 12px;
+  font-size: 16px;
   line-height: 16px;
   word-break: break-word;
 }
@@ -2904,7 +2915,21 @@ button {
   height: 119px;
 }
 
+.white-diary-mobile-scene.is-en.mobile-diary-spread-6 .white-diary-photo-curtain {
+  left: 159px;
+  top: 511px;
+  width: 147px;
+  height: 101px;
+}
+
 .white-diary-mobile-scene.mobile-diary-spread-8 .white-diary-photo-sun-tree {
+  left: 184px;
+  top: 495px;
+  width: 163px;
+  height: 109px;
+}
+
+.white-diary-mobile-scene.is-en.mobile-diary-spread-8 .white-diary-photo-sun-tree {
   left: 184px;
   top: 495px;
   width: 163px;
@@ -2918,9 +2943,23 @@ button {
   height: 115px;
 }
 
+.white-diary-mobile-scene.is-en.mobile-diary-spread-9 .white-diary-photo-forest-wide {
+  left: 160px;
+  top: 493px;
+  width: 173px;
+  height: 115px;
+}
+
 .white-diary-mobile-scene.mobile-diary-spread-9 .white-diary-photo-window-vine {
   left: 111px;
   top: 438px;
+  width: 206px;
+  height: 137px;
+}
+
+.white-diary-mobile-scene.is-en.mobile-diary-spread-9 .white-diary-photo-window-vine {
+  left: 106px;
+  top: 422px;
   width: 206px;
   height: 137px;
 }
@@ -2948,36 +2987,38 @@ button {
   display: block;
   width: 16px;
   height: 47px;
-  background: rgba(228, 179, 185, 0.5);
+  background: transparent url('/assets/white-diary-tape-pink.svg') center / 100% 100% no-repeat;
   transform: rotate(-148.83deg);
 }
 
 .white-diary-mobile-sticker.white-diary-tape-pink-long {
   left: 207px;
   top: 206px;
+  height: 42px;
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-meadow {
   left: 130px;
   top: 196px;
   height: 38px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(11.72deg);
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-bubbles {
-  left: 290px;
+  left: 310px;
   top: 457px;
   height: 38px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(-48.28deg);
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-bubbles-corner {
-  left: 107px;
+  left: 127px;
   top: 571px;
   height: 48px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(125.15deg);
 }
 
@@ -2985,7 +3026,7 @@ button {
   left: 50px;
   top: 212px;
   height: 53px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(53.73deg);
 }
 
@@ -2993,8 +3034,18 @@ button {
   left: 279px;
   top: 554px;
   height: 53px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(-145.88deg);
+}
+
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-green-pond-top {
+  left: 70px;
+  top: 202px;
+}
+
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-green-pond-bottom {
+  left: 299px;
+  top: 544px;
 }
 
 .white-diary-mobile-sticker.white-diary-tape-gold-rivergrass {
@@ -3002,44 +3053,63 @@ button {
   top: 472px;
   width: 18px;
   height: 40px;
-  background: rgba(210, 185, 106, 0.5);
+  background-image: url('/assets/white-diary-tape-gold-bottom.svg');
   transform: rotate(123.19deg);
 }
 
 .white-diary-mobile-sticker.white-diary-tape-pink-water-left {
-  left: 105px;
-  top: 574px;
+  left: 125px;
+  top: 564px;
   width: 15px;
   height: 42px;
-  background: rgba(228, 179, 185, 0.5);
   transform: rotate(-49.37deg);
 }
 
 .white-diary-mobile-sticker.white-diary-tape-pink-water-right {
-  left: 295px;
-  top: 449px;
+  left: 325px;
+  top: 439px;
   width: 15px;
   height: 42px;
-  background: rgba(228, 179, 185, 0.5);
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
   transform: rotate(127.28deg);
+}
+
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-pink-water-left {
+  left: 115px;
+}
+
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-pink-water-right {
+  left: 315px;
 }
 
 .white-diary-mobile-sticker.white-diary-tape-pink-curtain {
-  left: 203px;
+  left: 213px;
   top: 470px;
   width: 16px;
   height: 34px;
-  background: rgba(228, 179, 185, 0.5);
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
   transform: rotate(127.28deg);
 }
 
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-pink-curtain {
+  left: 212px;
+  top: 497px;
+  width: 13px;
+  height: 29px;
+}
+
 .white-diary-mobile-sticker.white-diary-tape-blue-sun-tree {
-  left: 251px;
+  left: 261px;
   top: 478px;
   width: 14px;
   height: 31px;
-  background: rgba(141, 189, 200, 0.5);
+  background-image: url('/assets/white-diary-tape-blue.svg');
   transform: rotate(11.72deg);
+}
+
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-blue-sun-tree {
+  left: 251px;
+  top: 478px;
 }
 
 .white-diary-mobile-sticker.white-diary-tape-green-forest-wide {
@@ -3047,26 +3117,41 @@ button {
   top: 488px;
   width: 11px;
   height: 24px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(-7.05deg);
 }
 
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-green-forest-wide {
+  left: 233px;
+  top: 481px;
+}
+
 .white-diary-mobile-sticker.white-diary-tape-green-window-left {
-  left: 102px;
+  left: 122px;
   top: 426px;
   width: 16px;
   height: 39px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(42.69deg);
 }
 
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-green-window-left {
+  left: 107px;
+  top: 410px;
+}
+
 .white-diary-mobile-sticker.white-diary-tape-green-window-right {
-  left: 288px;
+  left: 308px;
   top: 542px;
   width: 16px;
   height: 48px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(42.69deg);
+}
+
+.white-diary-mobile-scene.is-en .white-diary-mobile-sticker.white-diary-tape-green-window-right {
+  left: 293px;
+  top: 526px;
 }
 
 .white-diary-mobile-tape {
@@ -3081,7 +3166,7 @@ button {
 .white-diary-mobile-pencil {
   left: 303px;
   top: 312px;
-  z-index: 2;
+  z-index: 18;
   width: 136px;
   height: 452px;
   display: flex;
@@ -3109,10 +3194,9 @@ button {
 }
 
 .white-diary-mobile-pen img {
-  width: 67px;
+  width: 308px;
   height: 277px;
-  object-fit: cover;
-  object-position: 38.2% center;
+  object-fit: contain;
   transform: rotate(4.38deg);
 }
 
@@ -3219,8 +3303,8 @@ button {
 
 .white-diary-lp {
   position: absolute;
-  left: -250px;
-  top: -235px;
+  left: -400px;
+  top: 115px;
   z-index: 1;
   width: 735px;
   height: 735px;
@@ -3289,7 +3373,7 @@ button {
   font-family: 'DosGothic', 'DotGothic16', monospace;
   font-size: 25px;
   font-weight: 500;
-  line-height: 25px;
+  line-height: 27px;
   word-break: break-word;
 }
 
@@ -3319,6 +3403,13 @@ button {
   width: 522px;
 }
 
+.white-diary-scene.is-en .white-diary-copy-page-5 {
+  left: 1013px;
+  top: 144px;
+  width: 522px;
+  height: 623px;
+}
+
 .white-diary-copy-page-6-left {
   left: 390px;
   top: 144px;
@@ -3329,6 +3420,13 @@ button {
   left: 1015px;
   top: 144px;
   width: 525px;
+}
+
+.white-diary-scene.is-en .white-diary-copy-page-6-right {
+  left: 1013px;
+  top: 382px;
+  width: 545px;
+  height: 537px;
 }
 
 .white-diary-copy-page-7-left {
@@ -3416,8 +3514,15 @@ button {
 .white-diary-photo-rivergrass {
   left: 1071px;
   top: 570.38px;
-  width: 435px;
-  height: 290.011px;
+  width: 343.38px;
+  height: 228.76px;
+}
+
+.white-diary-scene.is-en .white-diary-photo-rivergrass {
+  left: 1119px;
+  top: 637.4px;
+  width: 343.376px;
+  height: 228.946px;
 }
 
 .white-diary-photo-branches {
@@ -3427,11 +3532,18 @@ button {
   height: 276.882px;
 }
 
+.white-diary-scene.is-en .white-diary-photo-branches {
+  left: 1213px;
+  top: 158.13px;
+  width: 282.256px;
+  height: 188.194px;
+}
+
 .white-diary-photo-water {
-  left: 413px;
-  top: 533px;
-  width: 468px;
-  height: 312px;
+  left: 436.07px;
+  top: 558.17px;
+  width: 422.83px;
+  height: 281.71px;
 }
 
 .white-diary-photo-curtain {
@@ -3444,8 +3556,8 @@ button {
 .white-diary-photo-sun-tree {
   left: 472px;
   top: 598px;
-  width: 371px;
-  height: 247px;
+  width: 400px;
+  height: 266.5px;
 }
 
 .white-diary-photo-forest-wide {
@@ -3523,7 +3635,7 @@ button {
   z-index: 19;
   display: block;
   width: 32px;
-  background: rgba(228, 179, 185, 0.5);
+  background: transparent url('/assets/white-diary-tape-pink.svg') center / 100% 100% no-repeat;
   transform-origin: center;
 }
 
@@ -3531,7 +3643,7 @@ button {
   left: 1314px;
   top: 127px;
   height: 91.67px;
-  background: rgba(228, 179, 185, 0.5);
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
   transform: rotate(-148.83deg);
 }
 
@@ -3539,49 +3651,63 @@ button {
   left: 558.22px;
   top: 137px;
   height: 70px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(11.72deg);
 }
 
 .white-diary-tape-green-bubbles {
-  left: 856px;
+  left: 876px;
   top: 622.52px;
   height: 70px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(-48.28deg);
 }
 
 .white-diary-tape-green-bubbles-corner {
-  left: 516.06px;
+  left: 536.06px;
   top: 833.52px;
   height: 88.509px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(125.15deg);
 }
 
 .white-diary-tape-green-pond-top {
-  left: 1020px;
-  top: 149px;
+  left: 1055px;
+  top: 139px;
   height: 100px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(53.73deg);
 }
 
 .white-diary-tape-green-pond-bottom {
-  left: 1449.46px;
+  left: 1469.46px;
   top: 791.11px;
   height: 100px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(-145.88deg);
 }
 
 .white-diary-tape-gold-rivergrass {
-  left: 1217.44px;
+  left: 1237.44px;
   top: 523px;
   width: 45.942px;
   height: 100.496px;
-  background: rgba(210, 185, 106, 0.5);
+  background-image: url('/assets/white-diary-tape-gold-bottom.svg');
   transform: rotate(123.19deg);
+}
+
+.white-diary-scene.is-en .white-diary-tape-gold-rivergrass {
+  left: 1234.62px;
+  top: 600px;
+  width: 36.27px;
+  height: 79.344px;
+}
+
+.white-diary-scene.is-en .white-diary-tape-gold-branches {
+  left: 1323.16px;
+  top: 126px;
+  width: 29.377px;
+  height: 64.262px;
 }
 
 .white-diary-tape-gold-branches {
@@ -3589,39 +3715,38 @@ button {
   top: 551px;
   width: 43.221px;
   height: 94.545px;
-  background: rgba(210, 185, 106, 0.5);
+  background-image: url('/assets/white-diary-tape-gold-bottom.svg');
   transform: rotate(37.8deg);
 }
 
 .white-diary-tape-pink-water-left {
-  left: 393px;
-  top: 788px;
+  left: 418px;
+  top: 788.57px;
   height: 91.67px;
-  background: rgba(228, 179, 185, 0.5);
   transform: rotate(-49.37deg);
 }
 
 .white-diary-tape-pink-water-right {
-  left: 812px;
-  top: 514px;
+  left: 796.58px;
+  top: 541px;
   height: 91.67px;
-  background: rgba(228, 179, 185, 0.5);
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
   transform: rotate(127.28deg);
 }
 
 .white-diary-tape-pink-curtain {
-  left: 1316px;
+  left: 1326px;
   top: 135px;
   height: 70.169px;
-  background: rgba(228, 179, 185, 0.5);
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
   transform: rotate(127.28deg);
 }
 
 .white-diary-tape-blue-sun-tree {
-  left: 625px;
+  left: 650px;
   top: 560px;
   height: 70px;
-  background: rgba(141, 189, 200, 0.5);
+  background-image: url('/assets/white-diary-tape-blue.svg');
   transform: rotate(11.72deg);
 }
 
@@ -3630,25 +3755,25 @@ button {
   top: 147.54px;
   width: 30.944px;
   height: 67.689px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(-7.05deg);
 }
 
 .white-diary-tape-green-window-left {
-  left: 469.27px;
+  left: 489.27px;
   top: 560px;
   width: 30.083px;
   height: 76.128px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(42.69deg);
 }
 
 .white-diary-tape-green-window-right {
-  left: 827.45px;
+  left: 847.45px;
   top: 784.75px;
   width: 30.083px;
   height: 93.422px;
-  background: rgba(167, 200, 141, 0.5);
+  background-image: url('/assets/white-diary-tape-green-bottom.svg');
   transform: rotate(42.69deg);
 }
 
@@ -3656,6 +3781,7 @@ button {
   left: 145px;
   top: -27px;
   height: 91.67px;
+  background-image: url('/assets/white-diary-tape-pink-bottom.svg');
   transform: rotate(-148.83deg);
 }
 
@@ -3664,8 +3790,8 @@ button {
 }
 
 .white-diary-tape {
-  left: -90px;
-  top: 579px;
+  left: -190px;
+  top: 659px;
   z-index: 2;
   width: 384px;
   height: 345px;
@@ -3680,7 +3806,7 @@ button {
 }
 
 .white-diary-pencil {
-  left: 1586px;
+  left: 1666px;
   top: 258px;
   width: 196.834px;
   height: 652.552px;
@@ -3698,7 +3824,7 @@ button {
 }
 
 .white-diary-pen {
-  left: 1546px;
+  left: 1616px;
   top: 515.69px;
   width: 125.139px;
   height: 434.617px;
@@ -3708,15 +3834,14 @@ button {
 }
 
 .white-diary-pen img {
-  width: 104px;
+  width: 478px;
   height: 430px;
-  object-fit: cover;
-  object-position: 38.2% center;
+  object-fit: contain;
   transform: rotate(2.83deg);
 }
 
 .white-diary-eraser {
-  left: 1662px;
+  left: 1742px;
   top: 149.05px;
   width: 136.626px;
   height: 165.765px;
