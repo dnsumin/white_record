@@ -32,7 +32,7 @@ const copy = {
     support:
       'Supported by Busan Metropolitan City & Busan Cultural Foundation <2026 Emerging Young Artists Creative Support Program>',
     jangmaIntro: ['If I Could Become a Grain of Sand, Someday.', "Hello, I'm Jangma, a singer-songwriter."],
-    jangmaMobileIntro: ['If I could become part of the sand someday', '', 'Hello', "I'm Jangma, a singer-songwriter"],
+    jangmaMobileIntro: ['If I could become', 'part of the sand someday', '', 'Hello', "I'm Jangma, a singer-songwriter"],
   },
 };
 
@@ -1093,12 +1093,17 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
 
   if (isMobile) {
     const isLyricMode = trackMode === 'lyric';
-    const mobileLyricPhotoTop = 1034;
+    const mobileLyricFlowTop = 666;
+    const mobileLyricPhotoGap = 32;
+    const mobileLyricPlaceHeight = activeLyricTrack.places.reduce((total, place) => {
+      const description = locale === 'ko' ? place.koDescription : place.enDescription;
+      return total + 64 + Math.max(78, Math.ceil(description.length / 22) * 24 + 34);
+    }, 0);
     const mobilePhotoGridHeight = activeLyricImages.length * 258 + Math.max(activeLyricImages.length - 1, 0) * 24;
     const mobileMvPhotoTop = 1994;
     const mobileMvPhotoGridHeight = mvImages.length * 258 + Math.max(mvImages.length - 1, 0) * 24;
     const mobileSceneHeight = isLyricMode
-      ? mobileLyricPhotoTop + 43 + 24 + mobilePhotoGridHeight + 48
+      ? mobileLyricFlowTop + mobileLyricPlaceHeight + mobileLyricPhotoGap + 43 + 24 + mobilePhotoGridHeight + 48
       : mobileMvPhotoTop + 43 + 24 + mobileMvPhotoGridHeight + 48;
     const activePlaceCards = isLyricMode
       ? activeLyricTrack.places.map((place) => ({
@@ -1167,36 +1172,34 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                 ))}
               </nav>
 
-              <div className="track-archive-mobile-place-list track-archive-mobile-place-list-lyric">
-                {activePlaceCards.map((place) => (
-                  <section className="track-archive-mobile-card" key={place.title}>
-                    <h2>{place.title}</h2>
-                    <p>{place.description}</p>
-                  </section>
-                ))}
-              </div>
-
-              <section
-                className="track-archive-mobile-photo-section"
-                style={{ top: mobileLyricPhotoTop }}
-                aria-label="Lyric video photos"
-              >
-                <h2>Photo</h2>
-                <div className="track-archive-mobile-photo-list">
-                  {activeLyricImages.map((image, index) => (
-                    <button
-                      className={`track-archive-mobile-photo${image.isWideCrop ? ' is-wide-crop' : ''}${
-                        image.isTopCrop ? ' is-top-crop' : ''
-                      }`}
-                      type="button"
-                      key={image.src}
-                      onClick={() => setExpandedTrackImageIndex(index)}
-                    >
-                      <img src={image.src} alt={image.alt} />
-                    </button>
+              <div className="track-archive-mobile-lyric-flow">
+                <div className="track-archive-mobile-place-list track-archive-mobile-place-list-lyric">
+                  {activePlaceCards.map((place) => (
+                    <section className="track-archive-mobile-card" key={place.title}>
+                      <h2>{place.title}</h2>
+                      <p>{place.description}</p>
+                    </section>
                   ))}
                 </div>
-              </section>
+
+                <section className="track-archive-mobile-photo-section" aria-label="Lyric video photos">
+                  <h2>Photo</h2>
+                  <div className="track-archive-mobile-photo-list">
+                    {activeLyricImages.map((image, index) => (
+                      <button
+                        className={`track-archive-mobile-photo${image.isWideCrop ? ' is-wide-crop' : ''}${
+                          image.isTopCrop ? ' is-top-crop' : ''
+                        }`}
+                        type="button"
+                        key={image.src}
+                        onClick={() => setExpandedTrackImageIndex(index)}
+                      >
+                        <img src={image.src} alt={image.alt} />
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              </div>
             </>
           ) : (
             <>
@@ -1214,6 +1217,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     ))}
                     <li>
                       {pageCopy.tracks[4]}
+                      {' '}
                       <span>(inst.)</span>
                     </li>
                   </ol>
@@ -1343,6 +1347,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
                     ))}
                     <li>
                       {pageCopy.tracks[4]}
+                      {' '}
                       <span>(inst.)</span>
                     </li>
                   </ol>
@@ -1689,8 +1694,8 @@ const whiteDiaryPages: WhiteDiaryPage[] = [
       '그래도 선택지가 점점 더 늘어나서 언젠가 정말 싫은 건 고르지 않아도 되는 날이 오면 좋겠어요. 선택지가 하나밖에 없으면 그게 정말 정말 싫어도 고를 수밖에 없잖아요.',
       '아니면 멈추거나. 멈추는 것도 선택인가요. 무튼 전 그런 걸 받아들이기 싫다고요...',
       '',
-      '그러니까 제가 하고 싶은 말은 딸기케이크',
-      '에 딸기만, 새우 파스타의 새우만 쏙쏙뽑아',
+      '그러니까 제가 하고 싶은 말은 딸기 케이크',
+      '에 딸기만, 새우 파스타의 새우만 쏙쏙 뽑아',
       '먹는 그런 삶이 아니더라도 다들 정말 못',
       '견디겠는 건 안 하며 살 수 있으면 좋겠다,',
       '그 말이에요. 그럼 서로 미워하고 할퀼 일도',
@@ -1904,8 +1909,7 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
       'you take a breath.',
       'Handed down? No, "thrown at you" would probably be a better way to put it.',
       '',
-      'Anyway, dealing with what’s in front of me right now is already giving me a massive headache, but then people go on about',
-      'what you need to do next,',
+      'Anyway, dealing with what’s in front of me right now is already giving me a massive headache, but then people go on about what you need to do next,',
       'what about next year,',
       'what about ten years from now,',
       'blah blah blah...',
@@ -1913,8 +1917,7 @@ const whiteDiaryEnglishLines: Array<{ lines: string[]; extraCopies?: string[][] 
     extraCopies: [
       [
         'How wonderful would it be if we could live our lives doing only what we want to do?',
-        'This is another thought I have all the',
-        'time, but adults always say that’s impossible. They ask,',
+        'This is another thought I have all the time, but adults always say that’s impossible. They ask,',
         '"How can anyone live doing only',
         'the things they like?"',
         '',
@@ -2216,8 +2219,7 @@ const whiteDiaryMobileEnglishLines: Record<string, string[]> = {
   ],
   '6-left': [
     'How wonderful would it be if we could live our lives doing only what we want to do?',
-    'This is another thought I have all the',
-    'time, but adults always say that’s impossible. They ask,',
+    'This is another thought I have all the time, but adults always say that’s impossible. They ask,',
     '"How can anyone live doing only',
     'the things they like?"',
     '',
@@ -2231,8 +2233,7 @@ const whiteDiaryMobileEnglishLines: Record<string, string[]> = {
     'I know it too. That a person can’t live inside a dream. We live in a reality where things you just have to do are constantly handed down to you, the moment you take a breath. Handed down?',
     'No, "thrown at you" would probably be a better way to put it.',
     '',
-    'Anyway, dealing with what’s in front of me right now is already giving me a massive headache, but then people go on about',
-    'what you need to do next,',
+    'Anyway, dealing with what’s in front of me right now is already giving me a massive headache, but then people go on about what you need to do next,',
     'what about next year,',
     'what about ten years from now,',
     'blah blah blah...',
@@ -2673,7 +2674,7 @@ function WhiteDiaryArchivePage({ locale }: WhiteDiaryArchivePageProps) {
   );
 }
 
-function WhiteRecordPage() {
+function WhiteRecordPage({ locale }: { locale: Locale }) {
   const isMobile = useIsMobileViewport();
   const [sceneScale, setSceneScale] = useState(1);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -3300,7 +3301,9 @@ function WhiteRecordPage() {
                 );
               })}
             </div>
-            <p className="white-record-mobile-object-hint">아래 아이템을 눌러 소리를 들어보세요</p>
+            <p className="white-record-mobile-object-hint">
+              {locale === 'ko' ? '아래 아이템을 눌러 소리를 들어보세요' : 'Press the items below to hear their sounds'}
+            </p>
 
             <div className="white-record-mobile-object-layer" aria-label="White Record objects">
               {whiteRecordObjects.map((object) => {
@@ -3726,7 +3729,7 @@ export default function App() {
   return (
     <>
       {currentPage === 'lp' ? (
-        <WhiteRecordPage />
+        <WhiteRecordPage locale={locale} />
       ) : currentPage === 'jangma' ? (
         <JangmaPage locale={locale} />
       ) : currentPage === 'track' ? (
