@@ -1884,7 +1884,7 @@ button {
   width: 353px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 0;
 }
 
 .track-archive-mobile-lyric-flow .track-archive-mobile-place-list-lyric,
@@ -1893,6 +1893,10 @@ button {
   left: auto;
   top: auto;
   width: 353px;
+}
+
+.track-archive-mobile-lyric-flow .track-archive-mobile-photo-section {
+  margin-top: 64px;
 }
 
 .track-archive-mobile-place-list .track-archive-mobile-card p {

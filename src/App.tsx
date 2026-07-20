@@ -1094,7 +1094,7 @@ function TrackArchivePage({ locale }: TrackArchivePageProps) {
   if (isMobile) {
     const isLyricMode = trackMode === 'lyric';
     const mobileLyricFlowTop = 666;
-    const mobileLyricPhotoGap = 32;
+    const mobileLyricPhotoGap = 64;
     const mobileLyricPlaceHeight = activeLyricTrack.places.reduce((total, place) => {
       const description = locale === 'ko' ? place.koDescription : place.enDescription;
       return total + 64 + Math.max(78, Math.ceil(description.length / 22) * 24 + 34);
